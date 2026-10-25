@@ -1,0 +1,373 @@
+@import "tailwindcss";
+
+/* Theme follows [data-theme] on <html>, set before first paint by ThemeScript.
+   Without JS, the media query below falls back to the device setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Website tokens: brand.md v3 "premium editorial direction".
+ * Neutral scale (warm concrete), proposed at the M4 checkpoint, contrast in progress/.../tests/contrast-tokens.txt:
+ *   white-0 #FFFFFF · paper-50 #F7F6F3 · stone-100 #EEECE7 · concrete-200 #E0DDD6 · concrete-300 #C7C3BA
+ *   concrete-500 #8A857C · steel-600 #5C5852 · graphite-700 #3A3835 · charcoal-800 #24231F
+ *   coal-900 #171614 · ink-950 #0F0E0D
+ * Reds are brand.md's: #C62828 / #A31515 on light; #FF6B6B text and #D32F2F / #B71C1C fills on dark.
+ * Semantic names are shared with earlier components (band, surface, elevated…).
+ */
+:root {
+  --bg: #ffffff;
+  --paper: #f7f6f3;
+  --stone: #eeece7;
+  --surface: #ffffff;
+  --band: #f7f6f3;
+  --elevated: #ffffff;
+  --divider: #e0ddd6;
+  --rule: #c7c3ba; /* stronger hairline for technical dividers */
+  --input-border: #8a857c;
+  --text: #1a1917;
+  --text-2: #5c5852;
+  --brand: #c62828;
+  --primary: #c62828;
+  --primary-hover: #a31515;
+  --on-primary: #ffffff;
+  --selected: #fdecea;
+  --success: #1e7b34;
+  --warning: #8f5b00;
+  --error: #c62828;
+  --grid-line: rgba(26, 25, 23, 0.06);
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.16);
+  --placeholder-a: #f7f6f3;
+  --placeholder-b: #eeece7;
+  color-scheme: light;
+}
+
+/* Dark tokens appear twice (switch + no-JS fallback); keep the two blocks identical. */
+:root[data-theme="dark"] {
+  --bg: #0f0e0d;
+  --paper: #171614;
+  --stone: #1c1b19;
+  --surface: #171614;
+  --band: #171614;
+  --elevated: #24231f;
+  --divider: #2e2d29;
+  --rule: #4a4843;
+  --input-border: #7a766e;
+  --text: #f2f0eb;
+  --text-2: #aba69d;
+  --brand: #ff6b6b;
+  --primary: #d32f2f;
+  --primary-hover: #b71c1c;
+  --on-primary: #ffffff;
+  --selected: #331a1a;
+  --success: #81c995;
+  --warning: #fdd663;
+  --error: #ff6b6b;
+  --grid-line: rgba(242, 240, 235, 0.05);
+  --shadow-1: none;
+  --shadow-2: none;
+  --placeholder-a: #171614;
+  --placeholder-b: #1c1b19;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0f0e0d;
+    --paper: #171614;
+    --stone: #1c1b19;
+    --surface: #171614;
+    --band: #171614;
+    --elevated: #24231f;
+    --divider: #2e2d29;
+    --rule: #4a4843;
+    --input-border: #7a766e;
+    --text: #f2f0eb;
+    --text-2: #aba69d;
+    --brand: #ff6b6b;
+    --primary: #d32f2f;
+    --primary-hover: #b71c1c;
+    --on-primary: #ffffff;
+    --selected: #331a1a;
+    --success: #81c995;
+    --warning: #fdd663;
+    --error: #ff6b6b;
+    --grid-line: rgba(242, 240, 235, 0.05);
+    --shadow-1: none;
+    --shadow-2: none;
+    --placeholder-a: #171614;
+    --placeholder-b: #1c1b19;
+    color-scheme: dark;
+  }
+}
+
+/*
+ * Dark architectural sections (the "15%"), in both themes. Re-points the tokens, so any component
+ * placed inside adapts. In the dark theme the section steps up to charcoal-800 with hairline edges,
+ * so it still stands apart from the ink-950 page (brand.md v3, Layout and rhythm).
+ */
+.tone-dark {
+  --bg: #171614;
+  --paper: #171614;
+  --surface: #1c1b19;
+  --band: #1c1b19;
+  --elevated: #24231f;
+  --divider: rgba(242, 240, 235, 0.14);
+  --rule: rgba(242, 240, 235, 0.28);
+  --input-border: #7a766e;
+  --text: #f2f0eb;
+  --text-2: #aba69d;
+  --brand: #ff6b6b;
+  --primary: #d32f2f;
+  --primary-hover: #b71c1c;
+  --selected: #331a1a;
+  --error: #ff6b6b;
+  --grid-line: rgba(242, 240, 235, 0.06);
+  --placeholder-a: #1c1b19;
+  --placeholder-b: #24231f;
+  color-scheme: dark;
+  background-color: var(--bg);
+  color: var(--text);
+}
+:where([data-theme="dark"]) .tone-dark {
+  --bg: #24231f;
+  --surface: #2b2a26;
+  border-block: 1px solid #3a3835;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-surface: var(--surface);
+  --color-band: var(--band);
+  --color-elevated: var(--elevated);
+  --color-divider: var(--divider);
+  --color-rule: var(--rule);
+  --color-input-border: var(--input-border);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-brand: var(--brand);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-selected: var(--selected);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --shadow-float-1: var(--shadow-1);
+  --shadow-float-2: var(--shadow-2);
+  --font-sans: var(--font-plex), var(--font-plex-devanagari, ui-sans-serif), system-ui, sans-serif;
+  /* Display lines and labels; Hindi falls back to Plex Sans Devanagari (brand.md v3). */
+  --font-display: var(--font-plex-condensed), var(--font-plex-devanagari, ui-sans-serif), var(--font-plex), sans-serif;
+}
+
+/* Brand breakpoints: phone < 600, tablet 600–1023, desktop ≥ 1024. */
+@theme {
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-lg: 64rem;
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Weights: body 400, labels/buttons 500, headings 600, nothing heavier. */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* ---------- Type scale (fluid; brand.md v3 "Typography") ---------- */
+@utility t-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(2.75rem, 1.35rem + 6vw, 7.5rem); /* 44 px phones → 120 px wide desktop */
+  line-height: 0.92;
+  letter-spacing: -0.012em;
+}
+@utility t-h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5rem); /* 40 → 80 px */
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+@utility t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 1.45rem + 2.3vw, 3.5rem); /* 32 → 56 px */
+  line-height: 0.98;
+  letter-spacing: -0.005em;
+}
+@utility t-h3 {
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem); /* 20 → 26 px */
+  line-height: 1.2;
+}
+@utility t-lead {
+  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.3125rem); /* 17 → 21 px */
+  line-height: 1.55;
+}
+/* Uppercase metadata with wide tracking: section numbers, project IDs, coordinates. */
+@utility t-meta {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.8125rem; /* 13 px */
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+@utility t-figure {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3.5rem, 2.4rem + 4.2vw, 7rem); /* 56 → 112 px: four figures fit in a row */
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Section spacing: generous, scales with the viewport. */
+@utility section-y {
+  padding-block: clamp(4.5rem, 2.8rem + 6vw, 9rem);
+}
+
+/* Fine engineering grid (technical sections only; never a fake blueprint). */
+@utility tech-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 96px 96px;
+  background-position: -1px -1px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Motion (brand.md v3 "Motion") ---------- */
+/* Reveal once on scroll: 400–700 ms ease-out, staggered with --reveal-delay. Only when JS runs
+   (html.js, set by ThemeScript), so content is never hidden without it. The hero never uses it. */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 600ms var(--ease-out-quint),
+    transform 700ms var(--ease-out-quint);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+/* Image reveal: a cover in the page colour lifts off the frame (bottom to top). Nothing clips the
+   photo itself: a clipped <img> never triggers lazy loading (and a clipped observed frame never
+   intersects), so the photo loads ahead as usual and is ready when the cover lifts. */
+html.js [data-reveal="image"] {
+  opacity: 1;
+  transform: none;
+}
+html.js [data-reveal="image"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--bg);
+  transform-origin: top;
+  transition: transform 900ms var(--ease-out-quint);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-reveal="image"].is-revealed::after {
+  transform: scaleY(0);
+}
+
+/* Hero scroll cue: three gentle nudges, then still (no endless motion). */
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* Gentle image scale on hover (inside .group). */
+.zoom-img img {
+  transition: transform 900ms var(--ease-out-quint);
+}
+.group:hover .zoom-img img,
+.group:focus-visible .zoom-img img {
+  transform: scale(1.04);
+}
+
+/* Arrow links: the arrow nudges and a red rule draws in under the text. */
+.arrow-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.arrow-link .arrow {
+  transition: transform 300ms var(--ease-out-quint);
+}
+.arrow-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: var(--brand);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms var(--ease-out-quint);
+}
+.arrow-link:hover .arrow,
+.group:hover .arrow-link .arrow,
+.arrow-link:focus-visible .arrow {
+  transform: translateX(6px);
+}
+.arrow-link:hover::after,
+.group:hover .arrow-link::after,
+.arrow-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  html.js [data-reveal],
+  html.js [data-reveal="image"] {
+    opacity: 1;
+    transform: none;
+  }
+  html.js [data-reveal="image"]::after {
+    display: none;
+  }
+  .group:hover .zoom-img img {
+    transform: none;
+  }
+}
+
+/* Placeholder imagery: deliberately looks unfinished until real photos arrive. */
+.placeholder-photo {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--placeholder-a) 0 12px,
+    var(--placeholder-b) 12px 24px
+  );
+}

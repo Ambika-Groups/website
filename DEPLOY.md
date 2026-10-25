@@ -1,0 +1,186 @@
+# Putting the website online (Netlify)
+
+This guide is for whoever holds the company's Netlify account. You don't need to know how the site is built, but you will copy a few commands into a terminal.
+
+There are two ways to publish. Pick one:
+
+| | **A. Connected to Git** (recommended) | **B. Netlify Drop** (drag and drop) |
+|---|---|---|
+| How it works | Netlify builds the site itself every time the code changes. | You build the site on your computer, then drag the finished folder onto a web page. |
+| Good for | Ongoing updates by a developer. | A quick first launch, or when there is no Git repository yet. |
+| Settings (keys, address) | Typed once into Netlify. | Must be in `.env.local` on **your computer before you build**. Netlify never sees them. |
+
+Both give the same website, with the same security headers and redirects.
+
+> **Budget rule (free plan).** The free plan allows 300 credits a month for the whole Netlify team. **Every production deploy costs 15 credits**, whether by Git or by Drop, and visitor traffic uses the rest. If credits run out, the site goes offline until the next month. So publish to production only for a real release (a few times a month), and use deploy previews (free) to review changes. Details and the traffic estimate: README.md, "Free plan".
+
+---
+
+## Before you start
+
+You need:
+1. **A Netlify account** made with the company email (app.netlify.com → Sign up). Keep the login safe. Use a team of its own, not the CRM's, so the website's traffic can never use up the CRM's credits.
+2. **A Web3Forms access key.** Sign up at web3forms.com with the email address where enquiries should arrive. It shows an *Access Key*. That is where every enquiry from the site will be emailed.
+3. **The website address** (domain), e.g. `https://www.ambikagroup.in`. If you don't have one yet, you can launch on the free `something.netlify.app` address first and add the domain later (step 4).
+
+### The three settings
+
+| Name | What to put | Example |
+|---|---|---|
+| `NEXT_PUBLIC_WEB3FORMS_KEY` | The Web3Forms access key. | `a1b2c3d4-…` |
+| `NEXT_PUBLIC_SITE_URL` | The site's final address, starting with `https://`, **no slash at the end**. Search engines and link previews use it. | `https://www.ambikagroup.in` |
+| `NEXT_PUBLIC_ENQUIRY_ENDPOINT` | **Leave empty for now.** Empty means "send enquiries to Web3Forms". Later, when the CRM is ready, it becomes the CRM's enquiry address and the developer will tell you the value. | *(empty)* |
+
+These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key is designed to be public. Never put any other key, password or CRM secret here.
+
+Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches on the sections that still contain placeholder figures and logos, and is only for internal review builds.
+
+---
+
+## A. Connected to Git (recommended)
+
+The code must be in a Git repository (GitHub, GitLab or Bitbucket) whose top level is this `Website` folder, i.e. `package.json` and `netlify.toml` sit at the root of the repository.
+
+1. In Netlify: **Add new project → Import an existing project**, choose the Git provider, sign in, and pick the repository.
+2. On the settings screen, check the values. They are read from `netlify.toml`, so normally you change nothing:
+
+   | Field | Value |
+   |---|---|
+   | Branch to deploy | `main` (or the repository's main branch) |
+   | Base directory | *(empty)*. Only if the Website folder sits inside a bigger repository: the folder that contains `netlify.toml`, e.g. `Website` |
+   | Build command | `npm run build` |
+   | Publish directory | `out` |
+
+3. Under **Environment variables** on the same screen (or later in **Project configuration → Environment variables**), add the three settings from the table above. For `NEXT_PUBLIC_ENQUIRY_ENDPOINT` you may leave it out entirely; it then counts as empty.
+4. Click **Deploy**. The first build takes 2–4 minutes. When it says **Published**, open the `….netlify.app` link.
+5. Check the build log once (Deploys → the deploy → Deploy log). It should show `npm run build` finishing with lines such as `✓ Generating static pages` and `netlify-redirects: … rule(s) written to out/_redirects`. Netlify's Next.js plugin is switched off on purpose (`NETLIFY_NEXT_PLUGIN_SKIP` in `netlify.toml`); that is correct for this site.
+6. Run the first-deploy checklist below.
+
+**After that:** every push to the main branch publishes a new version automatically (15 credits each). Pull requests get a free deploy preview link. If you want to save credits, push to main only when you mean to release; or in **Project configuration → Build & deploy → Continuous deployment**, set builds to stopped and publish with **Trigger deploy** when ready.
+
+---
+
+## B. Netlify Drop (drag and drop)
+
+Netlify Drop publishes a folder you built yourself. **Netlify does not build anything and does not see your settings**, so they must be correct on your computer first.
+
+### B1. Build the site on your computer (once per release)
+
+You need Node.js **24.11.1** (nodejs.org; the version is also in `.nvmrc`). In a terminal opened in the `Website` folder:
+
+1. Create the settings file: copy `.env.example` to a new file named `.env.local` in the same folder, and fill in the three settings from the table above. Check `NEXT_PUBLIC_SITE_URL` especially: it is baked into every page.
+   Make sure `.env.local` does **not** contain `NEXT_PUBLIC_PREVIEW_UNVERIFIED`.
+2. Install (first time, or after the code changes):
+   ```
+   npm ci
+   ```
+3. Build:
+   ```
+   npm run build
+   ```
+   It ends with a line like `netlify-redirects: 14 rule(s) written to out/_redirects`. If it stops with a red error, don't upload anything; send the error to the developer.
+4. Check the folder `Website\out\` now exists and contains `index.html`, `404.html`, `_headers` and `_redirects`. (`_headers` and `_redirects` hold the security headers and redirects; without them the site works but is less secure. On Windows, files starting with `_` are normal files, not hidden.)
+5. Optional but recommended: `npm run preview:netlify`, then open http://localhost:8888 and click through a few pages. Stop it with Ctrl+C.
+
+### B2. Upload
+
+**First time**
+1. Log in to app.netlify.com first (otherwise a Drop site is deleted after an hour).
+2. Go to **app.netlify.com/drop**.
+3. Drag the **`out` folder itself** (not the `Website` folder, and not the files inside `out` one by one) onto the page.
+4. Wait for the upload to finish; Netlify shows the new `….netlify.app` link.
+5. Optional: **Project configuration → Change project name** to get a readable address such as `ambika-group.netlify.app`.
+
+**Every later release**
+1. Repeat B1 (build again).
+2. In Netlify, open the project → **Deploys**, and drag the new `out` folder onto the box that says *"Drag and drop your project output folder here"*. Don't use app.netlify.com/drop again; that would create a second, separate project.
+
+Then run the first-deploy checklist below.
+
+---
+
+## Pointing the domain at the site
+
+Do this once the site works on its `….netlify.app` address.
+
+1. In Netlify: the project → **Domain management → Add a domain**. Type the domain you own (e.g. `ambikagroup.in`), confirm. Netlify adds both `ambikagroup.in` and `www.ambikagroup.in` and shows the DNS records it needs.
+2. Choose how the domain is connected:
+   - **Easiest, keep the domain where you bought it (GoDaddy, Hostinger, BigRock…):** log in to the registrar, open the domain's **DNS** settings and add exactly the records Netlify shows. Normally that is:
+
+     | Type | Name / Host | Value |
+     |---|---|---|
+     | `A` | `@` | `75.2.60.5` |
+     | `CNAME` | `www` | `<your-project>.netlify.app` |
+
+     Delete any older `A` record on `@` and any older `www` record (e.g. the registrar's "parked" page), or the domain will sometimes show the old page. Always use the values on Netlify's screen if they differ from this table.
+   - **Or** let Netlify manage DNS (Netlify DNS): Netlify gives four name servers; enter them at the registrar under "Nameservers". Only do this if there is no company email on the domain, or the email records are copied over first, otherwise email can stop working.
+3. Wait. DNS changes take from a few minutes to several hours. Netlify shows a green tick when it sees them.
+4. **HTTPS:** Netlify issues the certificate automatically after DNS works (**Domain management → HTTPS**). If it says "waiting", give it up to an hour, then click **Verify DNS configuration**.
+5. **Main address:** set `www.ambikagroup.in` as the primary domain (Netlify then redirects the bare `ambikagroup.in` to it), or the other way round, but it must match `NEXT_PUBLIC_SITE_URL` exactly.
+6. **Rebuild with the real address.** If `NEXT_PUBLIC_SITE_URL` was not yet the real domain:
+   - Git: change it under Environment variables, then **Deploys → Trigger deploy → Deploy project**.
+   - Drop: change it in `.env.local`, build again (B1) and drag the new `out` folder in (B2).
+7. In the Web3Forms dashboard, if your plan allows it, restrict the key to the domain.
+
+---
+
+## First-deploy checklist
+
+Do this after the first deploy and after the domain is connected. Replace `https://www.ambikagroup.in` with the real address (or the `….netlify.app` one).
+
+**Terminal commands.** On Windows use PowerShell and type `curl.exe` exactly as below (plain `curl` in Windows PowerShell is a different command). On Mac or Linux, type `curl` instead of `curl.exe`. `-I` asks only for the response headers.
+
+1. **Home page and security headers**
+   ```
+   curl.exe -I https://www.ambikagroup.in/
+   ```
+   Expect `HTTP/1.1 200` (or `HTTP/2 200`) and all of these lines:
+   ```
+   x-content-type-options: nosniff
+   referrer-policy: strict-origin-when-cross-origin
+   x-frame-options: DENY
+   content-security-policy: frame-ancestors 'none'
+   permissions-policy: camera=(), microphone=(), geolocation=(), …
+   ```
+   If these five are missing, `_headers` did not reach the site: with Drop, check that `out\_headers` existed before the upload.
+2. **Clean addresses and redirects**
+   ```
+   curl.exe -I https://www.ambikagroup.in/contact
+   curl.exe -I https://www.ambikagroup.in/contact.html
+   ```
+   Expect `200` for the first; `301` with `location: /contact` for the second.
+3. **Missing page**
+   ```
+   curl.exe -I https://www.ambikagroup.in/no-such-page
+   ```
+   Expect `404`. Open it in a browser too: it should show the site's own "page not found" page with the menu.
+4. **Long caching for site files.** Open the home page in a browser, right-click → **View page source**, search (Ctrl+F) for `/_next/static/` and copy one full path ending in `.js` or `.woff2`, e.g. `/_next/static/chunks/abc123.js`. Then:
+   ```
+   curl.exe -I https://www.ambikagroup.in/_next/static/chunks/abc123.js
+   ```
+   Expect `cache-control: public, max-age=31536000, immutable`. Do the same with one `/images/…` path from the source (e.g. `/images/hero-…-800.avif`); expect the same line.
+5. **Share image**
+   ```
+   curl.exe -I https://www.ambikagroup.in/og.png
+   ```
+   Expect `200` and `cache-control: public, max-age=604800`.
+6. **The right address is baked in.** In the page source, search for `canonical`: it must show the real domain, e.g. `https://www.ambikagroup.in/`, not `example.com` or `netlify.app`. Also open `/sitemap.xml` and `/robots.txt`; the addresses must use the real domain.
+7. **HTTPS and the bare domain.** `curl.exe -I http://ambikagroup.in/` should answer `301` to `https://www.ambikagroup.in/` (or the reverse, matching your main address).
+8. **Enquiry form, end to end.** On the Contact page, send a real test enquiry with your own name and phone. Expect the confirmation message, and the email in the Web3Forms inbox within a minute or two. If it says it could not send, check `NEXT_PUBLIC_WEB3FORMS_KEY` and rebuild.
+9. **Nothing unverified is showing.** On the Home and About pages there must be **no** figures section ("Work that adds up") and **no** "Trusted by" logos. If you see them, the build was made with `NEXT_PUBLIC_PREVIEW_UNVERIFIED`; remove it and rebuild.
+10. **A quick look on a phone.** Open the site on a phone: menu opens and closes, the light/dark switch works, the WhatsApp button opens WhatsApp with the company number.
+
+Placeholders such as **[Office address line]** and the "Illustrative photo" labels are expected until the client's details and photos arrive (see `CONTENT-CHECKLIST.md`). They are not deploy errors.
+
+---
+
+## If something goes wrong
+
+| What you see | Likely cause | Fix |
+|---|---|---|
+| Git build fails at `npm ci` or with a Node version error | Node version mismatch | `netlify.toml` sets Node 24.11.1; don't override **Node version** in the Netlify UI. |
+| Site shows "Page not found" on every page after Drop | The `Website` folder (or files inside `out`) was dropped instead of `out` itself | Drag the `out` folder itself. |
+| Security headers missing | `_headers` not uploaded | Rebuild; check `out\_headers` exists; upload `out` again. |
+| Old page still shows after a deploy | Browser cache | Reload with Ctrl+Shift+R, or try a private window. |
+| "Site not available" on every page | Monthly credits used up | Wait for the monthly reset, or upgrade the plan. See README "Free plan". |
+| Enquiries arrive at the wrong email | Web3Forms key belongs to another account | Create the key with the right email, update the setting, rebuild. |

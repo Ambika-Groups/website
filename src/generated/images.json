@@ -1,0 +1,122 @@
+{
+  "about": {
+    "width": 3575,
+    "height": 2553,
+    "hash": "0e897a4ca2",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "closing": {
+    "width": 5464,
+    "height": 3640,
+    "hash": "333a5c1e11",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "hero": {
+    "width": 5472,
+    "height": 3648,
+    "hash": "ced4257f2f",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "project-sample-house-1": {
+    "width": 2832,
+    "height": 4245,
+    "hash": "18b2c9d6d1",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "project-sample-paver-1": {
+    "width": 5669,
+    "height": 3940,
+    "hash": "04704a7a99",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "project-sample-road-1": {
+    "width": 4806,
+    "height": 3204,
+    "hash": "50ef73fec2",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "service-construction": {
+    "width": 6913,
+    "height": 9168,
+    "hash": "f748926042",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "service-interlocking-paver": {
+    "width": 6000,
+    "height": 4000,
+    "hash": "741059d8e2",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "service-real-estate-development": {
+    "width": 5129,
+    "height": 5118,
+    "hash": "6fcf2a62db",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  },
+  "service-road-works": {
+    "width": 4032,
+    "height": 2268,
+    "hash": "d24b65cd1b",
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000
+    ]
+  }
+}

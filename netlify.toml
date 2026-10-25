@@ -1,0 +1,24 @@
+# Netlify: plain static site from the Next.js export in out/. See DEPLOY.md.
+# `npm run build` runs prebuild (photo pipeline) and postbuild (prefetch fix + out/_redirects).
+#
+# Headers and redirects live in files inside the published folder, so they also work with Netlify Drop
+# (which uploads out/ only and never reads this file):
+#   public/_headers           -> out/_headers    security headers + cache rules
+#   scripts/netlify-redirects -> out/_redirects  /page.html -> /page (301)
+
+[build]
+  # Repository root = this Website folder (it is its own repo). If it ever sits inside a bigger repo,
+  # set Netlify's "Base directory" to the folder that contains this file.
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  # Same Node as development (.nvmrc); change both together.
+  NODE_VERSION = "24.11.1"
+  # Netlify auto-installs its Next.js adapter (@netlify/plugin-nextjs) for Next sites. This is a
+  # static export, so turn the adapter off entirely: no functions, no adapter headers or routing;
+  # out/ is published as-is.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+# Clean URLs: Netlify serves /contact from out/contact.html. Unknown URLs get out/404.html with
+# status 404 automatically.

@@ -1,0 +1,26 @@
+# Netlify response headers. Copied into out/ by the build, so they apply to Git-connected deploys AND to
+# Netlify Drop (drag-and-drop of out/), which never sees netlify.toml. This is the only place headers are set.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), magnetometer=(), gyroscope=(), accelerometer=(), browsing-topics=()
+
+# Hashed file names: safe to cache for a year.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Photo file names include a content hash, so a replaced photo gets a new URL.
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og.png
+  Cache-Control: public, max-age=604800
+
+/icon.svg
+  Cache-Control: public, max-age=604800
+
+/apple-icon.png
+  Cache-Control: public, max-age=604800

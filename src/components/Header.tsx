@@ -1,0 +1,28 @@
+import { routes } from "@/config/routes";
+import { telLink, whatsappLink } from "@/config/site";
+import type { Dictionary } from "@/content";
+import { localePath, type Locale } from "@/i18n/config";
+import { BrandMark } from "./BrandMark";
+import { SiteHeader } from "./SiteHeader";
+
+/** Server wrapper: resolves locale paths and copy, then hands off to the interactive header. */
+export function Header({ locale, t }: { locale: Locale; t: Dictionary["common"] }) {
+  return (
+    <SiteHeader
+      brand={<BrandMark href={localePath(locale, routes.home)} />}
+      items={t.nav.items.map((item) => ({ href: localePath(locale, routes[item.route]), label: item.label }))}
+      quote={{ href: localePath(locale, routes.contact), label: t.actions.requestQuote }}
+      overlayOn={localePath(locale, routes.home)}
+      labels={{
+        nav: t.nav.label,
+        open: t.nav.openMenu,
+        close: t.nav.closeMenu,
+        menu: t.nav.menu,
+        theme: t.themeSwitch,
+        call: t.actions.call,
+        whatsapp: t.actions.whatsapp,
+      }}
+      contact={{ telHref: telLink(), whatsappHref: whatsappLink(t.whatsappButton.prefill) }}
+    />
+  );
+}

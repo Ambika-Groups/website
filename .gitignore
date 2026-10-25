@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+.screenshots/
+# Generated from photos/ by scripts/optimize-images.mjs (src/generated/images.json is kept).
+public/images/
+
+# Local Netlify folder
+.netlify
