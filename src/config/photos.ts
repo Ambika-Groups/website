@@ -1,5 +1,5 @@
 // TODO(photo): every name here is a temporary free-licence stock photo (see PHOTO-CREDITS.md), not
-// Ambika Group's own work. <Photo> marks these "Illustrative photo" on the page so nothing implies
+// Ambika Groups' own work. <Photo> marks these "Illustrative photo" on the page so nothing implies
 // otherwise. Remove a name as soon as the real photo replaces it in photos/; empty before launch.
 export const temporaryPhotos = new Set<string>([
   "hero",

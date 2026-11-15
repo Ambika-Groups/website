@@ -146,7 +146,7 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
                       </span>
                       <span className={`t-h2 ${active ? "text-brand" : ""}`}>{item.label}</span>
                     </Link>
-                    {/* Sub-pages (the four services) as a short indented list under their section. The first child
+                    {/* Sub-pages (the five services) as a short indented list under their section. The first child
                         repeats the section's own page, which the big link above already opens. */}
                     {item.children && (
                       <ul className="-mt-1 mb-3 ml-[2.4rem] border-l border-divider pl-4">

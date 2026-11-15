@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { preview } from "@/config/launch";
 import { routes, serviceKeys, serviceSlug, type ServiceKey } from "@/config/routes";
 import { getContent } from "@/content";
 import { localePath, type Locale } from "@/i18n/config";
-import { Photo } from "./Photo";
+import { hasPhoto as hasPhotoFile, Photo } from "./Photo";
 
 /**
  * Services as numbered chapters, each a card (brand.md v4): number · photo · title + summary · typical jobs,
@@ -38,6 +39,8 @@ export function ServiceChapters({
         const number = String(serviceKeys.indexOf(key) + 1).padStart(2, "0");
         // The preloaded first row is in the first screen: shown at once, not faded in after the scripts load.
         const first = priorityFirst && i === 0;
+        // No photo file yet (production): the row is text only and uses the room.
+        const hasPhoto = hasPhotoFile(`service-${serviceSlug(key)}`) || preview;
         return (
           <li
             key={key}
@@ -61,9 +64,10 @@ export function ServiceChapters({
                   alt={name}
                   className="aspect-[4/3] lg:col-span-3"
                   priority={first}
+                  hideIfMissing
                 />
               )}
-              <div className={compact ? "lg:col-span-6" : "lg:col-span-5"}>
+              <div className={compact ? "lg:col-span-6" : hasPhoto ? "lg:col-span-5" : "lg:col-span-8"}>
                 <Heading className={compact ? "t-h3" : "t-h2"}>
                   <Link href={href} className="after:absolute after:inset-0 focus-visible:outline-none">
                     {name}

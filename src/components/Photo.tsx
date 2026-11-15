@@ -1,5 +1,6 @@
 import { preload } from "react-dom";
 import images from "@/generated/images.json";
+import { preview } from "@/config/launch";
 import { temporaryPhotos } from "@/config/photos";
 import { PlaceholderPhoto } from "./PlaceholderPhoto";
 
@@ -51,6 +52,7 @@ export function Photo({
   rounded = true,
   reveal = false,
   labelInFrame = true,
+  hideIfMissing = false,
 }: {
   name: string;
   alt: string;
@@ -71,8 +73,11 @@ export function Photo({
    * sits under scrims and the label must be drawn above them).
    */
   labelInFrame?: boolean;
+  /** No photo file yet: leave the slot out of a production build (review builds still show the marked placeholder). */
+  hideIfMissing?: boolean;
 }) {
   const entry = manifest[name];
+  if (!entry && hideIfMissing && !preview) return null;
   if (!entry) return <PlaceholderPhoto label={placeholderLabel} alt={alt} className={className} />;
 
   if (priority) {

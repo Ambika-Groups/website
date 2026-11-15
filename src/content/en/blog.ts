@@ -1,7 +1,7 @@
 const blog = {
   meta: {
     title: "Blog | Building, Roads & Paver Work Advice",
-    description: "Practical notes from Ambika Group on building houses, road works and interlocking paver work.",
+    description: "Practical notes from Ambika Groups on building houses, road works and interlocking paver work.",
   },
   title: "Blog",
   intro: "Practical notes on building houses, road works and paver work.",

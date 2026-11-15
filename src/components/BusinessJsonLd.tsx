@@ -1,8 +1,11 @@
 import { isPlaceholder, site } from "@/config/site";
+import { getContent } from "@/content";
+
+const { serviceNames } = getContent("en").common;
 
 /** GeneralContractor structured data, built only from site config. Placeholder values are left out. */
 export function BusinessJsonLd() {
-  const real = (value: string) => (isPlaceholder(value) ? undefined : value);
+  const real = (value: string) => (!value || isPlaceholder(value) ? undefined : value);
   const data = {
     "@context": "https://schema.org",
     "@type": "GeneralContractor",
@@ -14,6 +17,11 @@ export function BusinessJsonLd() {
     telephone: isPlaceholder(site.phone.display) ? undefined : site.phone.e164,
     email: real(site.email),
     areaServed: real(site.serviceArea),
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Services",
+      itemListElement: Object.values(serviceNames).map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
+    },
     hasMap: site.mapUrl || undefined,
     address: {
       "@type": "PostalAddress",

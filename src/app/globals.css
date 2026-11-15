@@ -697,3 +697,17 @@ select:-webkit-autofill {
   border: 1px solid var(--divider);
   padding: 0.4em 0.7em;
 }
+
+/* Header and footer logo: a separate logo-dark file (if given) shows on dark backgrounds (the dark theme, the footer
+   and the photo hero); with one logo only, that one is used everywhere. */
+.brand-logo-dark {
+  display: none;
+}
+:root[data-theme="dark"] .brand-logo-light:not(.brand-logo-only),
+.tone-dark .brand-logo-light:not(.brand-logo-only) {
+  display: none;
+}
+:root[data-theme="dark"] .brand-logo-dark,
+.tone-dark .brand-logo-dark {
+  display: block;
+}

@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { ContactIntent } from "@/components/ContactIntent";
+import { AddressText } from "@/components/AddressText";
 import { MapEmbed } from "@/components/MapEmbed";
+import { VideoComingSoon } from "@/components/VideoComingSoon";
 import { VideoFacade } from "@/components/VideoFacade";
 import { button, container } from "@/components/ui";
 import { formIds } from "@/config/forms";
@@ -110,7 +112,8 @@ export default function ContactPage() {
         <div className={`${container} pb-16 sm:pb-20 lg:pb-28`}>
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,60fr)_minmax(0,36fr)] lg:gap-[4%]">
             <div className="rise lg:sticky lg:top-32 xl:top-28" style={{ animationDelay: "360ms" }}>
-              {/* Switched off in one place: an empty contact.video.id hides the video and its caption. */}
+              {/* A video when there is one; otherwise a neutral "coming soon" frame (contact.video.comingSoon: false hides the block). */}
+              {!video.id && video.comingSoon && <VideoComingSoon title={video.comingSoonTitle} body={video.comingSoonBody} />}
               {video.id && (
                 <>
                   <VideoFacade id={video.id} title={video.title} playLabel={video.play} watchOnYoutube={video.watchOnYoutube} />
@@ -266,7 +269,7 @@ export default function ContactPage() {
               )}
               {shown(site.address.street) && (
                 <Detail icon={<MapPin size={18} />} label={d.address}>
-                  {addressLine()}
+                  <AddressText text={addressLine()} />
                 </Detail>
               )}
               {shown(site.hours) && (

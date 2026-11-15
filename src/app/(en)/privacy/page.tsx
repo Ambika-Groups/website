@@ -96,7 +96,7 @@ export default function PrivacyPage() {
                 </a>
               </li>
               {shown(site.email) && <li className="py-2">{site.email}</li>}
-              {shown(site.address.street) && <li className="py-2">{addressLine()}</li>}
+              {shown(site.address.street) && <li className="py-2">{addressLine({ native: false })}</li>}
             </ul>
           </section>
         </div>

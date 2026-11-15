@@ -9,11 +9,11 @@ const realPeople = (cmsSettings?.about?.people ?? []).filter((p) => isReal(p.nam
 
 const about = {
   meta: {
-    title: "About Ambika Group",
-    description: "Ambika Group: construction, road works, interlocking and real estate development.",
+    title: "About Ambika Groups",
+    description: "Ambika Groups: construction, road works, interlocking, plumbing and sewage, and real estate development.",
   },
-  title: "About Ambika Group",
-  intro: "Construction, road works, interlocking and real estate development, for private clients and government departments.",
+  title: "About Ambika Groups",
+  intro: "Construction, road works, interlocking, plumbing and sewage, and real estate development, for private clients and government departments.",
   story: {
     title: "Who we are",
     paragraphs: realStory.length

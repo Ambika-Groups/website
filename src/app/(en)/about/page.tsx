@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AddressText } from "@/components/AddressText";
 import { CtaBand } from "@/components/CtaBand";
 import { NumbersSection } from "@/components/NumbersSection";
 import { PageHeader } from "@/components/PageHeader";
@@ -37,6 +38,7 @@ export default function AboutPage() {
     {
       label: about.company.office,
       value: addressLine(),
+      native: true,
       real: site.address.street,
     },
     { label: about.company.area, value: site.serviceArea },
@@ -143,6 +145,7 @@ export default function AboutPage() {
                         illustrativeLabel={common.placeholder.illustrative}
                         alt={person.name}
                         className="aspect-[4/5]"
+                        hideIfMissing
                       />
                       <p className="t-h3 mt-4">{person.name}</p>
                       <p className="t-meta mt-1 text-text-2">{person.role}</p>
@@ -161,7 +164,7 @@ export default function AboutPage() {
                       className="grid gap-1 border-b border-divider py-5 last:border-b-0 sm:grid-cols-[10rem_1fr] sm:gap-6"
                     >
                       <dt className="t-meta pt-0.5 text-text-2">{item.label}</dt>
-                      <dd className="font-medium tabular">{item.value}</dd>
+                      <dd className="font-medium tabular">{item.native ? <AddressText text={item.value} /> : item.value}</dd>
                     </div>
                   ))}
                 </dl>

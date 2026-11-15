@@ -13,3 +13,4 @@ export interface LaunchQuestion {
 }
 export const questions: LaunchQuestion[];
 export const tierLabel: Record<"must" | "nice", string>;
+export const ownerStatus: Record<string, { status: "answered" | "skipped" | "later"; note: string }>;

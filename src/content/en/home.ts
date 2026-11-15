@@ -3,19 +3,20 @@ import { cmsSettings } from "@/lib/cms";
 
 const trustLogos = (cmsSettings?.trust?.logos ?? []).filter(isReal);
 const trustCerts = (cmsSettings?.trust?.certifications ?? []).filter(isReal);
+const govDepartments = (cmsSettings?.government?.departments ?? []).filter(isReal);
 const govRegistrations = (cmsSettings?.government?.registrations ?? []).filter((r) => isReal(r.label) && isReal(r.value));
 
 const home = {
   meta: {
-    title: "Ambika Group | Construction, Road Works & Interlocking",
+    title: "Ambika Groups | Construction, Road Works & Interlocking",
     description:
-      "Ambika Group builds houses, apartments, roads and interlocking paver works for private clients and government departments.",
+      "Ambika Groups builds houses, apartments, roads and interlocking paver works for private clients and government departments.",
   },
   hero: {
     eyebrow: "Construction · Road works · Interlocking · Real estate",
     // The company's real positioning, set as a display statement (one line per entry).
     titleLines: ["We build", "houses, roads", "and paved areas."],
-    body: "Construction, road works, interlocking paver work and real estate development, for families, builders and businesses, and for government departments such as Nagar Nigam and PWD.",
+    body: "Construction, road works, interlocking paver work, plumbing and sewage, and real estate development, for families, builders and businesses, and for government departments such as Nagar Nigam and PWD.",
     imageAlt: "Apartment towers under construction, seen from above", // TODO(photo): real Ambika site photo
     secondary: "See our projects",
     facts: [
@@ -68,7 +69,7 @@ const home = {
     label: "Government work",
     title: "Work for government departments",
     body: "We carry out civil and road works for departments such as Nagar Nigam and PWD, to the tender's specification and schedule.",
-    departments: ["Nagar Nigam (municipal corporation)", "PWD (Public Works Department)"],
+    departments: ["Nagar Nigam (municipal corporation)", "PWD (Public Works Department)", ...govDepartments],
     // TODO(content): registrations / contractor class / empanelments to list here.
     // From Site settings (Government work → registrations); left out while empty.
     credentials: govRegistrations.length ? govRegistrations.map((r) => `${r.label}: ${r.value}`).join(" · ") : preview ? "[Contractor registration and class to be supplied]" : "",

@@ -8,7 +8,7 @@ const government = {
   meta: {
     title: "Government Work | Nagar Nigam & PWD Contractor",
     description:
-      "Ambika Group carries out road, drain and paver works for government departments such as Nagar Nigam and PWD, to tender specification.",
+      "Ambika Groups carries out road, drain and paver works for government departments such as Nagar Nigam and PWD, to tender specification.",
   },
   title: "Work for government departments",
   intro:

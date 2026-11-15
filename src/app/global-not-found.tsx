@@ -16,7 +16,7 @@ const { notFound } = getContent("en");
 
 export const metadata: Metadata = {
   ...baseMetadata("en"),
-  // Outside the layouts, so the "%s | Ambika Group" template doesn't apply; add the name here.
+  // Outside the layouts, so the "%s | Ambika Groups" template doesn't apply; add the name here.
   title: { absolute: `${notFound.title} | ${site.name}` },
   robots: { index: false },
 };

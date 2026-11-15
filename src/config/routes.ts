@@ -7,6 +7,7 @@ export const routes = {
   roadWorks: "/services/road-works",
   interlockingPaver: "/services/interlocking-paver",
   realEstate: "/services/real-estate-development",
+  plumbingSewage: "/services/plumbing-sewage",
   governmentWork: "/government-work",
   projects: "/projects",
   blog: "/blog",
@@ -16,8 +17,8 @@ export const routes = {
 
 export type RouteKey = keyof typeof routes;
 
-/** The four service pages, in display order. Each key is also a key of `routes`. */
-export const serviceKeys = ["construction", "roadWorks", "interlockingPaver", "realEstate"] as const;
+/** The five service pages, in display order. Each key is also a key of `routes`. */
+export const serviceKeys = ["construction", "roadWorks", "interlockingPaver", "realEstate", "plumbingSewage"] as const;
 export type ServiceKey = (typeof serviceKeys)[number];
 
 /** URL slug of a service page: /services/<slug>. */

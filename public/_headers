@@ -16,6 +16,10 @@
 /images/*
   Cache-Control: public, max-age=31536000, immutable
 
+# The logo files made from photos/logo.* are content-hashed too.
+/brand/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /og.png
   Cache-Control: public, max-age=604800
 

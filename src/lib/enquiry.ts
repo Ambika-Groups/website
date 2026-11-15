@@ -73,6 +73,15 @@ export interface PayloadContext {
   utm: Utm;
   /** English label for the subject line, which the owner reads in their inbox. */
   workTypeLabel: string;
+  /** A service that has no work_type of its own (sent as "other"): its name replaces the label and heads the message. */
+  serviceLabel?: string;
+}
+
+/** "Service: Plumbing and sewage" on the first line, unless that would push the message over the contract's 2,000 characters. */
+function withService(message: string, serviceLabel?: string): string {
+  if (!serviceLabel) return message;
+  const text = `Service: ${serviceLabel}\n${message}`;
+  return text.length <= fieldLimits.message ? text : message;
 }
 
 /** Call only after validateEnquiry returned no errors. */
@@ -80,7 +89,7 @@ export function buildPayload(raw: Record<string, string>, ctx: PayloadContext): 
   const utm = { ...emptyUtm, ...ctx.utm };
   const payload: Record<string, string> = {
     ...(ctx.accessKey !== undefined && { access_key: ctx.accessKey }),
-    subject: `New website enquiry: ${ctx.workTypeLabel} in ${raw.location}`,
+    subject: `New website enquiry: ${ctx.serviceLabel ?? ctx.workTypeLabel} in ${raw.location}`,
     from_name: WEB3FORMS_FROM_NAME,
     name: raw.name,
     phone: normaliseIndianMobile(raw.phone) ?? "",
@@ -88,7 +97,7 @@ export function buildPayload(raw: Record<string, string>, ctx: PayloadContext): 
     work_type: raw.work_type,
     location: raw.location,
     size_or_budget: raw.size_or_budget ?? "",
-    message: raw.message,
+    message: withService(raw.message, ctx.serviceLabel),
     consent: raw.consent,
     source_url: ctx.sourceUrl,
     utm_source: utm.utm_source,

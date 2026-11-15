@@ -83,7 +83,7 @@ const items: Project[] = cmsProjects
 const projects = {
   meta: {
     title: "Projects | Construction, Roads & Paver Work",
-    description: "Completed and ongoing construction, road and paver projects by Ambika Group.",
+    description: "Completed and ongoing construction, road and paver projects by Ambika Groups.",
   },
   title: "Projects",
   intro: "Completed and ongoing work for private clients and government departments.",

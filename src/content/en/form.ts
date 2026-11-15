@@ -25,7 +25,7 @@ const form = {
   } satisfies Record<WorkType, string>,
   // TODO(content): consent wording to be approved by the user or their advocate.
   consent: {
-    before: "I agree that Ambika Group may contact me about this enquiry by phone, WhatsApp or email, as described in the ",
+    before: "I agree that Ambika Groups may contact me about this enquiry by phone, WhatsApp or email, as described in the ",
     link: "privacy policy",
     after: ".",
   },

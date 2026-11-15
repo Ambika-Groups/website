@@ -108,7 +108,7 @@ const sha = (p) => {
   }
 };
 // Hashes of the placeholder files that ship in the repo (the generic share card and the red "AG" mark).
-const PLACEHOLDER_ASSETS = { "public/og.png": "ae869401d56a0fad6c90", "public/icon.svg": "77c20e3fad5df1548bb2", "public/apple-icon.png": "f81eea15291ed72d1bf6" };
+const PLACEHOLDER_ASSETS = { "public/og.png": "400cfba8ca67ac4a503e", "public/icon.svg": "77c20e3fad5df1548bb2", "public/apple-icon.png": "f81eea15291ed72d1bf6" };
 
 // Visible placeholder text → the question it belongs to.
 const PLACEHOLDER_MAP = [
@@ -195,13 +195,14 @@ const checks = {
     return ok("posts to Web3Forms");
   },
   ownerEmail: () => (usesBackend ? confirm("cannot be checked from the build: OWNER_EMAIL and the Resend key live in the back end (DEPLOY.md C6)") : ok("not needed with Web3Forms")),
-  tradingName: () => (real(get("identity.name")) ? ok() : confirm("keeps the default 'Ambika Group'; confirm the spelling")),
+  tradingName: () => (real(get("identity.name")) ? ok() : confirm("keeps the default 'Ambika Groups'; confirm the spelling")),
   phone: () =>
     real(get("contact.phoneDisplay")) && /^\+\d{10,14}$/.test(get("contact.phoneE164") ?? "") ? ok() : missing("phone (as shown and for dialling) is not set"),
   whatsapp: () =>
     real(get("contact.whatsappDisplay")) && /^\d{11,14}$/.test(get("contact.whatsappDigits") ?? "") ? ok() : missing("WhatsApp (as shown and the number) is not set"),
   email: () => have("contact.email", "email"),
-  address: () => all(["contact.street", "address line"], ["contact.locality", "city"], ["contact.region", "state"], ["contact.postalCode", "PIN code"]),
+  // The PIN code is welcome but optional: an address without one reads correctly and is never filled in with a guess.
+  address: () => all(["contact.street", "address line"], ["contact.locality", "city"], ["contact.region", "state"]),
   privacyApproved: () => (get("privacy.approved") === true ? ok() : missing("not marked approved (q10_privacyApproved in src/config/launch-answers.ts, or Site settings → Privacy policy)")),
   retention: () => have("privacy.retention", "the retention period"),
   lastUpdated: () => have("privacy.updated", "the 'Last updated' date"),
@@ -230,7 +231,7 @@ const checks = {
   numbers: () => (get("numbers.show") === true ? ok() : skipped("the section is hidden")),
   trust: () => (get("trust.show") === true ? ok() : skipped("the section is hidden")),
   photos: () => (!hasOut ? skipped("no build to check") : stockPhotoPages ? skipped(`${stockPhotoPages} page(s) still show labelled stock photos`) : ok()),
-  logo: () => (["public/icon.svg", "public/apple-icon.png"].some((f) => sha(f).startsWith(PLACEHOLDER_ASSETS[f])) ? skipped("the red 'AG' mark is still used") : ok()),
+  logo: () => (readJson("src/generated/logo.json", {}).present ? ok("photos/logo.* is used for the header, footer and browser tab") : skipped("the red 'AG' mark is still used")),
   ogImage: () => (sha("public/og.png").startsWith(PLACEHOLDER_ASSETS["public/og.png"]) ? skipped("the generic share card is still used") : ok()),
   blog: () => (postCount > 0 ? ok(`${postCount} published`) : skipped("no articles: there is no Blog link")),
   hindi: () => skipped("English only (Hindi pages are not built)"),

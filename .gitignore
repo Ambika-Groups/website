@@ -12,6 +12,8 @@ next-env.d.ts
 .screenshots/
 # Generated from photos/ by scripts/optimize-images.mjs (src/generated/images.json is kept).
 public/images/
+# Logo files made from photos/logo.svg|png by scripts/prepare-logo.mjs (src/generated/logo.json is kept).
+public/brand/
 
 # Local Netlify folder
 .netlify

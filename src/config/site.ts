@@ -11,8 +11,8 @@ const id = cmsSettings?.identity ?? {};
 export const PLACEHOLDER_PREFIX = "[";
 
 export const site = {
-  // Trading name shown across the site. TODO(content): confirm ("Ambika Group" vs "Ambika Groups").
-  name: filled(id.name) ?? "Ambika Group",
+  // Trading name shown across the site. TODO(content): confirm ("Ambika Groups" vs "Ambika Groups").
+  name: filled(id.name) ?? "Ambika Groups",
   // TODO(content): registered legal name, exactly as on the GST certificate.
   legalName: filled(id.legalName) ?? "[Registered legal name]",
   shortMark: "AG",
@@ -31,7 +31,9 @@ export const site = {
     street: filled(c.street) ?? "[Office address line]",
     locality: filled(c.locality) ?? "[City]",
     region: filled(c.region) ?? "[State]",
-    postalCode: filled(c.postalCode) ?? "[000000]",
+    // No PIN code given: it is simply left out of the address (never guessed). The placeholder shows only while the
+    // whole address is unanswered.
+    postalCode: filled(c.postalCode) ?? (filled(c.street) ? "" : "[000000]"),
     country: "IN",
   },
   // TODO(content): GSTIN.
@@ -55,18 +57,26 @@ export function whatsappLink(text?: string): string {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
-export function addressLine(): string {
+const DEVANAGARI = /[\u0900-\u097F]/;
+
+/**
+ * The office address on one line; parts that are empty (for example the PIN code) are left out, with no stray comma
+ * or space. `native: false` drops any "(देवनागरी)" part in brackets, for the footer, maps and other places that
+ * should not need the Devanagari font.
+ */
+export function addressLine({ native = true }: { native?: boolean } = {}): string {
   const a = site.address;
-  return `${a.street}, ${a.locality}, ${a.region} ${a.postalCode}`;
+  const street = native ? a.street : a.street.replace(/\s*\([^)]*\)/g, (m) => (DEVANAGARI.test(m) ? "" : m));
+  return [street, a.locality, [a.region, a.postalCode].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 }
 
 export function mapsLink(): string {
-  return site.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.name}, ${addressLine()}`)}`;
+  return site.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.name}, ${addressLine({ native: false })}`)}`;
 }
 
 /** Keyless Google Maps embed, loaded only after the visitor clicks "Show map". */
 export function mapsEmbedUrl(): string {
-  return `https://maps.google.com/maps?q=${encodeURIComponent(`${site.name}, ${addressLine()}`)}&output=embed`;
+  return `https://maps.google.com/maps?q=${encodeURIComponent(`${site.name}, ${addressLine({ native: false })}`)}&output=embed`;
 }
 
 export function telLink(): string {

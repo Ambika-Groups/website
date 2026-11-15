@@ -3,7 +3,7 @@ import { cmsSettings, filled } from "@/lib/cms";
 
 const contact = {
   meta: {
-    title: "Request a Site Visit | Ambika Group, Construction & Road Works",
+    title: "Request a Site Visit | Ambika Groups, Construction & Road Works",
     description:
       "Planning a house, apartment, road or paver work? Share a few details and our team calls you back to plan a site visit and an itemised estimate.",
   },
@@ -19,11 +19,15 @@ const contact = {
   },
   // The video beside the enquiry card (a click-to-load player; nothing loads from YouTube before play).
   // TODO(content): CONFIRM THE VIDEO. This ID was supplied for the layout, but the video ("Apply your own photo|company
-  // logo| on your pendrive", channel "Hem K Tech 3232") is not about Ambika Group. Replace it with the company's own
+  // logo| on your pendrive", channel "Hem K Tech 3232") is not about Ambika Groups. Replace it with the company's own
   // video, or remove the video block (CONTENT-CHECKLIST.md, section 3).
-  // To switch the video off, set id to "": the page then hides the video and its caption. Once the website back end
-  // is live, the admin's Site settings set it instead (an empty video id there hides the block too).
+  // With no video id the page shows a neutral "Video coming soon" frame in the same layout (nothing from YouTube
+  // loads). To hide the block completely instead, set `comingSoon` to false. The id comes from launch-answers.ts
+  // (Q21) or Site settings.
   video: {
+    comingSoon: true,
+    comingSoonTitle: "Video coming soon",
+    comingSoonBody: "A short video about our work will appear here.",
     // The sample video (another channel) shows only in development and review builds; production shows a video only
     // when Site settings give one.
     id: filled(cmsSettings?.videoId) ?? (preview ? "jSkQGg2Tgoc" : ""),
@@ -102,7 +106,7 @@ const contact = {
     heading: "Location",
     load: "Show map",
     note: "The map loads from Google when you click.",
-    title: "Map of the Ambika Group office",
+    title: "Map of the Ambika Groups office",
   },
 };
 

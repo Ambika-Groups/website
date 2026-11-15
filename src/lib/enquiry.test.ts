@@ -24,6 +24,19 @@ const ctx = {
   workTypeLabel: "House construction",
 };
 
+test("a service without its own work type is sent as 'other' with its name in the subject and the message", () => {
+  const raw = readFields(Object.entries({ ...valid, work_type: "other" }));
+  assert.deepEqual(validateEnquiry(raw, true), {});
+  const payload = buildPayload(raw, { ...ctx, workTypeLabel: "Something else", serviceLabel: "Plumbing and sewage" });
+  assert.equal(payload.work_type, "other");
+  assert.equal(payload.subject, "New website enquiry: Plumbing and sewage in Gomti Nagar, Lucknow");
+  assert.ok(payload.message.startsWith("Service: Plumbing and sewage\n"));
+  assert.ok(payload.message.endsWith(valid.message));
+  // a message at the 2,000-character limit is never pushed over it
+  const long = readFields(Object.entries({ ...valid, work_type: "other", message: "x".repeat(2000) }));
+  assert.equal(buildPayload(long, { ...ctx, serviceLabel: "Plumbing and sewage" }).message.length, 2000);
+});
+
 test("valid entry has no errors and builds the contract payload", () => {
   const raw = readFields(Object.entries(valid));
   assert.deepEqual(validateEnquiry(raw, true), {});

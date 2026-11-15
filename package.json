@@ -6,10 +6,10 @@
     "node": ">=24.11.1"
   },
   "scripts": {
-    "images": "node scripts/optimize-images.mjs",
-    "predev": "node scripts/fetch-cms.mjs && node scripts/optimize-images.mjs",
+    "images": "node scripts/prepare-logo.mjs && node scripts/optimize-images.mjs",
+    "predev": "node scripts/fetch-cms.mjs && node scripts/prepare-logo.mjs && node scripts/optimize-images.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/fetch-cms.mjs && node scripts/optimize-images.mjs",
+    "prebuild": "node scripts/fetch-cms.mjs && node scripts/prepare-logo.mjs && node scripts/optimize-images.mjs",
     "build": "next build",
     "postbuild": "node scripts/flatten-segment-prefetch.mjs && node scripts/netlify-redirects.mjs && node scripts/launch-check.mjs --soft",
     "launch-check": "node scripts/launch-check.mjs",

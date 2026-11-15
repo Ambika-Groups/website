@@ -45,7 +45,7 @@ const common = {
       : "Tell us what you want to build and where. We will call you back to discuss it.",
   },
   footer: {
-    tagline: "Construction, road works, interlocking and real estate development.",
+    tagline: "Construction, road works, interlocking, plumbing and sewage, and real estate development.",
     // The closing statement at the top of the footer ("the final page of a publication").
     // A claim about the work, so the client must supply or approve it: it comes from Site settings (wording).
     // A production build without one shows the plain "Planning a project?" line instead; review builds show the draft.
@@ -71,6 +71,7 @@ const common = {
     roadWorks: "Road works",
     interlockingPaver: "Interlocking & paver",
     realEstate: "Real estate development",
+    plumbingSewage: "Plumbing and sewage",
   } satisfies Partial<Record<RouteKey, string>>,
   placeholder: {
     photo: "Photo placeholder",

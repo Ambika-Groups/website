@@ -18,7 +18,7 @@ const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#e0e0e0" stroke-width="2"/>
   <rect x="96" y="112" width="120" height="120" fill="#c62828"/>
   <text x="156" y="194" text-anchor="middle" font-family="${font}" font-size="52" font-weight="600" letter-spacing="2" fill="#fff">AG</text>
-  <text x="248" y="196" font-family="${font}" font-size="64" font-weight="600" fill="#1f1f1f">Ambika Group</text>
+  <text x="248" y="196" font-family="${font}" font-size="64" font-weight="600" fill="#1f1f1f">Ambika Groups</text>
   <rect x="96" y="304" width="64" height="5" fill="#c62828"/>
   <text x="96" y="380" font-family="${font}" font-size="44" fill="#1f1f1f">Construction · Road works</text>
   <text x="96" y="440" font-family="${font}" font-size="44" fill="#1f1f1f">Interlocking · Real estate</text>

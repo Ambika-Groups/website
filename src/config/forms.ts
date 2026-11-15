@@ -9,6 +9,7 @@ export const formIds = {
   serviceRoadWorks: "service-road-works",
   serviceInterlockingPaver: "service-interlocking-paver",
   serviceRealEstate: "service-real-estate",
+  servicePlumbingSewage: "service-plumbing-sewage",
   governmentWork: "government-work",
 } as const;
 
@@ -20,7 +21,17 @@ export const serviceFormIds = {
   roadWorks: formIds.serviceRoadWorks,
   interlockingPaver: formIds.serviceInterlockingPaver,
   realEstate: formIds.serviceRealEstate,
+  plumbingSewage: formIds.servicePlumbingSewage,
 } as const satisfies Record<ServiceKey, FormId>;
+
+/** The service a form belongs to, for the forms on the service pages (form_id → service key). */
+export const serviceByFormId = Object.fromEntries(Object.entries(serviceFormIds).map(([service, id]) => [id, service])) as Partial<Record<FormId, ServiceKey>>;
+
+/**
+ * The contract's work_type list is frozen (house, apartment, road, interlocking, other), so a service with no entry of
+ * its own is sent as "other" and its name goes into the subject and the message (see buildPayload's serviceLabel).
+ */
+export const workTypeForService: Partial<Record<ServiceKey, WorkType>> = { plumbingSewage: "other" };
 
 export const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 

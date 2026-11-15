@@ -147,11 +147,11 @@ function SiteSettingsForm({ initial, store, onChanged }: { initial: SiteSettings
         <h2 id="set-identity" className="text-base font-semibold">
           Company details
         </h2>
-        <p className="max-w-2xl text-sm text-text-2">Rows left empty are hidden on the site (the name keeps &ldquo;Ambika Group&rdquo;). Never typed in code, so no rebuild is needed beyond Publish.</p>
+        <p className="max-w-2xl text-sm text-text-2">Rows left empty are hidden on the site (the name keeps &ldquo;Ambika Groups&rdquo;). Never typed in code, so no rebuild is needed beyond Publish.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {(
             [
-              ["name", "Trading name", "As on the site, e.g. Ambika Group"],
+              ["name", "Trading name", "As on the site, e.g. Ambika Groups"],
               ["legalName", "Registered legal name", "Exactly as on the GST certificate"],
               ["gstin", "GSTIN", "15 characters"],
               ["pan", "PAN", "Shown on the Government work page only"],

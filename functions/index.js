@@ -38,7 +38,7 @@ setGlobalOptions({ region: "asia-south1", maxInstances: 2, memory: "256MiB" });
 // localhost are always allowed (contract).
 const SITE_ORIGINS = defineString("SITE_ORIGINS", { default: "" });
 const OWNER_EMAIL = defineString("OWNER_EMAIL", { default: "" });
-const EMAIL_FROM = defineString("EMAIL_FROM", { default: "Ambika Group Website <onboarding@resend.dev>" });
+const EMAIL_FROM = defineString("EMAIL_FROM", { default: "Ambika Groups Website <onboarding@resend.dev>" });
 // Secrets (Secret Manager). Set to "none" until there is a real value; the code then skips that step.
 const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
 const NETLIFY_BUILD_HOOK = defineSecret("NETLIFY_BUILD_HOOK");

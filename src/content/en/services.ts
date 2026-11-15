@@ -1,4 +1,4 @@
-// Services overview and the four service pages. Home's service grid reads `items` too.
+// Services overview and the five service pages. Home's service grid reads `items` too.
 // TODO(content): the user confirms every scope list and client type below.
 import { isReal, preview } from "@/config/launch";
 import type { ServiceKey } from "@/config/routes";
@@ -26,7 +26,7 @@ const pages: Record<ServiceKey, ServicePage> = {
   construction: {
     meta: {
       title: "Construction | Houses, Apartments & Buildings",
-      description: "Ambika Group builds independent houses, apartment buildings and commercial buildings, from foundation to finishing.",
+      description: "Ambika Groups builds independent houses, apartment buildings and commercial buildings, from foundation to finishing.",
     },
     summary: "New buildings from foundation to finishing.",
     jobs: ["Independent houses", "Apartment buildings", "Commercial buildings"],
@@ -45,7 +45,7 @@ const pages: Record<ServiceKey, ServicePage> = {
   roadWorks: {
     meta: {
       title: "Road Works | CC & Bituminous Roads, Drains",
-      description: "Ambika Group builds CC and bituminous roads, drains and culverts for private sites and government departments.",
+      description: "Ambika Groups builds CC and bituminous roads, drains and culverts for private sites and government departments.",
     },
     summary: "Roads and allied civil work for private sites and public departments.",
     jobs: ["CC roads", "Bituminous roads", "Drains and culverts"],
@@ -64,7 +64,7 @@ const pages: Record<ServiceKey, ServicePage> = {
   interlockingPaver: {
     meta: {
       title: "Interlocking & Paver Block Work",
-      description: "Ambika Group lays interlocking paver blocks for driveways, parking areas, footpaths and campus roads.",
+      description: "Ambika Groups lays interlocking paver blocks for driveways, parking areas, footpaths and campus roads.",
     },
     summary: "Paver block laying on a prepared, compacted base.",
     jobs: ["Driveways and parking", "Footpaths", "Campus and society roads"],
@@ -83,11 +83,11 @@ const pages: Record<ServiceKey, ServicePage> = {
   realEstate: {
     meta: {
       title: "Real Estate Development",
-      description: "Residential projects developed and built by Ambika Group.",
+      description: "Residential projects developed and built by Ambika Groups.",
     },
-    summary: "Residential projects that Ambika Group develops and builds.",
+    summary: "Residential projects that Ambika Groups develops and builds.",
     jobs: ["Current projects", "Upcoming projects"],
-    intro: "Ambika Group develops residential projects and builds them with its own construction team.",
+    intro: "Ambika Groups develops residential projects and builds them with its own construction team.",
     // TODO(content): the projects listed come from Site settings (Real estate); the section is left out while empty.
     scope: realEstateProjects.length
       ? realEstateProjects
@@ -100,14 +100,33 @@ const pages: Record<ServiceKey, ServicePage> = {
     clients: ["Home buyers", "Investors"],
     enquiryTitle: "Ask about our projects",
   },
+  // TODO(content): drafted from the owner's one-line description (plumbing services, sewage treatment, large sewage
+  // projects, city sewage pipelines). The owner should read it; the hints only explain the technical terms.
+  plumbingSewage: {
+    meta: {
+      title: "Plumbing and Sewage | Pipelines, Sewage Treatment",
+      description: "Ambika Groups does plumbing work, sewage treatment and large sewage and city sewage pipeline projects.",
+    },
+    summary: "Plumbing, sewage treatment and sewage pipeline work, from a single building to a city network.",
+    jobs: ["Plumbing services", "Sewage treatment", "Sewage pipelines"],
+    intro: "Ambika Groups does plumbing work for buildings and sewage work for colonies and cities: treatment, large sewage projects and city sewage pipelines.",
+    scope: [
+      { title: "Plumbing services", hint: "Water supply and drainage pipes in and around buildings" },
+      { title: "Sewage treatment", hint: "A sewage treatment plant cleans used water from drains before it is released or reused" },
+      { title: "Large sewage projects" },
+      { title: "City sewage pipelines", hint: "Underground pipelines that carry sewage from many buildings to a treatment plant" },
+    ],
+    clients: ["Home owners and builders", "Housing societies and colonies", "Government departments", "Businesses and institutions"],
+    enquiryTitle: "Ask about plumbing and sewage work",
+  },
 };
 
 const services = {
   overview: {
     meta: {
-      title: "Services | Construction, Roads, Interlocking & Real Estate",
+      title: "Services | Construction, Roads, Interlocking, Plumbing & Real Estate",
       description:
-        "Construction, road works, interlocking paver work and real estate development by Ambika Group, for private clients and government departments.",
+        "Construction, road works, interlocking paver work, plumbing and sewage, and real estate development by Ambika Groups, for private clients and government departments.",
     },
     title: "Our services",
     intro: "Choose a service to see what it covers and who we do it for.",

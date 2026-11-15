@@ -1,4 +1,4 @@
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono, Noto_Sans_Devanagari } from "next/font/google";
 
 // Latin fonts for every locale (brand.md v4.1: sharp fonts, so Inter Tight headings, not a rounded face).
 // Self-hosted at build time by next/font (no runtime Google call).
@@ -24,6 +24,19 @@ export const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   display: "swap",
   adjustFontFallback: true,
+});
+
+/**
+ * Devanagari for the one place English pages show it (the office address on Contact and About). Never preloaded, and the
+ * browser downloads the file only on pages that actually contain Devanagari characters (the footer shows the Latin
+ * address only), so other pages pay nothing for it.
+ */
+export const notoDevanagariNative = Noto_Sans_Devanagari({
+  subsets: ["devanagari"],
+  weight: ["400", "500"],
+  variable: "--font-noto-devanagari",
+  display: "swap",
+  preload: false,
 });
 
 /** Eyebrows, labels, section numbers and IDs. */

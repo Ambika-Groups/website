@@ -5,6 +5,7 @@ import { EnquirySection } from "@/components/EnquirySection";
 import { Gallery } from "@/components/Gallery";
 import { PageHeader } from "@/components/PageHeader";
 import { Photo, photoSeries } from "@/components/Photo";
+import { preview } from "@/config/launch";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceChapters } from "@/components/ServiceChapters";
 import { arrowClass, button, container } from "@/components/ui";
@@ -18,7 +19,7 @@ const locale: Locale = "en";
 const { common, services } = getContent(locale);
 const GALLERY_SLOTS = 3;
 
-// Static export: exactly the four service pages, nothing else under /services/.
+// Static export: exactly the five service pages, nothing else under /services/.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -45,14 +46,22 @@ export default async function ServicePage({ params }: Props) {
   if (!key) notFound();
   const page = services.pages[key];
   const name = common.serviceNames[key];
-  // A service page with no scope list yet (real estate, until the admin adds projects) leaves that section out.
-  const idx = (n: number) => String(n - (page.scope.length > 0 ? 0 : 1)).padStart(2, "0");
   const { labels } = services;
   const number = String(serviceKeys.indexOf(key) + 1).padStart(2, "0");
   // Every photos/service-<slug>-N file that exists; until then, GALLERY_SLOTS placeholders.
   const prefix = `service-${serviceSlug(key)}-`;
   const series = photoSeries(prefix);
   const gallery = series.length ? series : Array.from({ length: GALLERY_SLOTS }, (_, i) => `${prefix}${i + 1}`);
+  // A service page with no scope list yet (real estate, until the admin adds projects) leaves that section out.
+  // A service with no photo yet (production build) also leaves out the photo gallery; section numbers follow what shows.
+  const hasGallery = series.length > 0 || preview;
+  let shown = 0;
+  const num = (on: boolean) => (on ? String(++shown).padStart(2, "0") : "");
+  const iScope = num(page.scope.length > 0);
+  const iClients = num(true);
+  const iPhotos = num(hasGallery);
+  const iEnquiry = num(true);
+  const iRelated = num(true);
 
   return (
     <>
@@ -81,6 +90,7 @@ export default async function ServicePage({ params }: Props) {
           illustrativeLabel={common.placeholder.illustrative}
           alt={name}
           className="aspect-[4/3] sm:aspect-[21/9]"
+          hideIfMissing
         />
       </div>
 
@@ -88,7 +98,7 @@ export default async function ServicePage({ params }: Props) {
         <section aria-labelledby="scope-title" className="section-y">
           <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
             <div className="lg:col-span-4">
-              <SectionHeading id="scope-title" index="01" label={`${labels.chapter} ${number}`} title={labels.scope} />
+              <SectionHeading id="scope-title" index={iScope} label={`${labels.chapter} ${number}`} title={labels.scope} />
             </div>
             <ol className="grid gap-3 lg:col-span-7 lg:col-start-6">
               {page.scope.map((item, i) => (
@@ -114,7 +124,7 @@ export default async function ServicePage({ params }: Props) {
       <section aria-labelledby="clients-title" className="tone-dark section-y">
         <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
           <div className="lg:col-span-4">
-            <SectionHeading id="clients-title" index={idx(2)} label={labels.chapter} title={labels.clients} />
+            <SectionHeading id="clients-title" index={iClients} label={labels.chapter} title={labels.clients} />
           </div>
           <ul className="lg:col-span-7 lg:col-start-6">
             {page.clients.map((client, i) => (
@@ -131,25 +141,27 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
-      <section aria-labelledby="photos-title" className="section-y">
-        <div className={container}>
-          <SectionHeading id="photos-title" index={idx(3)} label={name} title={labels.photos} />
-          <div className="mt-12">
-            <Gallery
-              names={gallery}
-              alt={name}
-              placeholderLabel={common.placeholder.photo}
-              illustrativeLabel={common.placeholder.illustrative}
-            />
+      {hasGallery && (
+        <section aria-labelledby="photos-title" className="section-y">
+          <div className={container}>
+            <SectionHeading id="photos-title" index={iPhotos} label={name} title={labels.photos} />
+            <div className="mt-12">
+              <Gallery
+                names={gallery}
+                alt={name}
+                placeholderLabel={common.placeholder.photo}
+                illustrativeLabel={common.placeholder.illustrative}
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <EnquirySection locale={locale} formId={serviceFormIds[key]} index={idx(4)} title={page.enquiryTitle} body={labels.enquiryBody} />
+      <EnquirySection locale={locale} formId={serviceFormIds[key]} index={iEnquiry} title={page.enquiryTitle} body={labels.enquiryBody} />
 
       <section aria-labelledby="related-title" className="section-y">
         <div className={container}>
-          <SectionHeading id="related-title" index={idx(5)} label={labels.breadcrumb} title={labels.related} />
+          <SectionHeading id="related-title" index={iRelated} label={labels.breadcrumb} title={labels.related} />
           <div className="mt-12">
             <ServiceChapters locale={locale} exclude={key} compact />
           </div>

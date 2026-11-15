@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import logoManifest from "@/generated/logo.json";
+
+const logo = logoManifest as { present: boolean; icon: string; apple: string };
 import type { Locale } from "@/i18n/config";
 
 const ogLocale: Record<Locale, string> = { en: "en_IN", hi: "hi_IN" };
@@ -17,11 +20,13 @@ export function baseMetadata(locale: Locale): Metadata {
     metadataBase: new URL(site.url),
     title: { default: site.name, template: `%s | ${site.name}` },
     applicationName: site.name,
-    // TODO(content): replace the "AG" mark icons with the real logo once supplied.
-    icons: {
-      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-      apple: "/apple-icon.png",
-    },
+    // The red "AG" mark until a logo file is dropped into photos/ (scripts/prepare-logo.mjs makes the icons from it).
+    icons: logo.present
+      ? { icon: [{ url: logo.icon, type: "image/png" }], apple: logo.apple }
+      : {
+          icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+          apple: "/apple-icon.png",
+        },
     openGraph: openGraphBase(locale),
     twitter: { card: "summary_large_image" },
     formatDetection: { telephone: false },
@@ -31,7 +36,7 @@ export function baseMetadata(locale: Locale): Metadata {
 /**
  * Per-page metadata. Next replaces (not merges) nested objects such as openGraph, so every page
  * goes through here to keep the share image, site name and locale.
- * `absoluteTitle` skips the "| Ambika Group" suffix for titles that already contain the name.
+ * `absoluteTitle` skips the "| Ambika Groups" suffix for titles that already contain the name.
  */
 export function pageMetadata({
   locale,

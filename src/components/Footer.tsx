@@ -94,7 +94,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary["common"] 
               {shown(site.address.street) && (
                 <>
                   <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.addressLabel}</dt>
-                  <dd>{addressLine()}</dd>
+                  <dd>{addressLine({ native: false })}</dd>
                 </>
               )}
               {shown(site.gstin) && (

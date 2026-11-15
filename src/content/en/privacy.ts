@@ -6,11 +6,10 @@ import { preview } from "@/config/launch";
 import { cmsSettings, filled } from "@/lib/cms";
 
 // Site settings → Privacy policy: `approved` is switched on once the advocate approves this text. That removes the
-// draft notice and the square brackets around the drafted paragraphs; `retention` and `updated` fill the two gaps.
+// draft notice; `retention` and `updated` fill the two gaps.
 const approved = cmsSettings?.privacy?.approved === true;
 const retention = filled(cmsSettings?.privacy?.retention);
 const updated = filled(cmsSettings?.privacy?.updated);
-const unbracket = (text: string) => (approved ? text.replace(/^\[([\s\S]*)\]$/, "$1") : text);
 
 interface Section {
   heading: string;
@@ -22,7 +21,7 @@ const sections: Section[] = [
   {
     heading: "Who we are",
     paragraphs: [
-      "This website belongs to Ambika Group. This page explains what information we collect through the website, why, and what you can ask us to do with it. Our contact details are at the end of the page.",
+      "This website belongs to Ambika Groups. This page explains what information we collect through the website, why, and what you can ask us to do with it. Our contact details are at the end of the page.",
     ],
   },
   {
@@ -55,15 +54,12 @@ const sections: Section[] = [
   },
   {
     heading: "Who handles it",
-    // TODO(content): draft for the advocate to approve (contract v3). It describes the website's own back end:
-    // enquiries stored on Google Cloud (Firebase, Mumbai region), owner emails sent through Resend, and Web3Forms
-    // only as the fallback. The bracketed parts are placeholders. When the CRM link is switched on, add the third
-    // sentence about the customer records system. Site settings → Privacy policy switches the brackets off.
+    // Describes what happens today: the form is sent through Web3Forms and emailed to us. The owner approved this text
+    // (the advocate has not reviewed it yet and will adjust it; see LAUNCH-QUESTIONS.md, Q10). Update it BEFORE any new
+    // service (the website's own database, an email service, the CRM) starts handling enquiries.
     paragraphs: [
-      unbracket("[Your enquiry is stored in our website's database on Google Cloud (Firebase), in Google's Mumbai region. Only our staff can see it, after signing in.]"),
-      unbracket("[When an enquiry arrives, we are sent an email about it through Resend, an email delivery service.]"),
-      unbracket("[Until our database is switched on, the form sends your enquiry to us by email through Web3Forms, a form service, instead.]"),
-      unbracket("[Once our customer records system (CRM) is connected, your enquiry is also copied there so our team can follow it up.]"),
+      "When you send the enquiry form, your details are passed to Web3Forms, a form service, which emails them to us. Web3Forms handles the form on our behalf.",
+      "If we change how enquiries are stored or who handles them, for example by adding our own database or a customer records system, we will update this page.",
     ],
   },
   {
@@ -91,7 +87,7 @@ const sections: Section[] = [
 const privacy = {
   meta: {
     title: "Privacy Policy",
-    description: "How Ambika Group uses the information you send through the website's enquiry form.",
+    description: "How Ambika Groups uses the information you send through the website's enquiry form.",
   },
   title: "Privacy policy",
   draftNotice: "Draft. This policy has not yet been approved and will change before the website goes live.",

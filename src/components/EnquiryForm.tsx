@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { AlertCircle, Check, CheckCircle2, MessageCircle, Phone } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ENQUIRY_ENDPOINT, fieldLimits, isWeb3Forms, workTypes, type FormId, type WorkType } from "@/config/forms";
+import { ENQUIRY_ENDPOINT, fieldLimits, isWeb3Forms, serviceByFormId, workTypeForService, workTypes, type FormId, type WorkType } from "@/config/forms";
 import { site, telLink, whatsappLink } from "@/config/site";
 import type { FormCopy } from "@/content";
+import enCommon from "@/content/en/common";
 import enForm from "@/content/en/form";
 import type { Locale } from "@/i18n/config";
 import {
@@ -41,6 +42,11 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
   const successRef = useRef<HTMLHeadingElement>(null);
   const failureRef = useRef<HTMLDivElement>(null);
   const idp = `enq-${formId}`;
+  // A service page whose service has no work type of its own (plumbing and sewage): preselect "other" and name the
+  // service in the enquiry text.
+  const service = serviceByFormId[formId];
+  const defaultWorkType = service ? (workTypeForService[service] ?? "") : "";
+  const serviceLabel = service && workTypeForService[service] ? enCommon.serviceNames[service] : undefined;
 
   useEffect(() => {
     if (status === "success") successRef.current?.focus();
@@ -77,6 +83,7 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
       sourceUrl: window.location.href,
       utm: readUtm(storage),
       workTypeLabel: enForm.workTypes[raw.work_type as WorkType],
+      serviceLabel: raw.work_type === "other" ? serviceLabel : undefined,
     });
 
     try {
@@ -168,7 +175,7 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
         </Field>
 
         <Field id={`${idp}-work_type`} label={f.work_type.label} error={errorText("work_type")}>
-          <select {...wire("work_type")} defaultValue="" className={field}>
+          <select {...wire("work_type")} defaultValue={defaultWorkType} className={field}>
             <option value="" disabled>
               {f.work_type.placeholder}
             </option>

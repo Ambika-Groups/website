@@ -14,7 +14,7 @@ export function Header({ locale, t }: { locale: Locale; t: Dictionary["common"] 
       items={t.nav.items.filter((item) => item.route !== "projects" || hasProjects).map((item) => ({
         href: localePath(locale, routes[item.route]),
         label: item.label,
-        // Services opens its own page; the four service pages hang under it (dropdown on wider screens, sub-items in the phone menu).
+        // Services opens its own page; the five service pages hang under it (dropdown on wider screens, sub-items in the phone menu).
         ...(item.route === "services" && {
           children: [
             { href: localePath(locale, routes.services), label: t.nav.allServices },
