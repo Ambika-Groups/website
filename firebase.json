@@ -1,0 +1,18 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "website",
+      "runtime": "nodejs22",
+      "ignore": ["node_modules", "**/*.test.js"]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
+    "location": "asia-south1"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

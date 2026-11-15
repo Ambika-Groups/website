@@ -9,6 +9,7 @@ export const routes = {
   realEstate: "/services/real-estate-development",
   governmentWork: "/government-work",
   projects: "/projects",
+  blog: "/blog",
   contact: "/contact",
   privacy: "/privacy",
 } as const;

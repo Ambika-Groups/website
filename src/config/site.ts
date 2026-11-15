@@ -1,5 +1,10 @@
 // Every company contact detail lives here, so swapping placeholders for real values is a
 // one-file edit. Values in [square brackets] are placeholders and render as-is in the UI.
+// Once the website back end is live, the admin's Site settings (Firestore settings/site, snapshotted at build by
+// scripts/fetch-cms.mjs) override these values field by field; anything left empty there keeps the value here.
+import { cmsSettings, filled } from "@/lib/cms";
+
+const c = cmsSettings?.contact ?? {};
 
 export const PLACEHOLDER_PREFIX = "[";
 
@@ -12,27 +17,27 @@ export const site = {
   // TODO(content): real domain. Read from env so builds for staging/production can differ.
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.com").replace(/\/$/, ""),
   // TODO(content): main phone, as dialled and as displayed.
-  phone: { e164: "+910000000000", display: "[+91 00000 00000]" },
+  phone: { e164: filled(c.phoneE164) ?? "+910000000000", display: filled(c.phoneDisplay) ?? "[+91 00000 00000]" },
   // TODO(content): WhatsApp number, digits only with country code (used in wa.me links).
-  whatsapp: { digits: "910000000000", display: "[+91 00000 00000]" },
+  whatsapp: { digits: filled(c.whatsappDigits) ?? "910000000000", display: filled(c.whatsappDisplay) ?? "[+91 00000 00000]" },
   // TODO(content): enquiry email.
-  email: "[info@example.com]",
+  email: filled(c.email) ?? "[info@example.com]",
   // TODO(content): registered office address.
   address: {
-    street: "[Office address line]",
-    locality: "[City]",
-    region: "[State]",
-    postalCode: "[000000]",
+    street: filled(c.street) ?? "[Office address line]",
+    locality: filled(c.locality) ?? "[City]",
+    region: filled(c.region) ?? "[State]",
+    postalCode: filled(c.postalCode) ?? "[000000]",
     country: "IN",
   },
   // TODO(content): GSTIN.
   gstin: "[GSTIN to be supplied]",
   // TODO(content): primary service area, e.g. "Lucknow and nearby districts".
-  serviceArea: "[City / region]",
+  serviceArea: filled(c.serviceArea) ?? "[City / region]",
   // TODO(content): Google Maps share link for the office. While empty, links search the address.
-  mapUrl: "",
+  mapUrl: filled(c.mapUrl) ?? "",
   // TODO(content): office hours.
-  hours: "[Mon–Sat, 10:00–18:00]",
+  hours: filled(c.hours) ?? "[Mon–Sat, 10:00–18:00]",
 } as const;
 
 export function isPlaceholder(value: string): boolean {

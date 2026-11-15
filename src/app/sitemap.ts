@@ -3,6 +3,7 @@ import { routes, serviceKeys } from "@/config/routes";
 import { site } from "@/config/site";
 import { getContent } from "@/content";
 import { localePath, publishedLocales } from "@/i18n/config";
+import { allTags, posts, tagSlug } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
@@ -15,6 +16,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.governmentWork,
     routes.projects,
     ...getContent("en").projects.items.map((p) => `${routes.projects}/${p.slug}`),
+    // The blog index always; each published post and topic once they exist (stand-in 404 pages are never listed).
+    routes.blog,
+    ...posts.map((p) => `${routes.blog}/${p.slug}`),
+    ...allTags.map((t) => `${routes.blog}/tag/${tagSlug(t)}`),
     routes.about,
     routes.contact,
     routes.privacy,

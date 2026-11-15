@@ -30,12 +30,12 @@ export default function PrivacyPage() {
             <h2 id="privacy-contents" className="t-meta text-text-2">
               {privacy.contentsHeading}
             </h2>
-            <ol className="mt-4 border-t border-rule">
+            <ol className="mt-4 rounded-card border border-divider bg-surface p-2">
               {privacy.sections.map((section, i) => (
-                <li key={section.heading} className="border-b border-rule">
+                <li key={section.heading}>
                   <a
                     href={`#privacy-${i + 1}`}
-                    className="flex min-h-11 items-baseline gap-3 py-2 text-text-2 hover:text-text"
+                    className="flex min-h-11 items-baseline gap-3 rounded-field px-3 py-2 text-text-2 transition-colors duration-200 hover:bg-text/[0.05] hover:text-text"
                   >
                     <span className="t-meta tabular text-brand">{String(i + 1).padStart(2, "0")}</span>
                     {section.heading}
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
                 <ul className="mt-4 space-y-2">
                   {section.list.map((item) => (
                     <li key={item} className="flex gap-3">
-                      <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 bg-text-2" />
+                      <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand-strong" />
                       {item}
                     </li>
                   ))}
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
             </section>
           ))}
 
-          <section className="mt-12 border-t border-rule pt-10">
+          <section className="mt-12 rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8">
             <h2 className="t-h3">{privacy.contactHeading}</h2>
             <ul className="mt-4 space-y-1">
               <li>

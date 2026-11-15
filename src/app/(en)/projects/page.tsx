@@ -27,8 +27,8 @@ export default function ProjectsPage() {
       <PageHeader {...sectionRef(common, "projects")} title={projects.title} intro={projects.intro} />
       <div className={`${container} section-y`}>
         {/* TODO(content): remove the notice once real projects replace the placeholders. */}
-        <Notice className="max-w-2xl">{projects.placeholderNotice}</Notice>
-        <ProjectShowcase locale={locale} projects={projects.items} headingLevel={2} />
+        {projects.placeholderNotice && <Notice className="max-w-2xl">{projects.placeholderNotice}</Notice>}
+        <ProjectShowcase locale={locale} projects={projects.items} headingLevel={2} priorityFirst />
       </div>
       <CtaBand locale={locale} t={common} />
     </>

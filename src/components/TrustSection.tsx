@@ -14,7 +14,7 @@ export function TrustSection({ locale }: { locale: Locale }) {
   const t = getContent(locale).home.trust;
   const placeholder = t.logos.some((logo) => logo.startsWith("["));
   return (
-    <section aria-labelledby="trust-title" className="border-y border-rule bg-paper py-14 sm:py-20">
+    <section aria-labelledby="trust-title" className="bg-paper py-14 sm:py-20">
       <div className={`${container} grid gap-10 lg:grid-cols-12 lg:items-center`}>
         <div className="lg:col-span-3" data-reveal="">
           <p className="t-meta text-text-2">{t.label}</p>
@@ -22,18 +22,18 @@ export function TrustSection({ locale }: { locale: Locale }) {
             {t.title}
           </h2>
           {placeholder && (
-            <p className="mt-4 flex items-start gap-2 border border-warning px-3 py-2 text-sm text-warning">
+            <p className="mt-4 flex items-start gap-2 rounded-field border border-warning px-3 py-2 text-sm text-warning">
               <Info aria-hidden="true" size={16} className="mt-0.5 shrink-0" />
               {t.notice}
             </p>
           )}
         </div>
         <div className="lg:col-span-9" data-reveal="">
-          <ul className="grid grid-cols-2 border-t border-l border-divider sm:grid-cols-3 lg:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {t.logos.map((logo, i) => (
               <li
                 key={i}
-                className="t-meta grid h-24 place-items-center border-r border-b border-divider px-4 text-center text-text-2"
+                className="t-meta grid h-24 place-items-center rounded-field border border-divider bg-surface px-4 text-center text-text-2"
               >
                 {logo}
               </li>
@@ -42,7 +42,7 @@ export function TrustSection({ locale }: { locale: Locale }) {
           <ul className="t-meta mt-5 flex flex-wrap gap-x-6 gap-y-2 text-text-2">
             {t.certifications.map((cert) => (
               <li key={cert} className="flex items-center gap-2">
-                <span aria-hidden="true" className="size-1.5 bg-brand" />
+                <span aria-hidden="true" className="size-1.5 rounded-full bg-brand-strong" />
                 {cert}
               </li>
             ))}

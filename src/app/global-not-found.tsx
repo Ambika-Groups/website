@@ -6,7 +6,7 @@ import { button } from "@/components/ui";
 import { routes } from "@/config/routes";
 import { site } from "@/config/site";
 import { getContent } from "@/content";
-import { plex, plexCondensed } from "./fonts";
+import { inter, interTight, jetbrainsMono } from "./fonts";
 import { baseMetadata } from "./metadata";
 import "./globals.css";
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function GlobalNotFound() {
   return (
-    <html lang="en" className={`${plex.variable} ${plexCondensed.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>

@@ -19,7 +19,9 @@ const { common, home, projects } = getContent(locale);
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return projects.items.map((project) => ({ slug: project.slug }));
+  // A static export needs at least one page here; if the admin has switched every project off, a stand-in slug
+  // renders the 404 (it is not linked from anywhere and not in the sitemap).
+  return projects.items.length ? projects.items.map((project) => ({ slug: project.slug })) : [{ slug: "none" }];
 }
 
 type Props = { params: Promise<{ slug: string }> };
@@ -63,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
       ),
     },
     { label: labels.location, value: project.location },
-    { label: labels.clientType, value: project.clientType },
+    ...(project.clientType ? [{ label: labels.clientType, value: project.clientType }] : []),
     { label: labels.year, value: <span className="tabular">{project.year}</span> },
     { label: labels.status, value: project.status },
   ];
@@ -80,7 +82,7 @@ export default async function ProjectPage({ params }: Props) {
 
       <div className={`${container} pt-8 sm:pt-12`}>
         {/* TODO(content): remove the notice once this is a real project. */}
-        <Notice className="mb-8 max-w-2xl">{projects.placeholderNotice}</Notice>
+        {projects.placeholderNotice && <Notice className="mb-8 max-w-2xl">{projects.placeholderNotice}</Notice>}
         <Photo
           name={`${prefix}1`} // TODO(photo): temporary stock photo, see PHOTO-CREDITS.md
           priority
@@ -96,9 +98,9 @@ export default async function ProjectPage({ params }: Props) {
         <div className={`${container} grid gap-14 lg:grid-cols-12 lg:gap-8`}>
           <div className="lg:col-span-5">
             <SectionHeading id="spec-title" index="01" label={id} title={labels.details} />
-            <dl className="mt-10 border-t border-rule" data-reveal="">
+            <dl className="mt-10 rounded-card border border-divider bg-surface px-6 shadow-card" data-reveal="">
               {facts.map((fact) => (
-                <div key={fact.label} className="grid grid-cols-[8rem_1fr] gap-4 border-b border-rule py-4">
+                <div key={fact.label} className="grid grid-cols-[8rem_1fr] gap-4 border-b border-divider py-4 last:border-b-0">
                   <dt className="t-meta pt-0.5 text-text-2">{fact.label}</dt>
                   <dd className="font-medium">{fact.value}</dd>
                 </div>
@@ -107,13 +109,13 @@ export default async function ProjectPage({ params }: Props) {
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
             <SectionHeading id="scope-title" index="02" label={id} title={labels.scope} />
-            <ol className="mt-10 border-t border-rule">
+            <ol className="mt-10 grid gap-3">
               {project.scope.map((item, i) => (
                 <li
                   key={i}
                   data-reveal=""
                   style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-                  className="grid grid-cols-[3rem_1fr] border-b border-rule py-5"
+                  className="grid grid-cols-[3rem_1fr] rounded-field border border-divider bg-surface p-5"
                 >
                   <span className="t-meta tabular pt-1 text-brand">{String(i + 1).padStart(2, "0")}</span>
                   <span className="t-h3">{item}</span>
@@ -125,7 +127,7 @@ export default async function ProjectPage({ params }: Props) {
       </section>
 
       {gallery.length > 0 && (
-        <section aria-labelledby="gallery-title" className="section-y border-t border-rule pt-0 sm:pt-0">
+        <section aria-labelledby="gallery-title" className="section-y pt-0 sm:pt-0">
           <div className={`${container} pt-16 sm:pt-20`}>
             <SectionHeading id="gallery-title" index="03" label={id} title={labels.photos} />
             <div className="mt-12">

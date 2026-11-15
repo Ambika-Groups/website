@@ -49,7 +49,8 @@ const problems = [];
 let written = 0;
 
 for (const file of await listPhotos()) {
-  const name = file.slice(0, -extname(file).length).toLowerCase();
+  // "<name>.cms.jpg" files are downloaded by scripts/fetch-cms.mjs (admin uploads); they fill the same slots.
+  const name = file.slice(0, -extname(file).length).toLowerCase().replace(/\.cms$/, "");
   if (!NAME_RULE.test(name)) {
     problems.push(`${file}: use lowercase letters, digits and hyphens only (e.g. service-road-works-1.jpg)`);
     continue;

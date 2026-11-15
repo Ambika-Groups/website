@@ -56,7 +56,6 @@ export default function AboutPage() {
               name="about" // TODO(photo): temporary stock photo, see PHOTO-CREDITS.md
               priority // in the first screen on phones and desktops: preload, don't lazy-load (LCP)
               reveal
-              parallax
               sizes="(min-width: 1440px) 660px, (min-width: 1024px) 48vw, 100vw"
               placeholderLabel={common.placeholder.photo}
               illustrativeLabel={common.placeholder.illustrative}
@@ -72,13 +71,14 @@ export default function AboutPage() {
       <section aria-labelledby="clients-title" className="section-y">
         <div className={container}>
           <SectionHeading id="clients-title" index="02" title={about.clients.title} />
-          <ul className="mt-12 grid border-t border-rule lg:grid-cols-2">
+          <ul className="mt-12 grid gap-4 lg:grid-cols-2 lg:gap-5">
             {about.clients.items.map((item, i) => (
               <li
                 key={item.title}
                 data-reveal=""
                 style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
-                className={`border-b border-rule py-8 lg:py-10 ${i === 1 ? "lg:border-l lg:pl-10" : "lg:pr-10"}`}
+                data-spotlight=""
+                className="rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8 lg:p-10"
               >
                 <span className="t-meta tabular text-brand">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="t-h2 mt-3">{item.title}</h3>
@@ -89,7 +89,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section aria-labelledby="work-title" className="section-y tech-grid border-y border-rule bg-paper">
+      <section aria-labelledby="work-title" className="section-y bg-paper">
         <div className={container}>
           <SectionHeading id="work-title" index="03" title={about.work.title} intro={about.work.body} />
           <div className="mt-12">
@@ -123,9 +123,9 @@ export default function AboutPage() {
           </div>
           <div className="lg:col-span-5 lg:col-start-8">
             <SectionHeading id="company-title" index="05" title={about.company.title} />
-            <dl className="mt-10 border-t border-rule" data-reveal="">
+            <dl className="mt-10 rounded-card border border-divider bg-surface px-6 shadow-card" data-reveal="">
               {details.map((item) => (
-                <div key={item.label} className="grid gap-1 border-b border-rule py-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
+                <div key={item.label} className="grid gap-1 border-b border-divider py-5 last:border-b-0 sm:grid-cols-[10rem_1fr] sm:gap-6">
                   <dt className="t-meta pt-0.5 text-text-2">{item.label}</dt>
                   <dd className="font-medium tabular">{item.value}</dd>
                 </div>

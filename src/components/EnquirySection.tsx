@@ -30,11 +30,11 @@ export function EnquirySection({
   const { form, common } = getContent(locale);
   const contactLink = "arrow-link t-meta inline-flex min-h-12 items-center gap-3 text-text sm:min-h-10";
   return (
-    <section id={ENQUIRY_ANCHOR} className="section-y tech-grid scroll-mt-28 border-t border-rule bg-paper">
+    <section id={ENQUIRY_ANCHOR} className="section-y scroll-mt-28 bg-paper">
       <div className={`${container} grid gap-12 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-5">
           <SectionHeading index={index} label={common.enquiry.label} title={title} intro={body} />
-          <div className="mt-10 border-t border-rule pt-6" data-reveal="">
+          <div className="mt-10 rounded-card border border-divider bg-surface p-6 shadow-card" data-reveal="">
             <p className="t-h3">{common.enquiry.talkHeading}</p>
             <p className="mt-1 text-text-2">{common.enquiry.talkBody}</p>
             <ul className="mt-4 space-y-1">

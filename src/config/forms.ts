@@ -25,12 +25,13 @@ export const serviceFormIds = {
 export const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
 /**
- * Where the form posts (contract v2). Stage 1: Web3Forms (the default). Stage 2: the CRM's
- * submitEnquiry function, set with NEXT_PUBLIC_ENQUIRY_ENDPOINT. Switching is configuration only.
+ * Where the form posts (contract v3): the website's own submitEnquiry function (functions/index.js), set with
+ * NEXT_PUBLIC_ENQUIRY_ENDPOINT. While that is empty the form falls back to Web3Forms, as in stage 1. The CRM is
+ * reached only through the back end's forward, never from the browser. Switching is configuration only.
  */
 export const ENQUIRY_ENDPOINT = process.env.NEXT_PUBLIC_ENQUIRY_ENDPOINT || WEB3FORMS_ENDPOINT;
 
-/** access_key is sent only to Web3Forms; the CRM endpoint never receives it (contract v2). */
+/** access_key is sent only to Web3Forms; the website's own function never receives it (contract v2/v3). */
 export function isWeb3Forms(endpoint: string): boolean {
   try {
     return new URL(endpoint).hostname === new URL(WEB3FORMS_ENDPOINT).hostname;

@@ -50,9 +50,9 @@ export default function GovernmentWorkPage() {
         <div className={`${container} grid gap-14 lg:grid-cols-12 lg:gap-8`}>
           <div className="lg:col-span-6">
             <SectionHeading id="departments-title" index="01" title={g.departments.title} />
-            <ul className="mt-10 border-t border-rule">
+            <ul className="mt-10 grid gap-3">
               {g.departments.items.map((dept) => (
-                <li key={dept.name} data-reveal="" className="border-b border-rule py-6">
+                <li key={dept.name} data-reveal="" data-spotlight="" className="rounded-card border border-divider bg-surface p-6 shadow-card">
                   <p className="t-h2">{dept.name}</p>
                   <p className="mt-2 text-text-2">{dept.hint}</p>
                 </li>
@@ -61,13 +61,13 @@ export default function GovernmentWorkPage() {
           </div>
           <div className="lg:col-span-5 lg:col-start-8">
             <SectionHeading id="work-title" index="02" title={g.work.title} />
-            <ol className="mt-10 border-t border-rule">
+            <ol className="mt-10 grid gap-3">
               {g.work.items.map((item, i) => (
                 <li
                   key={item}
                   data-reveal=""
                   style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-                  className="grid grid-cols-[3rem_1fr] border-b border-rule py-5"
+                  className="grid grid-cols-[3rem_1fr] rounded-field border border-divider bg-surface p-5"
                 >
                   <span className="t-meta tabular pt-0.5 text-brand">{String(i + 1).padStart(2, "0")}</span>
                   <span className="t-h3">{item}</span>
@@ -78,7 +78,7 @@ export default function GovernmentWorkPage() {
         </div>
       </section>
 
-      <section aria-labelledby="how-title" className="tone-dark tech-grid section-y">
+      <section aria-labelledby="how-title" className="tone-dark section-y">
         <div className={container}>
           <SectionHeading id="how-title" index="03" title={g.howWeWork.title} intro={g.howWeWork.hints.boq} />
           <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
@@ -87,7 +87,7 @@ export default function GovernmentWorkPage() {
                 key={step.title}
                 data-reveal=""
                 style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
-                className="border-t-2 border-text pt-5"
+                className="rounded-card border border-divider bg-surface p-6"
               >
                 <span className="t-meta tabular text-brand">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="t-h3 mt-3">{step.title}</h3>
@@ -103,9 +103,9 @@ export default function GovernmentWorkPage() {
           <div className="lg:col-span-4">
             <SectionHeading id="credentials-title" index="04" title={g.credentials.title} intro={g.credentials.intro} />
           </div>
-          <dl className="border-t border-rule lg:col-span-7 lg:col-start-6" data-reveal="">
+          <dl className="rounded-card border border-divider bg-surface px-6 shadow-card lg:col-span-7 lg:col-start-6" data-reveal="">
             {credentials.map((item) => (
-              <div key={item.label} className="grid gap-1 border-b border-rule py-5 sm:grid-cols-[14rem_1fr] sm:gap-6">
+              <div key={item.label} className="grid gap-1 border-b border-divider py-5 last:border-b-0 sm:grid-cols-[14rem_1fr] sm:gap-6">
                 <dt className="t-meta pt-1 text-text-2">{item.label}</dt>
                 <dd className="t-h3 tabular">{item.value}</dd>
               </div>

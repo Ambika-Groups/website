@@ -7,19 +7,21 @@
   },
   "scripts": {
     "images": "node scripts/optimize-images.mjs",
-    "predev": "node scripts/optimize-images.mjs",
+    "predev": "node scripts/fetch-cms.mjs && node scripts/optimize-images.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/optimize-images.mjs",
+    "prebuild": "node scripts/fetch-cms.mjs && node scripts/optimize-images.mjs",
     "build": "next build",
     "postbuild": "node scripts/flatten-segment-prefetch.mjs && node scripts/netlify-redirects.mjs",
     "start": "npx --yes serve@14.2.4 out",
     "preview:netlify": "npx --yes netlify-cli@27.14.2 serve --offline",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/lib/*.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/*.test.ts && npm --prefix functions test"
   },
   "dependencies": {
+    "firebase": "13.0.0",
     "lucide-react": "^1.61.0",
+    "marked": "18.1.0",
     "next": "16.4.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

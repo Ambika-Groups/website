@@ -44,6 +44,8 @@ This decides which local searches the site is set up for, for example "road cont
 |---|---|
 | **Main photo (hero)** | 1 photo. See "Photos" below. |
 | **Response time** (optional) | Can we promise a reply time, e.g. "We call back within one working day"? If yes, tell us the exact promise. It will appear on every page and after someone sends an enquiry. Only promise what your team can always keep. |
+| **Contact page wording** (approve or reword) | The Contact page, which is also the page your ads will link to, says: **"Building a house, road or paver yard? Start with a site visit."** and **"Our team calls you back, visits your site and gives you an itemised estimate."** Confirm this is how you work (for example, that you visit before quoting), or send the wording you prefer. If you can promise a reply time, it replaces "Your enquiry goes straight to our team". |
+| **Contact page video** (confirm or replace) | The Contact page shows a YouTube video beside the enquiry form. The video set up for now is **"Apply your own photo|company logo| on your pendrive" from the channel "Hem K Tech 3232"**, which is not about Ambika Group. Send the link to your own video (for example a short walk-through of your work, or you explaining how you work with clients), or tell us to remove the video. |
 | **Closing statement** (approve or reword) | At the bottom of every page, in large type, the site says: **"Houses, roads and paved ground, built to specification."** This is a claim about your work. Confirm it is true as written, or send the wording you prefer. |
 
 ---
@@ -116,6 +118,13 @@ The Privacy page currently shows a **draft** clearly marked "not yet approved". 
 1. **Ask your advocate to read and approve** the Privacy page (and the short consent sentence under the enquiry form). It should comply with India's Digital Personal Data Protection Act, 2023.
 2. **Tell us how long you keep enquiries**, for example "2 years after the last contact".
 3. **Tell us the date** to show as "Last updated".
+4. **"Who handles it"** now names, in [square brackets] for approval:
+   - the website's own database on Google Cloud (Firebase, Mumbai)
+   - Resend, which sends you the email about each enquiry
+   - Web3Forms, used only until the database is switched on
+   - the CRM, once it is connected
+
+   Confirm or reword these with your advocate.
 
 ---
 
@@ -164,6 +173,8 @@ If renaming files is a hassle, just send the photos with a note saying which is 
 - [ ] Logo file
 - [ ] Main city or region you serve
 - [ ] Response-time promise (or "no promise")
+- [ ] Contact page wording approved or reworded
+- [ ] Contact page video: your own video link, or remove it
 - [ ] Closing statement approved or reworded
 - [ ] Service lists confirmed or corrected (4 services)
 - [ ] Real estate project details

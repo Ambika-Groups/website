@@ -19,7 +19,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary["common"] 
   const heading = "t-meta mb-4 text-text-2";
 
   return (
-    <footer className="tone-dark tech-grid pb-20 sm:pb-24">
+    <footer className="tone-dark pb-20 sm:pb-24">
       <div className={container}>
         <div className="grid gap-8 border-b border-divider py-16 lg:grid-cols-12 lg:items-end lg:py-24">
           <p className="t-h1 lg:col-span-9">{t.footer.statement}</p>

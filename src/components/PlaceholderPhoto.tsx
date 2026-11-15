@@ -17,9 +17,9 @@ export function PlaceholderPhoto({
     <div
       role="img"
       aria-label={`${label}: ${alt}`}
-      className={`placeholder-photo flex items-center justify-center border border-dashed border-input-border ${className}`}
+      className={`placeholder-photo flex items-center justify-center rounded-card border border-dashed border-input-border ${className}`}
     >
-      <span className="inline-flex items-center gap-1.5 bg-surface px-2.5 py-1 text-xs font-medium text-text-2">
+      <span className="inline-flex items-center gap-1.5 rounded-chip bg-surface px-2.5 py-1 text-xs font-medium text-text-2">
         <ImageIcon aria-hidden="true" size={14} />
         {label}
       </span>

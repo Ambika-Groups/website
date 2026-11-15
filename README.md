@@ -57,13 +57,18 @@ After any Next upgrade:
 - `src/lib/`: the enquiry contract (`enquiry.ts`, `phone.ts`, `utm.ts`), implementing the enquiry form contract v2.1 (see "Shared rules")
 - `src/app/(en)/`: English pages at bare URLs. `src/app/(hi)/hi/`: Hindi root layout, no pages yet.
 - `src/app/metadata.ts`: shared SEO metadata; every page uses `pageMetadata()` so share images aren't lost.
+- `src/app/(admin)/admin/` + `src/admin/`: the website admin at `/admin` (M7c–M9): enquiries inbox, analytics, blog, projects, site settings, "Publish site". One static page; it runs in the browser against the website's own Firebase project, or in **demo mode** (sample data in IndexedDB, labelled) when no project is configured. Never indexed (noindex, `X-Robots-Tag`, not in the sitemap).
+- `functions/`: the website back end (contract v3): `submitEnquiry` (stores, emails the owner, forwards to the CRM later) and `publishSite` (Netlify build hook). `npm test` there runs the validation tests with no emulator.
+- `firestore.rules`, `storage.rules`: who can read and change what. Admin = a document at `admins/{uid}`.
+- `scripts/fetch-cms.mjs` (runs before every build): snapshots published posts, shown projects and site settings into `src/generated/cms-*.json` and their photos into `photos/`. If Firebase can't be reached it keeps the last snapshot, so a build never breaks. Content files in `src/content/` stay the fallback.
+- `src/app/(en)/blog/`: the blog, static at build (list, topics, posts with BlogPosting JSON-LD).
 
 Search for `TODO(content)` to find every placeholder. `CONTENT-CHECKLIST.md` lists what the client must supply.
 
 ## Shared rules (docs/shared/)
 Three documents this code follows are kept by the project supervisor. Copies are in [docs/shared/](docs/shared/); don't edit them here (see [docs/shared/README.md](docs/shared/README.md)).
 - [enquiry-form-contract.md](docs/shared/enquiry-form-contract.md) (version 2.1): the fields, the phone rule, the endpoint switch. The CRM implements the same contract, so a change there is a change on both sides; `src/lib/phone.test.ts` holds its phone table.
-- [brand.md](docs/shared/brand.md) (version 3): colours, type, layout rules. The tokens are in `src/app/globals.css`.
+- [brand.md](docs/shared/brand.md) (version 4.1): palette, type, shape and motion rules. The tokens are in `src/app/globals.css`.
 - [website-design-brief.md](docs/shared/website-design-brief.md) (25 Oct 2026): the premium editorial direction, with the supervisor's notes.
 
 ## Run it locally
@@ -81,9 +86,10 @@ If a port is already in use, stop the other server, or run `npx serve@14.2.4 out
 
 ## Environment
 Copy `.env.example` to `.env.local`:
-- `NEXT_PUBLIC_ENQUIRY_ENDPOINT`: empty for Web3Forms (stage 1); the CRM `submitEnquiry` URL from CRM Phase 3 (stage 2). When it changes, also update the "Who handles it" section of the Privacy page (TODO in `src/content/en/privacy.ts`).
+- `NEXT_PUBLIC_ENQUIRY_ENDPOINT`: empty for Web3Forms (fallback); the website's own `submitEnquiry` URL once its back end is deployed (contract v3; DEPLOY.md section C). When it changes, also update the "Who handles it" section of the Privacy page (TODO in `src/content/en/privacy.ts`).
 - `NEXT_PUBLIC_WEB3FORMS_KEY`: stage 1 only.
 - `NEXT_PUBLIC_SITE_URL`: the production domain (canonical links, sitemap, share previews).
+- `NEXT_PUBLIC_FIREBASE_*` (five values): the website Firebase project's public web settings. Empty = demo mode for `/admin`, content files for the site. Setup: DEPLOY.md section C.
 
 ## Photos
 Put original photos (any size, straight from the camera) in `photos/` with the names listed in `CONTENT-CHECKLIST.md`, e.g. `hero.jpg`, `service-road-works.jpg`, `project-<slug>-1.jpg`. The build makes AVIF + WebP copies at 480–2000 px in `public/images/`, applies the camera's rotation, strips all metadata (including GPS location) and records sizes in `src/generated/images.json`. Any slot without a photo shows a visible placeholder.

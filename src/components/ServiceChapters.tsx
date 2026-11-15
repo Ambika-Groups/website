@@ -6,9 +6,8 @@ import { localePath, type Locale } from "@/i18n/config";
 import { Photo } from "./Photo";
 
 /**
- * Services as numbered chapters (brief §11), not cards. Each chapter is one row on a hairline:
- * number · title + summary · typical jobs · photo, with a red rule that draws across on hover, the
- * photo scaling gently and the arrow nudging. Nothing is hover-only: every part is always visible.
+ * Services as numbered chapters, each a card (brand.md v4): number · photo · title + summary · typical jobs,
+ * with the pointer spotlight, the photo scaling gently and the arrow nudging. Nothing is hover-only.
  * `compact`: text-only rows (for "Other services" and About).
  */
 export function ServiceChapters({
@@ -31,7 +30,7 @@ export function ServiceChapters({
   const keys = serviceKeys.filter((key) => key !== exclude);
 
   return (
-    <ol className="border-b border-rule">
+    <ol className={`grid ${compact ? "gap-3" : "gap-4 lg:gap-5"}`}>
       {keys.map((key, i) => {
         const page = services.pages[key];
         const name = common.serviceNames[key];
@@ -44,15 +43,11 @@ export function ServiceChapters({
             key={key}
             data-reveal={first ? undefined : ""}
             style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-            className="group relative border-t border-rule has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-brand"
+            data-spotlight=""
+            className={`group relative ${compact ? "rounded-field" : "rounded-card shadow-card"} border border-divider bg-surface transition-colors duration-300 hover:border-rule has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-brand`}
           >
-            {/* Red rule draws across the top on hover. */}
-            <span
-              aria-hidden="true"
-              className="absolute -top-px left-0 h-[2px] w-full origin-left scale-x-0 bg-brand transition-transform duration-500 ease-out-quint group-hover:scale-x-100"
-            />
             <div
-              className={`grid gap-x-8 gap-y-5 ${compact ? "py-7 lg:grid-cols-12 lg:items-baseline" : "py-10 lg:grid-cols-12 lg:py-14"}`}
+              className={`grid gap-x-8 gap-y-5 ${compact ? "p-5 sm:p-6 lg:grid-cols-12 lg:items-baseline" : "p-4 sm:p-6 lg:grid-cols-12 lg:p-8"}`}
             >
               <p className={`t-meta tabular text-brand ${compact ? "lg:col-span-1" : "lg:col-span-1 lg:pt-3"}`}>{number}</p>
               {/* Photo on the left of the row: its "Illustrative photo" label (top-left) then stays
@@ -81,7 +76,7 @@ export function ServiceChapters({
                   <ul className="mb-6 space-y-2">
                     {page.jobs.map((job) => (
                       <li key={job} className="flex items-baseline gap-3 border-b border-divider pb-2">
-                        <span aria-hidden="true" className="size-1.5 shrink-0 translate-y-[-2px] bg-text-2" />
+                        <span aria-hidden="true" className="size-1.5 shrink-0 translate-y-[-2px] rounded-full bg-brand-strong" />
                         {job}
                       </li>
                     ))}

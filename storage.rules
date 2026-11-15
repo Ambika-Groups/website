@@ -1,0 +1,15 @@
+rules_version = '2';
+// Blog covers and project photos: public to read (the site and the Netlify build download them), and only
+// admins may upload images under 5 MB. Admin = a Firestore document at admins/{uid}.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+    match /{folder}/{file=**} {
+      allow read: if folder in ['blog', 'projects'];
+      allow write: if folder in ['blog', 'projects'] && isAdmin()
+        && (request.resource == null || (request.resource.size < 5 * 1024 * 1024 && request.resource.contentType.matches('image/.*')));
+    }
+  }
+}

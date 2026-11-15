@@ -39,6 +39,8 @@ export function pageMetadata({
   title,
   description,
   absoluteTitle = false,
+  image,
+  article,
 }: {
   locale: Locale;
   /** Locale-specific path, e.g. "/services/road-works". */
@@ -46,11 +48,23 @@ export function pageMetadata({
   title: string;
   description: string;
   absoluteTitle?: boolean;
+  /** Share image for this page (e.g. a blog cover); the site's og.png otherwise. */
+  image?: { url: string; width: number; height: number; alt: string } | null;
+  /** Blog posts: shared as an article with its dates and tags. */
+  article?: { publishedTime: string; modifiedTime?: string; tags?: string[] };
 }): Metadata {
+  const base = openGraphBase(locale);
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
-    openGraph: { ...openGraphBase(locale), title, description, url: path },
+    openGraph: {
+      ...base,
+      ...(image && { images: [image] }),
+      ...(article && { type: "article" as const, publishedTime: article.publishedTime, modifiedTime: article.modifiedTime, tags: article.tags }),
+      title,
+      description,
+      url: path,
+    },
   };
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SiteShell } from "@/components/SiteShell";
 import { ThemeScript } from "@/components/ThemeScript";
-import { plex, plexCondensed } from "../fonts";
+import { inter, interTight, jetbrainsMono } from "../fonts";
 import { baseMetadata } from "../metadata";
 import "../globals.css";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = baseMetadata("en");
 export default function EnglishRootLayout({ children }: { children: ReactNode }) {
   return (
     // ThemeScript sets data-theme before hydration, so the attribute differs from the server HTML.
-    <html lang="en" className={`${plex.variable} ${plexCondensed.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>

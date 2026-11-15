@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 /**
- * Editorial section heading: a technical index line ("03 — Portfolio", red rule), then a large
- * display title and an optional lead. Without `index`, the line is just the red rule.
+ * Section heading (brand.md v4): a pill eyebrow ("03 — Portfolio" with a red dot), then a large
+ * display title and an optional lead.
  */
 export function SectionHeading({
   title,
@@ -23,8 +23,8 @@ export function SectionHeading({
 }) {
   return (
     <div className={`max-w-3xl ${className}`} data-reveal="">
-      <p className="t-meta flex items-center gap-3 text-text-2">
-        <span aria-hidden="true" className="block h-[2px] w-10 bg-brand" />
+      <p className="t-meta inline-flex items-center gap-2.5 rounded-full border border-divider px-3.5 py-1.5 text-text-2">
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-brand-strong" />
         {index && <span className="tabular text-brand">{index}</span>}
         {index && label && <span aria-hidden="true">—</span>}
         {label && <span>{label}</span>}

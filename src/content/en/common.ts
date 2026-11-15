@@ -1,3 +1,4 @@
+import { cmsPostCount } from "@/lib/cms";
 import type { RouteKey } from "@/config/routes";
 
 const common = {
@@ -8,9 +9,14 @@ const common = {
       { route: "services", label: "Services" },
       { route: "governmentWork", label: "Government work" },
       { route: "projects", label: "Projects" },
+      // The blog joins the menu once a post is published (src/lib/cms.ts, snapshotted at build).
+      ...(cmsPostCount > 0 ? [{ route: "blog" as const, label: "Blog" }] : []),
       { route: "about", label: "About" },
       { route: "contact", label: "Contact" },
     ] satisfies { route: RouteKey; label: string }[],
+    // The chevron button beside "Services" that opens the list of service pages.
+    subMenu: "Service pages",
+    allServices: "All services",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     menu: "Menu",

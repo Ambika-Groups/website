@@ -1,0 +1,61 @@
+rules_version = '2';
+// Website project (separate from the CRM's). Admin = a document at admins/{uid}, created by hand in the console
+// for the first admin (DEPLOY.md). Browsers never write enquiries: only the submitEnquiry function does, with the
+// Admin SDK, which these rules do not apply to.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // The signed-in user may check their own admin entry (the dashboard uses it to show "not an admin").
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Inbox: admins read, and change only the follow-up fields. Never created or deleted from a browser.
+    match /enquiries/{id} {
+      allow read: if isAdmin();
+      allow update: if isAdmin() && onlyChanges(['status', 'notes', 'firstContactAt', 'updatedAt', 'statusHistory', 'needsChecking']);
+      allow create, delete: if false;
+    }
+
+    // Blog: published posts are public (the Netlify build reads them); drafts only for admins.
+    match /posts/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Projects: only those switched on for the website are public.
+    match /projects/{id} {
+      allow read: if resource.data.showOnWebsite == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // settings/site is public (contact details, video id, numbers and trust values, read at build).
+    // settings/publishState counts unpublished changes; settings/crmLink shows the CRM link status (no key).
+    match /settings/{doc} {
+      allow read: if doc == 'site' || isAdmin();
+      allow write: if isAdmin() && doc in ['site', 'publishState', 'crmLink'];
+    }
+
+    // Publish log: written by the publishSite function only.
+    match /publishes/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Server-side secrets entered from the dashboard (the CRM API key): admins may overwrite, nobody may read.
+    match /private/{doc} {
+      allow read: if false;
+      allow write: if isAdmin();
+    }
+  }
+}

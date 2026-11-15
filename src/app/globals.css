@@ -5,133 +5,191 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /*
- * Website tokens: brand.md v3 "premium editorial direction".
- * Neutral scale (warm concrete), proposed at the M4 checkpoint, contrast in progress/.../tests/contrast-tokens.txt:
- *   white-0 #FFFFFF · paper-50 #F7F6F3 · stone-100 #EEECE7 · concrete-200 #E0DDD6 · concrete-300 #C7C3BA
- *   concrete-500 #8A857C · steel-600 #5C5852 · graphite-700 #3A3835 · charcoal-800 #24231F
- *   coal-900 #171614 · ink-950 #0F0E0D
- * Reds are brand.md's: #C62828 / #A31515 on light; #FF6B6B text and #D32F2F / #B71C1C fills on dark.
- * Semantic names are shared with earlier components (band, surface, elevated…).
+ * Website tokens: brand.md version 4 (palette #F12136 · #B23A48 · #FCB9B2 · #FED0BB; style after clio.praxistence.com).
+ * Semantic names are kept from earlier versions (bg, paper, surface, brand…), so every component re-themes from here.
+ * Rules from brand.md v4 that the tokens encode:
+ *   - #F12136 is for fills, large type and markers; small red text is #D7192C (light) / #FF4A5C (dark).
+ *   - The primary button label is #0B0B0C on #F12136 (4.69); white on #F12136 is only 4.19, so never.
+ *   - Rose #B23A48 is text only on light grounds; on dark the accent is peach.
+ *   - On peach / pink bands (.tone-peach) every text colour is ink.
  */
 :root {
-  --bg: #ffffff;
-  --paper: #f7f6f3;
-  --stone: #eeece7;
+  --bg: #fffdf9;
+  --paper: #fbf4ee;
+  --stone: #f5ebe3;
   --surface: #ffffff;
-  --band: #f7f6f3;
+  --band: #fbf4ee;
   --elevated: #ffffff;
-  --divider: #e0ddd6;
-  --rule: #c7c3ba; /* stronger hairline for technical dividers */
-  --input-border: #8a857c;
-  --text: #1a1917;
-  --text-2: #5c5852;
-  --brand: #c62828;
-  --primary: #c62828;
-  --primary-hover: #a31515;
-  --on-primary: #ffffff;
-  --selected: #fdecea;
+  --divider: rgba(26, 18, 6, 0.1);
+  --rule: rgba(26, 18, 6, 0.18);
+  --input-border: #8c7f78;
+  --text: #1a1206;
+  --text-2: #6b5e57;
+  --brand: #d7192c; /* red as small text and links */
+  --brand-strong: #f12136; /* red as fills, large type and markers */
+  --accent: #b23a48; /* rose: emphasis on light grounds */
+  --primary: #f12136;
+  --primary-hover: #d7192c;
+  --on-primary: #0b0b0c;
+  --on-primary-hover: #ffffff;
+  --selected: #ffede8;
   --success: #1e7b34;
   --warning: #8f5b00;
-  --error: #c62828;
-  --grid-line: rgba(26, 25, 23, 0.06);
-  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.16);
-  --placeholder-a: #f7f6f3;
-  --placeholder-b: #eeece7;
+  --error: #d7192c;
+  --glow: rgba(241, 33, 54, 0.12);
+  --grid-line: rgba(26, 18, 6, 0.05);
+  --shadow-card: 0 30px 60px -35px rgba(60, 40, 10, 0.35);
+  --shadow-1: 0 8px 24px -12px rgba(60, 40, 10, 0.25);
+  --shadow-2: 0 24px 60px -24px rgba(60, 40, 10, 0.35);
+  --glass: rgba(255, 253, 249, 0.86); /* opaque enough that secondary text stays ≥ 4.5:1 over any photo */
+  --glass-border: rgba(254, 208, 187, 0.9);
+  --placeholder-a: #fbf4ee;
+  --placeholder-b: #f5ebe3;
   color-scheme: light;
 }
 
 /* Dark tokens appear twice (switch + no-JS fallback); keep the two blocks identical. */
 :root[data-theme="dark"] {
-  --bg: #0f0e0d;
-  --paper: #171614;
-  --stone: #1c1b19;
-  --surface: #171614;
-  --band: #171614;
-  --elevated: #24231f;
-  --divider: #2e2d29;
-  --rule: #4a4843;
-  --input-border: #7a766e;
-  --text: #f2f0eb;
-  --text-2: #aba69d;
-  --brand: #ff6b6b;
-  --primary: #d32f2f;
-  --primary-hover: #b71c1c;
-  --on-primary: #ffffff;
-  --selected: #331a1a;
+  --bg: #0b0b0c;
+  --paper: #161416;
+  --stone: #211d20;
+  --surface: #161416;
+  --band: #161416;
+  --elevated: #211d20;
+  --divider: rgba(245, 243, 239, 0.1);
+  --rule: rgba(245, 243, 239, 0.18);
+  --input-border: #6e676b;
+  --text: #f5f3ef;
+  --text-2: #a9a2a6;
+  --brand: #ff4a5c;
+  --brand-strong: #f12136;
+  --accent: #fed0bb; /* peach: accent text and lines on dark */
+  --primary: #f12136;
+  --primary-hover: #ff4a5c;
+  --on-primary: #0b0b0c;
+  --on-primary-hover: #0b0b0c;
+  --selected: #2a1519;
   --success: #81c995;
   --warning: #fdd663;
-  --error: #ff6b6b;
-  --grid-line: rgba(242, 240, 235, 0.05);
-  --shadow-1: none;
-  --shadow-2: none;
-  --placeholder-a: #171614;
-  --placeholder-b: #1c1b19;
+  --error: #ff4a5c;
+  --glow: rgba(254, 208, 187, 0.12);
+  --grid-line: rgba(245, 243, 239, 0.04);
+  --shadow-card: 0 30px 70px -35px rgba(0, 0, 0, 0.9);
+  --shadow-1: 0 8px 24px -12px rgba(0, 0, 0, 0.8);
+  --shadow-2: 0 24px 60px -24px rgba(0, 0, 0, 0.9);
+  --glass: rgba(11, 11, 12, 0.85);
+  --glass-border: rgba(254, 208, 187, 0.16);
+  --placeholder-a: #161416;
+  --placeholder-b: #211d20;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #0f0e0d;
-    --paper: #171614;
-    --stone: #1c1b19;
-    --surface: #171614;
-    --band: #171614;
-    --elevated: #24231f;
-    --divider: #2e2d29;
-    --rule: #4a4843;
-    --input-border: #7a766e;
-    --text: #f2f0eb;
-    --text-2: #aba69d;
-    --brand: #ff6b6b;
-    --primary: #d32f2f;
-    --primary-hover: #b71c1c;
-    --on-primary: #ffffff;
-    --selected: #331a1a;
+    --bg: #0b0b0c;
+    --paper: #161416;
+    --stone: #211d20;
+    --surface: #161416;
+    --band: #161416;
+    --elevated: #211d20;
+    --divider: rgba(245, 243, 239, 0.1);
+    --rule: rgba(245, 243, 239, 0.18);
+    --input-border: #6e676b;
+    --text: #f5f3ef;
+    --text-2: #a9a2a6;
+    --brand: #ff4a5c;
+    --brand-strong: #f12136;
+    --accent: #fed0bb; /* peach: accent text and lines on dark */
+    --primary: #f12136;
+    --primary-hover: #ff4a5c;
+    --on-primary: #0b0b0c;
+    --on-primary-hover: #0b0b0c;
+    --selected: #2a1519;
     --success: #81c995;
     --warning: #fdd663;
-    --error: #ff6b6b;
-    --grid-line: rgba(242, 240, 235, 0.05);
-    --shadow-1: none;
-    --shadow-2: none;
-    --placeholder-a: #171614;
-    --placeholder-b: #1c1b19;
+    --error: #ff4a5c;
+    --glow: rgba(254, 208, 187, 0.12);
+    --grid-line: rgba(245, 243, 239, 0.04);
+    --shadow-card: 0 30px 70px -35px rgba(0, 0, 0, 0.9);
+    --shadow-1: 0 8px 24px -12px rgba(0, 0, 0, 0.8);
+    --shadow-2: 0 24px 60px -24px rgba(0, 0, 0, 0.9);
+    --glass: rgba(11, 11, 12, 0.85);
+    --glass-border: rgba(254, 208, 187, 0.16);
+    --placeholder-a: #161416;
+    --placeholder-b: #211d20;
     color-scheme: dark;
   }
 }
 
 /*
- * Dark architectural sections (the "15%"), in both themes. Re-points the tokens, so any component
- * placed inside adapts. In the dark theme the section steps up to charcoal-800 with hairline edges,
- * so it still stands apart from the ink-950 page (brand.md v3, Layout and rhythm).
+ * Dark sections inside the light theme (the hero, closing bands). Re-points the tokens to the dark palette,
+ * so any component placed inside adapts. In the dark theme they step up to the surface tone.
  */
 .tone-dark {
-  --bg: #171614;
-  --paper: #171614;
-  --surface: #1c1b19;
-  --band: #1c1b19;
-  --elevated: #24231f;
-  --divider: rgba(242, 240, 235, 0.14);
-  --rule: rgba(242, 240, 235, 0.28);
-  --input-border: #7a766e;
-  --text: #f2f0eb;
-  --text-2: #aba69d;
-  --brand: #ff6b6b;
-  --primary: #d32f2f;
-  --primary-hover: #b71c1c;
-  --selected: #331a1a;
-  --error: #ff6b6b;
-  --grid-line: rgba(242, 240, 235, 0.06);
-  --placeholder-a: #1c1b19;
-  --placeholder-b: #24231f;
+  --bg: #0e0d0e;
+  --paper: #161416;
+  --stone: #211d20;
+  --surface: #161416;
+  --band: #161416;
+  --elevated: #211d20;
+  --divider: rgba(245, 243, 239, 0.1);
+  --rule: rgba(245, 243, 239, 0.18);
+  --input-border: #6e676b;
+  --text: #f5f3ef;
+  --text-2: #a9a2a6;
+  --brand: #ff4a5c;
+  --brand-strong: #f12136;
+  --accent: #fed0bb; /* peach: accent text and lines on dark */
+  --primary: #f12136;
+  --primary-hover: #ff4a5c;
+  --on-primary: #0b0b0c;
+  --on-primary-hover: #0b0b0c;
+  --selected: #2a1519;
+  --success: #81c995;
+  --warning: #fdd663;
+  --error: #ff4a5c;
+  --glow: rgba(254, 208, 187, 0.12);
+  --grid-line: rgba(245, 243, 239, 0.04);
+  --shadow-card: 0 30px 70px -35px rgba(0, 0, 0, 0.9);
+  --shadow-1: 0 8px 24px -12px rgba(0, 0, 0, 0.8);
+  --shadow-2: 0 24px 60px -24px rgba(0, 0, 0, 0.9);
+  --glass: rgba(11, 11, 12, 0.85);
+  --glass-border: rgba(254, 208, 187, 0.16);
+  --placeholder-a: #161416;
+  --placeholder-b: #211d20;
   color-scheme: dark;
   background-color: var(--bg);
   color: var(--text);
 }
 :where([data-theme="dark"]) .tone-dark {
-  --bg: #24231f;
-  --surface: #2b2a26;
-  border-block: 1px solid #3a3835;
+  --bg: #161416;
+  --surface: #211d20;
+}
+
+/* Peach band (tint band A). Secondary text and small red text change to their peach-safe values. */
+.tone-peach {
+  --bg: #fed0bb;
+  --paper: #fed0bb;
+  --surface: #fffdf9;
+  --divider: rgba(26, 18, 6, 0.14);
+  --rule: rgba(26, 18, 6, 0.24);
+  --text: #1a1206;
+  --text-2: #1a1206;
+  --brand: #be1428;
+  --accent: #1a1206;
+  background-color: var(--bg);
+  color: var(--text);
+}
+:where([data-theme="dark"]) .tone-peach {
+  --bg: #211d20;
+  --paper: #211d20;
+  --surface: #161416;
+  --divider: rgba(245, 243, 239, 0.12);
+  --rule: rgba(245, 243, 239, 0.2);
+  --text: #f5f3ef;
+  --text-2: #a9a2a6;
+  --brand: #ff4a5c;
+  --accent: #fed0bb;
 }
 
 @theme inline {
@@ -154,18 +212,28 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+  --color-brand-strong: var(--brand-strong);
+  --color-accent: var(--accent);
+  --color-on-primary-hover: var(--on-primary-hover);
+  --shadow-card: var(--shadow-card);
+  --radius-card: 20px;
+  --radius-field: 12px;
+  --radius-chip: 6px;
   --shadow-float-1: var(--shadow-1);
   --shadow-float-2: var(--shadow-2);
-  --font-sans: var(--font-plex), var(--font-plex-devanagari, ui-sans-serif), system-ui, sans-serif;
-  /* Display lines and labels; Hindi falls back to Plex Sans Devanagari (brand.md v3). */
-  --font-display: var(--font-plex-condensed), var(--font-plex-devanagari, ui-sans-serif), var(--font-plex), sans-serif;
+  --font-sans: var(--font-inter), var(--font-noto-devanagari, ui-sans-serif), system-ui, sans-serif;
+  /* Headings: Inter Tight (Latin), Noto Sans Devanagari on Hindi pages (brand.md v4.1). */
+  --font-display: var(--font-inter-tight), var(--font-noto-devanagari, ui-sans-serif), var(--font-inter), sans-serif;
+  /* Labels, metadata, IDs: JetBrains Mono. */
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
 /* Brand breakpoints: phone < 600, tablet 600–1023, desktop ≥ 1024. */
 @theme {
   --breakpoint-sm: 37.5rem;
   --breakpoint-lg: 64rem;
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1); /* brand.md v4 ease-out */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 body {
@@ -177,61 +245,59 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Weights: body 400, labels/buttons 500, headings 600, nothing heavier. */
+/* Weights: body 400, labels/buttons 500, headings 600 (brand.md v4.1). */
 h1, h2, h3, h4 {
   font-weight: 600;
-  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-/* ---------- Type scale (fluid; brand.md v3 "Typography") ---------- */
+/* ---------- Type scale (fluid; brand.md v4.1 "Typography": Inter Tight 600 headings, sentence case, about −0.02 em) ---------- */
 @utility t-display {
   font-family: var(--font-display);
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: clamp(2.75rem, 1.35rem + 6vw, 7.5rem); /* 44 px phones → 120 px wide desktop */
-  line-height: 0.92;
-  letter-spacing: -0.012em;
+  font-size: clamp(2.75rem, 1.6rem + 4.6vw, 6rem); /* 44 px phones → 96 px wide desktop */
+  line-height: 1;
+  letter-spacing: -0.025em; /* slightly tighter on the big hero lines (brand.md v4.1) */
 }
 @utility t-h1 {
   font-family: var(--font-display);
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5rem); /* 40 → 80 px */
-  line-height: 0.95;
-  letter-spacing: -0.01em;
+  font-size: clamp(2.375rem, 1.6rem + 3vw, 4.25rem); /* 38 → 68 px */
+  line-height: 1.04;
+  letter-spacing: -0.02em;
 }
 @utility t-h2 {
   font-family: var(--font-display);
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: clamp(2rem, 1.45rem + 2.3vw, 3.5rem); /* 32 → 56 px */
-  line-height: 0.98;
-  letter-spacing: -0.005em;
+  font-size: clamp(1.875rem, 1.4rem + 1.9vw, 3rem); /* 30 → 48 px */
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 @utility t-h3 {
+  font-family: var(--font-display);
   font-weight: 600;
+  letter-spacing: -0.01em;
   font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem); /* 20 → 26 px */
   line-height: 1.2;
 }
 @utility t-lead {
-  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.3125rem); /* 17 → 21 px */
-  line-height: 1.55;
+  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.25rem); /* 17 → 20 px */
+  line-height: 1.6;
 }
-/* Uppercase metadata with wide tracking: section numbers, project IDs, coordinates. */
+/* Eyebrows, section numbers, IDs: JetBrains Mono, uppercase, wide tracking. */
 @utility t-meta {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.8125rem; /* 13 px */
-  line-height: 1.3;
+  font-size: 0.75rem; /* 12 px */
+  line-height: 1.4;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
 }
 @utility t-figure {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(3.5rem, 2.4rem + 4.2vw, 7rem); /* 56 → 112 px: four figures fit in a row */
-  line-height: 0.85;
+  font-size: clamp(3.25rem, 2.3rem + 3.8vw, 6rem);
+  line-height: 0.95;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -259,15 +325,15 @@ h1, h2, h3, h4 {
   outline-offset: 2px;
 }
 
-/* ---------- Motion (brand.md v3 "Motion") ---------- */
-/* Reveal once on scroll: 400–700 ms ease-out, staggered with --reveal-delay. Only when JS runs
-   (html.js, set by ThemeScript), so content is never hidden without it. The hero never uses it. */
+/* ---------- Motion (brand.md v4 "Motion and effects") ---------- */
+/* Reveal once on scroll: fade and rise 18 px over 600 ms, staggered with --reveal-delay (about 80 ms).
+   Only when JS runs (html.js, set by ThemeScript), so content is never hidden without it. */
 html.js [data-reveal] {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(18px);
   transition:
     opacity 600ms var(--ease-out-quint),
-    transform 700ms var(--ease-out-quint);
+    transform 600ms var(--ease-out-quint);
   transition-delay: var(--reveal-delay, 0ms);
 }
 html.js [data-reveal].is-revealed {
@@ -310,7 +376,7 @@ html.js [data-reveal="image"].is-revealed::after {
   transform: scale(1.04);
 }
 
-/* Arrow links: the arrow nudges and a red rule draws in under the text. */
+/* Arrow links: the arrow nudges and a red line draws in under the text. */
 .arrow-link {
   position: relative;
   display: inline-flex;
@@ -327,6 +393,7 @@ html.js [data-reveal="image"].is-revealed::after {
   bottom: -4px;
   height: 2px;
   width: 100%;
+  border-radius: 999px;
   background: var(--brand);
   transform: scaleX(0);
   transform-origin: left;
@@ -343,7 +410,166 @@ html.js [data-reveal="image"].is-revealed::after {
   transform: scaleX(1);
 }
 
+
+/* Spotlight: a soft glow that follows the pointer on cards marked [data-spotlight] (MotionObserver sets
+   --mx / --my). Only its opacity animates; without JS or a fine pointer it never shows. */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 60%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out-quint);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-spotlight]:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Magnetic main call-to-action: drifts a few pixels toward the pointer (MotionObserver sets --tx / --ty). */
+[data-magnetic] {
+  transform: translate3d(var(--tx, 0), var(--ty, 0), 0);
+  transition: transform 300ms var(--ease-spring);
+}
+
+/* Marquee (one per site at most): a looping strip that pauses on hover and off-screen.
+   Under reduced motion it becomes a wrapped list. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 48s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee[data-paused] .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Header glass on scroll (and the phone menu sheet): the only translucent surfaces. */
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-color: var(--glass-border);
+}
+
+/* Phone menu sheet: dark glass, near-opaque so its text is legible over any page content. */
+.glass-sheet {
+  background: rgba(11, 11, 12, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* The Contact hero's drifting glow: 6% red in light (with the 14% hero glow, secondary text stays 4.58:1),
+   18% in dark. */
+:root[data-theme="dark"],
+.tone-dark {
+  --drift-red: 18%;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --drift-red: 18%;
+    --hero-glow: 22%;
+  }
+}
+
+/* Browser autofill paints its own pale fill; keep autofilled fields in the theme's colours. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  box-shadow: 0 0 0 1000px var(--surface) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* Soft peach / red glow behind a hero (one of the three gradients brand.md v4 allows). Its peak is 14% red in
+   light (secondary text 4.96:1 there; small red text would fail, so text over it is ink or secondary) and 22% in dark. */
+:root[data-theme="dark"],
+.tone-dark {
+  --hero-glow: 22%;
+}
+.hero-glow {
+  background:
+    radial-gradient(60% 55% at 50% 0%, color-mix(in srgb, var(--brand-strong) var(--hero-glow, 14%), transparent), transparent 70%),
+    radial-gradient(40% 40% at 85% 20%, color-mix(in srgb, #fed0bb 16%, transparent), transparent 70%);
+}
+
+/* Contact (ad landing): the first screen rises in once on load, staggered by inline animation-delay
+   (brand.md v4.1: 600 ms ease-out, 18 px). A CSS animation, so nothing stays hidden without JavaScript. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 600ms var(--ease-out-quint) both;
+}
+.rise-late {
+  animation-delay: 140ms;
+}
+/* Contact hero: a soft peach and red glow that drifts slowly behind the headline (transform and opacity only). */
+@keyframes glow-drift {
+  0% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(-44%, 6%, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+.glow-drift {
+  background:
+    radial-gradient(45% 55% at 40% 45%, color-mix(in srgb, var(--brand-strong) var(--drift-red, 6%), transparent), transparent 70%),
+    radial-gradient(40% 50% at 65% 55%, color-mix(in srgb, #fed0bb 12%, transparent), transparent 70%);
+  /* No blur filter: the gradients already fade out, and a blurred layer this size is slow to paint on phones. */
+  animation: glow-drift 14s ease-in-out infinite alternate;
+}
+/* "Live" dot on the Contact card's badge: a soft ring that pulses outwards. */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 60%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--success) 0%, transparent);
+  }
+}
+.pulse-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%; /* the one round shape: a status light */
+  background: var(--success);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .rise,
+  .pulse-dot,
+  .glow-drift {
+    animation: none;
+  }
   *,
   *::before,
   *::after {
@@ -361,6 +587,18 @@ html.js [data-reveal="image"].is-revealed::after {
   .group:hover .zoom-img img {
     transform: none;
   }
+  [data-magnetic] {
+    transform: none;
+  }
+  .marquee-track {
+    animation: none;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .marquee-track > [aria-hidden="true"] {
+    display: none;
+  }
 }
 
 /* Placeholder imagery: deliberately looks unfinished until real photos arrive. */
@@ -370,4 +608,92 @@ html.js [data-reveal="image"].is-revealed::after {
     var(--placeholder-a) 0 12px,
     var(--placeholder-b) 12px 24px
   );
+}
+
+/* Blog article body (Markdown from the admin; also the admin's preview). A calm reading measure, theme tokens only. */
+.blog-prose {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+.blog-prose > * + * {
+  margin-top: 1.1em;
+}
+.blog-prose h2 {
+  margin-top: 2em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.blog-prose h3 {
+  margin-top: 1.6em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.blog-prose a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-prose ul,
+.blog-prose ol {
+  padding-left: 1.4em;
+}
+.blog-prose ul {
+  list-style: disc;
+}
+.blog-prose ol {
+  list-style: decimal;
+}
+.blog-prose li + li {
+  margin-top: 0.4em;
+}
+.blog-prose li::marker {
+  color: var(--text-2);
+}
+.blog-prose blockquote {
+  border-left: 3px solid var(--brand-strong);
+  padding-left: 1em;
+  color: var(--text-2);
+}
+.blog-prose img {
+  border-radius: 20px;
+  width: 100%;
+  height: auto;
+}
+.blog-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  border-radius: 6px;
+  padding: 0.1em 0.35em;
+}
+.blog-prose pre {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  padding: 1em;
+}
+.blog-prose pre code {
+  background: none;
+  padding: 0;
+}
+.blog-prose hr {
+  border: 0;
+  border-top: 1px solid var(--divider);
+}
+.blog-prose table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+.blog-prose th,
+.blog-prose td {
+  border: 1px solid var(--divider);
+  padding: 0.4em 0.7em;
 }

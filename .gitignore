@@ -10,3 +10,12 @@ public/images/
 
 # Local Netlify folder
 .netlify
+
+# Website back end (Firebase): per-installation settings and CLI state.
+.firebaserc
+.firebase/
+functions/.env
+functions/.env.*
+*-debug.log
+# Photos downloaded from the admin by scripts/fetch-cms.mjs (rebuilt from Firebase on every build).
+photos/*.cms.*

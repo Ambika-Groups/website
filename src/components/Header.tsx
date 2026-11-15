@@ -10,7 +10,21 @@ export function Header({ locale, t }: { locale: Locale; t: Dictionary["common"] 
   return (
     <SiteHeader
       brand={<BrandMark href={localePath(locale, routes.home)} />}
-      items={t.nav.items.map((item) => ({ href: localePath(locale, routes[item.route]), label: item.label }))}
+      items={t.nav.items.map((item) => ({
+        href: localePath(locale, routes[item.route]),
+        label: item.label,
+        // Services opens its own page; the four service pages hang under it (dropdown on wider screens, sub-items in the phone menu).
+        ...(item.route === "services" && {
+          children: [
+            { href: localePath(locale, routes.services), label: t.nav.allServices },
+            ...(Object.keys(t.serviceNames) as (keyof typeof t.serviceNames)[]).map((key) => ({
+              href: localePath(locale, routes[key]),
+              label: t.serviceNames[key],
+            })),
+          ],
+          childrenLabel: t.nav.subMenu,
+        }),
+      }))}
       quote={{ href: localePath(locale, routes.contact), label: t.actions.requestQuote }}
       overlayOn={localePath(locale, routes.home)}
       labels={{

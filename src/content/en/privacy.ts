@@ -45,12 +45,15 @@ const sections: Section[] = [
   },
   {
     heading: "Who handles it",
-    // TODO(content): contract v2, stage 2 (CRM Phase 3): replace both sentences with
-    // "Your enquiry goes to our customer records system (CRM) on Google Cloud (Firebase)",
-    // in the same release that sets NEXT_PUBLIC_ENQUIRY_ENDPOINT to the CRM function.
+    // TODO(content): draft for the advocate to approve (contract v3). It describes the website's own back end:
+    // enquiries stored on Google Cloud (Firebase, Mumbai region), owner emails sent through Resend, and Web3Forms
+    // only as the fallback. The bracketed parts are placeholders. When the CRM link is switched on, add the third
+    // sentence about the customer records system.
     paragraphs: [
-      "The form is sent through Web3Forms, a form service that delivers your enquiry to us by email.",
-      "[We keep enquiries in our customer records system, hosted on Google Cloud / Firebase.]",
+      "[Your enquiry is stored in our website's database on Google Cloud (Firebase), in Google's Mumbai region. Only our staff can see it, after signing in.]",
+      "[When an enquiry arrives, we are sent an email about it through Resend, an email delivery service.]",
+      "[Until our database is switched on, the form sends your enquiry to us by email through Web3Forms, a form service, instead.]",
+      "[Once our customer records system (CRM) is connected, your enquiry is also copied there so our team can follow it up.]",
     ],
   },
   {
@@ -64,7 +67,7 @@ const sections: Section[] = [
       "Campaign tags, until you close the browser tab",
     ],
     paragraphs: [
-      "The website does not use advertising cookies. The map on the Contact page loads from Google only when you choose “Show map”, and Google's own privacy policy then applies. WhatsApp links open WhatsApp, where WhatsApp's policy applies.",
+      "The website does not use advertising cookies. The map on the Contact page loads from Google only when you choose “Show map”, and Google's own privacy policy then applies. The video on the Contact page shows only its preview picture until you press play; the player then loads from YouTube (youtube-nocookie.com), and Google's privacy policy applies. WhatsApp links open WhatsApp, where WhatsApp's policy applies.",
     ],
   },
   {

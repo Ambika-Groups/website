@@ -1,5 +1,19 @@
 # Enquiry form contract: website → CRM
 
+> **Version 3, 26 Oct 2026 (supervisor). This supersedes "stage 2" below.**
+>
+> **Why:** the user asked for a website admin dashboard that stores and analyses every quote request. So the website now has its **own** back end: a separate Firebase project, kept inside the free tier.
+>
+> **How enquiries flow now:**
+> 1. The form posts the **same JSON fields** to the website's own `submitEnquiry` function.
+>    - The function rules are unchanged from "CRM behaviour" below: CORS, a 10 KB cap, the rate limit, a low maxInstances, the honeypot, validation, logging and identical replies.
+>    - The function stores the enquiry in the website's Firestore `enquiries` collection, which the website admin dashboard reads.
+>    - It emails the owner through a free email tier.
+> 2. **Fallback:** if the website back end isn't configured yet, the form keeps using Web3Forms, as in stage 1.
+> 3. **CRM link, later:** when the user provides the CRM API, the website back end forwards each accepted enquiry to the CRM, where it becomes a lead with source Website (§13.1), and it records the link status.
+>
+> Field keys, enums, the phone rule and the website's behaviour stay exactly as below. The CRM's own `submitEnquiry` (stage 2 below) becomes the CRM's inbound API for that forward.
+
 **Version 2.1, 25 Oct 2026.** Owner: supervisor session `ambikagroups-3f`. Source: spec v1.4, §13.1.
 
 **What changed from version 1:** Web3Forms' free plan has no webhooks, and the user's rule is that everything stays free. So from CRM Phase 3, the website posts enquiries straight to a CRM function, and Web3Forms is dropped. Until then the website keeps using Web3Forms for email only. The fields, the phone rule and the website's behaviour are unchanged. The webhook token is gone.

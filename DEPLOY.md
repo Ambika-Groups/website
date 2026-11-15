@@ -23,15 +23,16 @@ You need:
 2. **A Web3Forms access key.** Sign up at web3forms.com with the email address where enquiries should arrive. It shows an *Access Key*. That is where every enquiry from the site will be emailed.
 3. **The website address** (domain), e.g. `https://www.ambikagroup.in`. If you don't have one yet, you can launch on the free `something.netlify.app` address first and add the domain later (step 4).
 
-### The three settings
+### The settings
 
 | Name | What to put | Example |
 |---|---|---|
 | `NEXT_PUBLIC_WEB3FORMS_KEY` | The Web3Forms access key. | `a1b2c3d4-…` |
 | `NEXT_PUBLIC_SITE_URL` | The site's final address, starting with `https://`, **no slash at the end**. Search engines and link previews use it. | `https://www.ambikagroup.in` |
-| `NEXT_PUBLIC_ENQUIRY_ENDPOINT` | **Leave empty for now.** Empty means "send enquiries to Web3Forms". Later, when the CRM is ready, it becomes the CRM's enquiry address and the developer will tell you the value. | *(empty)* |
+| `NEXT_PUBLIC_ENQUIRY_ENDPOINT` | Empty means "send enquiries to Web3Forms". Once the website back end is set up (section C), the address of its `submitEnquiry` function. | *(empty)*, later `https://asia-south1-ambika-website.cloudfunctions.net/submitEnquiry` |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`, `…_AUTH_DOMAIN`, `…_PROJECT_ID`, `…_STORAGE_BUCKET`, `…_APP_ID` | **Leave empty until section C.** The website Firebase project's web settings (C4). While `…_PROJECT_ID` is empty, `/admin` runs in demo mode on sample data, and the site uses its content files. | *(empty)* |
 
-These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key is designed to be public. Never put any other key, password or CRM secret here.
+These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key and the Firebase web settings are designed to be public (the security rules protect the data). Never put any other key, password or CRM secret here; those live in the back end (section C6).
 
 Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches on the sections that still contain placeholder figures and logos, and is only for internal review builds.
 
@@ -174,6 +175,113 @@ Placeholders such as **[Office address line]** and the "Illustrative photo" labe
 
 ---
 
+## C. The website back end and admin (Firebase)
+
+This gives the site its own back end. Enquiries are stored and shown in the admin at `/admin` (inbox and analytics), and the owner gets an email for each one. The blog, projects and site settings are edited there and published with one button. It is a **separate Firebase project from the CRM's**, so its traffic, spam and quota can never touch the CRM.
+
+Until this is done the site works as before: enquiries go to Web3Forms, and `/admin` shows a clearly labelled **demo** with sample data.
+
+**Cost.** Everything below stays inside Firebase's free allowances for a site of this size. Firebase needs the Blaze (pay-as-you-go) plan for Functions, so a billing account is required, but the bill is ₹0 inside the free allowances. The ₹100 budget alert (C2) emails you long before any real cost. The enquiry function runs at most 2 copies at a time, so a flood of spam is turned away instead of scaling up.
+
+### C1. Create the project
+1. Open console.firebase.google.com with the company Google account → **Create a project**.
+2. Name it e.g. `ambika-website`. Do not use the CRM's project.
+3. Google Analytics: **off**.
+
+### C2. Blaze plan and the ₹100 alert
+1. In the project, **Upgrade** → Blaze → link or create a billing account.
+2. Go to console.cloud.google.com → **Billing** → **Budgets & alerts** → **Create budget**:
+   - scope: this project only
+   - amount: **₹100**
+   - alerts at 50%, 90% and 100%, emailed to the billing admins
+
+   An alert only warns you. It does not stop spending.
+
+### C3. Turn on the services (all in region `asia-south1`, Mumbai)
+1. **Authentication** → Get started → **Email/Password** → Enable.
+2. Still in Authentication: **Settings** → **User actions** → untick **Enable create (sign-up)**. Nobody can then make an account from the browser; you add admins yourself (C9).
+3. **Firestore Database** → Create → production mode → location `asia-south1`.
+4. **Storage** → Get started → production mode → location `asia-south1`.
+
+### C4. The web settings
+1. Project settings (gear) → **Your apps** → web (`</>`) → register "Website". Hosting: no.
+2. It shows `apiKey`, `authDomain`, `projectId`, `storageBucket` and `appId`.
+3. Put them in the five `NEXT_PUBLIC_FIREBASE_…` settings: in Netlify, and in `.env.local` for builds on your computer.
+
+### C5. Tools on your computer (once)
+```
+npm install -g firebase-tools
+firebase login
+```
+In `Website\`, copy `.firebaserc.example` to `.firebaserc` and put the project id in it.
+
+### C6. Back-end settings and secrets
+1. **Back-end settings.** Create `Website\functions\.env`. It holds no secret, but it belongs to this installation, so never commit it:
+   ```
+   SITE_ORIGINS=https://www.ambikagroup.in,https://ambikagroup.in
+   OWNER_EMAIL=owner@ambikagroup.in
+   EMAIL_FROM=Ambika Group Website <onboarding@resend.dev>
+   ```
+   `*.netlify.app` addresses and localhost are always allowed.
+2. **Owner email (free).** Sign up at resend.com with the owner's email and create an API key. Then run:
+   ```
+   firebase functions:secrets:set RESEND_API_KEY
+   ```
+   and paste the key.
+   - Until you have a key, enter `none`. Enquiries are still stored; only the email is skipped.
+   - With `onboarding@resend.dev` as the sender, Resend only delivers to the address the Resend account was made with.
+   - To send from the company's own address instead, verify the domain in Resend and change `EMAIL_FROM`.
+3. **Netlify build hook.** The admin's "Publish site" button needs it; you create it in C8. For now, run:
+   ```
+   firebase functions:secrets:set NETLIFY_BUILD_HOOK
+   ```
+   and enter `none`.
+
+### C7. Deploy the back end
+```
+cd functions
+npm ci
+npm test
+cd ..
+firebase deploy --only functions,firestore,storage
+```
+1. The output lists the `submitEnquiry` address. Put it in `NEXT_PUBLIC_ENQUIRY_ENDPOINT` in Netlify.
+2. Deploy the site once.
+
+The form now posts to the website's own back end (contract v3), and Web3Forms is no longer used.
+
+### C8. The "Publish site" button (Netlify build hook)
+This needs the Git-connected setup (A). A Drop site has no builds to trigger.
+1. Netlify → the site → **Site configuration** → **Build & deploy** → **Build hooks** → **Add build hook**: name "Admin publish", branch `main`. Copy the URL.
+2. Run `firebase functions:secrets:set NETLIFY_BUILD_HOOK`, paste the URL, then run `firebase deploy --only functions`.
+
+The URL stays in the back end; the browser never sees it.
+
+**Each publish is a production deploy: 15 of the 300 monthly credits.** The admin counts them from its own publish log and shows how many are left. It refuses a second publish within 2 minutes. Make all your edits first, then publish once.
+
+If Firebase can't be reached during a Netlify build, the build carries on from the last saved snapshot (`src/generated/cms-*.json`) and says so in the deploy log. It never breaks the site.
+
+### C9. The first admin user
+1. Firebase → **Authentication** → **Users** → **Add user**: the admin's email and a strong password. Copy the **User UID**.
+2. **Firestore** → **Start collection** `admins` → Document ID: paste the UID. Add a field `email` (string) holding the email, then Save.
+3. Open `https://<your site>/admin` and sign in. "Forgot password" sends a reset email.
+
+- **To add another admin:** repeat C9.
+- **To remove an admin:** delete their `admins` document. Also delete the user if they shouldn't sign in at all.
+
+### C10. Checks
+1. Send a test enquiry from the Contact page. It should appear in **/admin → Enquiries** within seconds. If C6.2 is set up, the owner email should arrive too.
+2. Run `curl.exe -I https://<your site>/admin`. It should show `X-Robots-Tag: noindex, nofollow, noarchive`. Check that `/admin` is not in `sitemap.xml`.
+3. In the admin, change something small (e.g. Site settings → office hours), save, then press **Publish site**. A new deploy should appear in Netlify within a minute, and the change goes live a few minutes later.
+
+### C11. The CRM link (later)
+When the CRM's API exists, go to **/admin → Site settings → CRM link** and enter its address and key.
+- The key goes to a back-end-only document that no browser can read back.
+- Each new enquiry is then also sent to the CRM, and its status shows on the enquiry.
+- Syncing projects from the CRM is prepared but not built yet (`functions/src/crm.js`, TODO).
+
+---
+
 ## If something goes wrong
 
 | What you see | Likely cause | Fix |
@@ -184,3 +292,7 @@ Placeholders such as **[Office address line]** and the "Illustrative photo" labe
 | Old page still shows after a deploy | Browser cache | Reload with Ctrl+Shift+R, or try a private window. |
 | "Site not available" on every page | Monthly credits used up | Wait for the monthly reset, or upgrade the plan. See README "Free plan". |
 | Enquiries arrive at the wrong email | Web3Forms key belongs to another account | Create the key with the right email, update the setting, rebuild. |
+| /admin says "Demo mode" on the live site | The Firebase settings were empty when the site was built | Set the five `NEXT_PUBLIC_FIREBASE_…` settings (C4) and deploy again. |
+| /admin: "No admin access" | The account has no `admins` document | C9 step 2, with the exact User UID. |
+| Enquiry form shows an error after C7 | The site's address is not in `SITE_ORIGINS` | Add it in `functions/.env` (C6), then `firebase deploy --only functions`. |
+| "Publish site" says the build hook is not set up | `NETLIFY_BUILD_HOOK` is still `none` | C8. |

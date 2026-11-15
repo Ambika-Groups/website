@@ -23,6 +23,14 @@ export function hasPhoto(name: string): boolean {
   return name in manifest;
 }
 
+/** One WebP size of a photo (the closest width at or above `want`), e.g. for a share image. null if no photo. */
+export function photoImage(name: string, want = 1200): { url: string; width: number; height: number } | null {
+  const entry = manifest[name];
+  if (!entry) return null;
+  const w = entry.widths.find((x) => x >= want) ?? entry.widths[entry.widths.length - 1];
+  return { url: `/images/${name}-${entry.hash}-${w}.webp`, width: w, height: Math.round((entry.height / entry.width) * w) };
+}
+
 const srcSet = (name: string, entry: ImageEntry, format: "avif" | "webp") =>
   entry.widths.map((w) => `/images/${name}-${entry.hash}-${w}.${format} ${w}w`).join(", ");
 
@@ -40,7 +48,7 @@ export function Photo({
   illustrativeLabel,
   className = "",
   priority = false,
-  parallax = false,
+  rounded = true,
   reveal = false,
   labelInFrame = true,
 }: {
@@ -54,8 +62,8 @@ export function Photo({
   className?: string;
   /** Above-the-fold image (the hero): preloaded, loaded immediately at high priority. */
   priority?: boolean;
-  /** Large images only: drift gently with scroll (ParallaxObserver). */
-  parallax?: boolean;
+  /** 20 px card corners (brand.md v4). False for full-bleed backgrounds (hero, closing band). */
+  rounded?: boolean;
   /** Reveal with a lifting mask when scrolled into view. */
   reveal?: boolean;
   /**
@@ -83,11 +91,8 @@ export function Photo({
   return (
     // The frame's size comes from `className` (or the grid row), never from the photo's own shape,
     // so a portrait photo can't stretch a landscape slot: the image is absolutely positioned.
-    <div className={`zoom-img relative overflow-hidden bg-band ${className}`} data-reveal={reveal ? "image" : undefined}>
-      <picture
-        className={`absolute inset-0 block ${parallax ? "scale-[1.08] will-change-transform" : ""}`}
-        data-parallax={parallax ? "" : undefined}
-      >
+    <div className={`zoom-img relative overflow-hidden bg-band ${rounded ? "rounded-card" : ""} ${className}`} data-reveal={reveal ? "image" : undefined}>
+      <picture className="absolute inset-0 block">
         <source type="image/avif" srcSet={srcSet(name, entry, "avif")} sizes={sizes} />
         <source type="image/webp" srcSet={srcSet(name, entry, "webp")} sizes={sizes} />
         {/* Plain <img>, not next/image: static export, and sizes are made at build time. */}
@@ -102,21 +107,23 @@ export function Photo({
           className="size-full object-cover"
         />
       </picture>
-      {temporary && labelInFrame && <IllustrativeLabel text={illustrativeLabel} className="absolute top-0 left-0" />}
+      {temporary && labelInFrame && <IllustrativeLabel text={illustrativeLabel} className="absolute top-3 left-3" />}
     </div>
   );
 }
 
 /**
  * "Illustrative photo" chip on temporary stock photos (TODO(photo)). Its job is to say "this is not
- * Ambika's work", so it must be readable everywhere: opaque ink chip, #F2F0EB text (16.9:1), 12 px.
- * Placed top-left of the frame by default, a corner the bottom-right WhatsApp button never reaches.
+ * Ambika's work", so it must be readable everywhere: opaque ink badge (6 px radius, brand.md v4), #F5F3EF text
+ * (18:1), 12 px. Placed top-left of the frame. When a photo's top edge reaches the bottom of a phone screen, the
+ * WhatsApp button (bottom-right, about 150 px wide) sits beside it, so below 400 px the chip wraps onto two short
+ * lines (about 110 px wide) and stays clear of the button.
  */
 export function IllustrativeLabel({ text, className = "" }: { text: string; className?: string }) {
   return (
     <span
       data-illustrative-label=""
-      className={`t-meta z-[2] bg-[#0f0e0d] px-2.5 py-1.5 !text-[0.75rem] !tracking-[0.12em] text-[#f2f0eb] ${className}`}
+      className={`t-meta z-[2] rounded-chip bg-[#0b0b0c] px-2.5 py-1.5 !text-[0.75rem] !tracking-[0.12em] text-[#f5f3ef] max-[399px]:max-w-[8rem] max-[399px]:!leading-[1.35] ${className}`}
     >
       {text}
     </span>

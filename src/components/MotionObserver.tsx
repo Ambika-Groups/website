@@ -3,19 +3,25 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
 /**
- * Site-wide motion (brand.md v3): one-time scroll reveals for [data-reveal] and gentle parallax for
- * [data-parallax] images. CSS does the animating; this only toggles a class / sets one transform.
- * Re-scans on every page change. Under prefers-reduced-motion: everything is revealed at once and
- * parallax never starts.
+ * Site-wide effects (brand.md v4, "Motion and effects"). CSS does the animating; this only sets classes and
+ * custom properties. Re-scans on every page change. Under prefers-reduced-motion everything is revealed at
+ * once and the pointer effects never start; without JavaScript nothing is hidden (reveals key off html.js).
+ *   - [data-reveal]: one-time scroll reveal
+ *   - [data-spotlight]: pointer glow on cards (--mx / --my), fine pointers only
+ *   - [data-magnetic]: the main call-to-action drifts toward the pointer (--tx / --ty), at most 6 px
+ *   - .marquee: paused while off-screen
  */
 export function MotionObserver() {
   const pathname = usePathname();
 
+  // Scroll reveals.
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const targets = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-revealed)"));
-    if (reduce || !("IntersectionObserver" in window)) {
+    if (reducedMotion() || !("IntersectionObserver" in window)) {
       targets.forEach((el) => el.classList.add("is-revealed"));
       return;
     }
@@ -33,33 +39,59 @@ export function MotionObserver() {
     return () => io.disconnect();
   }, [pathname]);
 
+  // Spotlight and magnetic: one delegated pointer listener.
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const layers = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
-    if (layers.length === 0) return;
+    if (reducedMotion() || !finePointer()) return;
     let frame = 0;
+    let last: PointerEvent | null = null;
+    let magnet: HTMLElement | null = null;
     const update = () => {
       frame = 0;
-      const vh = window.innerHeight;
-      for (const el of layers) {
-        const box = el.parentElement!.getBoundingClientRect();
-        if (box.bottom < 0 || box.top > vh) continue;
-        // -1 … 1 as the frame crosses the viewport; at most ±4% of the frame's height.
-        const progress = (box.top + box.height / 2 - vh / 2) / (vh / 2 + box.height / 2);
-        el.style.transform = `translate3d(0, ${(progress * -4).toFixed(2)}%, 0) scale(1.08)`;
+      const e = last;
+      if (!e) return;
+      const target = e.target instanceof Element ? e.target : null;
+      const card = target?.closest<HTMLElement>("[data-spotlight]");
+      if (card) {
+        const box = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - box.left}px`);
+        card.style.setProperty("--my", `${e.clientY - box.top}px`);
+      }
+      const m = target?.closest<HTMLElement>("[data-magnetic]") ?? null;
+      if (magnet && magnet !== m) {
+        magnet.style.removeProperty("--tx");
+        magnet.style.removeProperty("--ty");
+      }
+      magnet = m;
+      if (m) {
+        const box = m.getBoundingClientRect();
+        const dx = (e.clientX - (box.left + box.width / 2)) / (box.width / 2);
+        const dy = (e.clientY - (box.top + box.height / 2)) / (box.height / 2);
+        m.style.setProperty("--tx", `${(dx * 6).toFixed(1)}px`);
+        m.style.setProperty("--ty", `${(dy * 4).toFixed(1)}px`);
       }
     };
-    const onScroll = () => {
+    const onMove = (e: PointerEvent) => {
+      last = e;
       if (!frame) frame = requestAnimationFrame(update);
     };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    document.addEventListener("pointermove", onMove, { passive: true });
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      document.removeEventListener("pointermove", onMove);
       if (frame) cancelAnimationFrame(frame);
     };
+  }, [pathname]);
+
+  // Marquee: runs only while on screen.
+  useEffect(() => {
+    const strips = Array.from(document.querySelectorAll<HTMLElement>(".marquee"));
+    if (strips.length === 0 || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        (entry.target as HTMLElement).toggleAttribute("data-paused", !entry.isIntersecting);
+      }
+    });
+    strips.forEach((el) => io.observe(el));
+    return () => io.disconnect();
   }, [pathname]);
 
   return null;

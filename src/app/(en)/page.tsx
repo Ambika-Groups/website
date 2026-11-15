@@ -8,6 +8,7 @@ import { ProjectShowcase } from "@/components/ProjectShowcase";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceChapters } from "@/components/ServiceChapters";
 import { TrustSection } from "@/components/TrustSection";
+import { WorkMarquee } from "@/components/WorkMarquee";
 import { container } from "@/components/ui";
 import { formIds } from "@/config/forms";
 import { routes } from "@/config/routes";
@@ -27,14 +28,18 @@ export const metadata: Metadata = pageMetadata({
   absoluteTitle: true,
 });
 
-// Rhythm (brand.md v3): image → light portfolio → dark figures → light → paper → light → form.
+// Rhythm (brand.md v4): photo hero → work-types strip → project cards → (figures) → service cards → departments
+// → (trust) → peach process band → enquiry card.
 export default function HomePage() {
   const href = (path: string) => localePath(locale, path);
 
   return (
     <>
       <HomeHero locale={locale} />
+      <WorkMarquee locale={locale} />
 
+      {/* Hidden when the admin has switched every project off (nothing to show). */}
+      {projects.items.length > 0 && (
       <section aria-labelledby="projects-title" className="section-y">
         <div className={container}>
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -53,6 +58,7 @@ export default function HomePage() {
           <ProjectShowcase locale={locale} projects={projects.items.slice(0, 3)} />
         </div>
       </section>
+      )}
 
       <NumbersSection locale={locale} />
 
@@ -84,9 +90,9 @@ export default function HomePage() {
             <p className="t-meta mt-6 text-text-2">{home.government.credentials}</p>
           </div>
           <div className="lg:col-span-5 lg:col-start-8 lg:pt-16" data-reveal="">
-            <ul className="border-t border-rule">
+            <ul className="grid gap-3">
               {home.government.departments.map((dept) => (
-                <li key={dept} className="t-h3 border-b border-rule py-5">
+                <li key={dept} data-spotlight="" className="t-h3 rounded-field border border-divider bg-surface px-5 py-5">
                   {dept}
                 </li>
               ))}
@@ -101,7 +107,7 @@ export default function HomePage() {
 
       <TrustSection locale={locale} />
 
-      <section aria-labelledby="process-title" className="section-y tech-grid border-y border-rule bg-paper">
+      <section aria-labelledby="process-title" className="section-y tone-peach">
         <div className={container}>
           <SectionHeading id="process-title" index={home.process.index} label={home.process.label} title={home.process.title} />
           <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
@@ -110,7 +116,7 @@ export default function HomePage() {
                 key={step.title}
                 data-reveal=""
                 style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
-                className="border-t-2 border-text pt-5"
+                className="rounded-card border border-divider bg-surface p-6 shadow-card"
               >
                 <span className="t-meta tabular text-brand">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="t-h3 mt-3">{step.title}</h3>

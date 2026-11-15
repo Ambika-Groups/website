@@ -1,3 +1,5 @@
+import { cmsSettings } from "@/lib/cms";
+
 const home = {
   meta: {
     title: "Ambika Group | Construction, Road Works & Interlocking",
@@ -18,6 +20,10 @@ const home = {
     scroll: "Scroll",
   },
   // Service names, summaries and job lists live in services.ts.
+  // The work-types strip under the hero (the site's one marquee, brand.md v4).
+  marquee: {
+    label: "Work we take on",
+  },
   services: {
     index: "02",
     label: "Services",
@@ -30,12 +36,15 @@ const home = {
     title: "Work that adds up",
     // TODO(content): real figures only. The whole section is hidden in production builds until
     // these placeholders are replaced (src/config/flags.ts).
-    items: [
-      { value: "[00]+", label: "Years of work" },
-      { value: "[000]+", label: "Projects completed" },
-      { value: "[00]", label: "Districts served" },
-      { value: "[000]", label: "Kilometres of road" },
-    ],
+    // The admin's Site settings replace these once they hold real values (src/config/flags.ts).
+    items: cmsSettings?.numbers?.items?.length
+      ? cmsSettings.numbers.items
+      : [
+          { value: "[00]+", label: "Years of work" },
+          { value: "[000]+", label: "Projects completed" },
+          { value: "[00]", label: "Districts served" },
+          { value: "[000]", label: "Kilometres of road" },
+        ],
     notice: "Placeholder figures. This section stays hidden on the live site until real numbers are supplied.",
   },
   trust: {
@@ -43,8 +52,10 @@ const home = {
     title: "Trusted by",
     // TODO(content): real client logos (with each client's permission) and real certifications only.
     // Hidden in production builds until then (config/flags.ts).
-    logos: ["[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]"],
-    certifications: ["[Contractor registration]", "[ISO or quality certificate]", "[Safety certificate]"],
+    logos: cmsSettings?.trust?.logos?.length ? cmsSettings.trust.logos : ["[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]"],
+    certifications: cmsSettings?.trust?.certifications?.length
+      ? cmsSettings.trust.certifications
+      : ["[Contractor registration]", "[ISO or quality certificate]", "[Safety certificate]"],
     notice: "Placeholder logos. This section stays hidden on the live site until real client logos and certificates are supplied.",
   },
   government: {

@@ -15,11 +15,11 @@ export function NumbersSection({ locale }: { locale: Locale }) {
   const n = getContent(locale).home.numbers;
   const placeholder = n.items.some((item) => item.value.startsWith("["));
   return (
-    <section aria-labelledby="numbers-title" className="tone-dark tech-grid section-y">
+    <section aria-labelledby="numbers-title" className="tone-dark section-y">
       <div className={container}>
         <SectionHeading id="numbers-title" label={n.label} title={n.title} />
         {placeholder && (
-          <p className="mt-6 inline-flex items-start gap-2 border border-[#fdd663]/60 px-3 py-2 text-sm text-[#fdd663]">
+          <p className="mt-6 inline-flex items-start gap-2 rounded-field border border-[#fdd663]/60 px-3 py-2 text-sm text-[#fdd663]">
             <Info aria-hidden="true" size={16} className="mt-0.5 shrink-0" />
             {n.notice}
           </p>

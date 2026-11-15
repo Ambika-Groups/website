@@ -30,9 +30,11 @@ interface Props {
   privacyHref: string;
   whatsappPrefill: string;
   whatsappLabel: string;
+  /** Inside a card that already has its own border and padding (the Contact page). */
+  embedded?: boolean;
 }
 
-export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill, whatsappLabel }: Props) {
+export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill, whatsappLabel, embedded = false }: Props) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const sending = useRef(false);
@@ -105,7 +107,7 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
 
   if (status === "success") {
     return (
-      <div {...{ [ENQUIRY_ATTR]: "" }} className="border border-divider bg-surface p-6 sm:p-8" role="status">
+      <div {...{ [ENQUIRY_ATTR]: "" }} className={embedded ? "" : "rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8"} role="status">
         <CheckCircle2 aria-hidden="true" className="text-success" size={28} />
         <h3 ref={successRef} tabIndex={-1} className="mt-3 text-xl outline-none">
           {copy.success.title}
@@ -142,11 +144,11 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
       noValidate
       onSubmit={onSubmit}
       onInput={onInput}
-      className="relative space-y-6 border border-divider bg-surface p-4 sm:p-8"
+      className={`relative space-y-6 ${embedded ? "" : "rounded-card border border-divider bg-surface p-4 shadow-card sm:p-8"}`}
     >
       <p className="text-sm text-text-2">{copy.requiredNote}</p>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className={`grid gap-6 ${embedded ? "" : "sm:grid-cols-2"}`}>
         <Field id={`${idp}-name`} label={f.name.label} error={errorText("name")}>
           <input {...wire("name")} type="text" autoComplete="name" maxLength={fieldLimits.nameMax} className={field} />
         </Field>
@@ -215,7 +217,7 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
               {...wire("consent")}
               type="checkbox"
               value="yes"
-              className="peer size-5 cursor-pointer appearance-none border-2 border-input-border bg-surface checked:border-primary checked:bg-primary aria-[invalid=true]:border-error"
+              className="peer size-5 cursor-pointer appearance-none rounded-[6px] border-2 border-input-border bg-surface checked:border-primary checked:bg-primary aria-[invalid=true]:border-error"
             />
             <Check
               aria-hidden="true"
@@ -248,7 +250,7 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
           ref={failureRef}
           tabIndex={-1}
           role="alert"
-          className="border border-l-[3px] border-error bg-selected p-4 text-sm outline-none"
+          className="rounded-field border border-error bg-selected p-4 text-sm outline-none"
         >
           <p className="flex items-center gap-2 font-medium text-error">
             <AlertCircle aria-hidden="true" size={18} />
@@ -266,7 +268,11 @@ export function EnquiryForm({ formId, locale, copy, privacyHref, whatsappPrefill
         </p>
       )}
 
-      <button type="submit" className={`${button.primary} w-full sm:w-auto`} disabled={status === "sending"}>
+      <button
+        type="submit"
+        className={`${button.primary} w-full ${embedded ? "" : "sm:w-auto"}`}
+        disabled={status === "sending"}
+      >
         {status === "sending" ? copy.sending : copy.submit}
       </button>
     </form>

@@ -19,10 +19,10 @@ interface Props {
 }
 
 /**
- * Site header (brand.md v3 navigation).
- * - Over the Home hero: transparent, light text; turns solid after 24 px of scroll.
- * - Everywhere else: solid from the start.
- * - Phones (< 600): brand + Menu; the menu is a full-screen dark panel with large numbered links.
+ * Site header (brand.md v4).
+ * - Over the Home hero: transparent, light text; turns to glass after 24 px of scroll.
+ * - Everywhere else: the page colour at the top, glass once the page scrolls.
+ * - Phones (< 600): brand + Menu; the menu is a full-screen dark glass sheet with large numbered links.
  * - 600–1279: two rows (user-approved); ≥ 1280: one row.
  */
 export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: Props) {
@@ -31,7 +31,8 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
-  const overlay = pathname === overlayOn && !scrolled && !open;
+  // A trailing slash (/hi/) must match the pre-rendered page (/hi), or the header renders differently after hydration.
+  const overlay = (pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname) === overlayOn && !scrolled && !open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -65,13 +66,19 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-30 transition-[background-color,color] duration-300 ${
-        overlay ? "tone-dark !border-0 !bg-transparent" : open ? "tone-dark !border-0" : "border-b border-divider bg-bg"
+      className={`fixed inset-x-0 top-0 z-30 border-b transition-[background-color,color,border-color] duration-300 ${
+        overlay
+          ? "tone-dark !border-transparent !bg-transparent"
+          : open
+            ? "tone-dark border-transparent"
+            : scrolled
+              ? "glass"
+              : "border-divider bg-bg"
       }`}
     >
       {/* Over the photo: a top scrim keeps the bar readable on any image. */}
       {overlay && (
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-[#0f0e0d]/70 to-transparent" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-[#0b0b0c]/70 to-transparent" />
       )}
       <div className={`${container} flex h-16 items-stretch justify-between gap-4 xl:h-20`}>
         {brand}
@@ -91,7 +98,7 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
           <button
             ref={toggleRef}
             type="button"
-            className="inline-flex min-h-12 items-center gap-2 px-2 text-base font-medium sm:hidden"
+            className="inline-flex min-h-12 items-center gap-2 rounded-full px-3 text-base font-medium sm:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? labels.close : labels.open}
@@ -115,7 +122,7 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
       <div
         id="mobile-nav"
         hidden={!open}
-        className="tone-dark tech-grid fixed inset-x-0 top-16 bottom-0 overflow-y-auto sm:hidden"
+        className="tone-dark glass-sheet fixed inset-x-0 top-16 bottom-0 overflow-y-auto sm:hidden"
       >
         <div className={`${container} flex min-h-full flex-col pb-8`}>
           <div className="border-b border-divider py-2">
@@ -131,7 +138,7 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
                       ref={i === 0 ? firstLinkRef : undefined}
                       href={item.href}
                       onClick={close}
-                      aria-current={active ? "page" : undefined}
+                      aria-current={pathname.replace(/\/$/, "") === item.href || pathname === item.href ? "page" : undefined}
                       className="flex min-h-16 items-baseline gap-4 py-3"
                     >
                       <span className={`t-meta tabular ${active ? "text-brand" : "text-text-2"}`}>
@@ -139,6 +146,27 @@ export function SiteHeader({ brand, items, quote, overlayOn, labels, contact }: 
                       </span>
                       <span className={`t-h2 ${active ? "text-brand" : ""}`}>{item.label}</span>
                     </Link>
+                    {/* Sub-pages (the four services) as a short indented list under their section. The first child
+                        repeats the section's own page, which the big link above already opens. */}
+                    {item.children && (
+                      <ul className="-mt-1 mb-3 ml-[2.4rem] border-l border-divider pl-4">
+                        {item.children.slice(1).map((child) => {
+                          const current = pathname.replace(/\/$/, "") === child.href;
+                          return (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                onClick={close}
+                                aria-current={current ? "page" : undefined}
+                                className={`flex min-h-11 items-center text-lg ${current ? "font-medium text-brand" : "text-text-2"}`}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
                   </li>
                 );
               })}

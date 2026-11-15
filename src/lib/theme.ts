@@ -4,8 +4,11 @@ export type Theme = "light" | "dark";
 
 export const THEME_STORAGE_KEY = "ag-theme";
 
-/** Page background per theme (brand.md v2), used for <meta name="theme-color">. */
-export const themeColors: Record<Theme, string> = { light: "#ffffff", dark: "#121212" };
+/** Page background per theme (brand.md v4), used for <meta name="theme-color">. */
+export const themeColors: Record<Theme, string> = { light: "#fffdf9", dark: "#0b0b0c" };
+
+/** brand.md v4 is dark first: a first visit opens dark until the visitor chooses. Without JS the device setting decides. */
+export const defaultTheme: Theme = "dark";
 
 export function applyTheme(theme: Theme): void {
   const root = document.documentElement;
@@ -36,18 +39,15 @@ export function storeTheme(theme: Theme): void {
   }
 }
 
-export function deviceTheme(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
 
 /**
  * Runs inline in <head> before first paint, so the page never flashes the wrong theme. Also adds
  * `js` to <html>, which scroll reveals key off, so nothing is hidden when scripts don't run.
  * Text is never hidden while fonts load (see app/fonts.ts).
- * Mirrors storedTheme/deviceTheme/applyTheme above in plain ES5; keep them in step.
+ * Mirrors storedTheme/defaultTheme/applyTheme above in plain ES5; keep them in step.
  */
 export const themeBootScript = `(function(){var d=document,t;d.documentElement.classList.add("js");try{t=localStorage.getItem(${JSON.stringify(
   THEME_STORAGE_KEY,
-)})}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}d.documentElement.setAttribute("data-theme",t);var m=d.querySelector('meta[name="theme-color"]');if(!m){m=d.createElement("meta");m.name="theme-color";d.head.appendChild(m)}m.content=t==="dark"?${JSON.stringify(
+)})}catch(e){}if(t!=="light"&&t!=="dark"){t=${JSON.stringify(defaultTheme)}}d.documentElement.setAttribute("data-theme",t);var m=d.querySelector('meta[name="theme-color"]');if(!m){m=d.createElement("meta");m.name="theme-color";d.head.appendChild(m)}m.content=t==="dark"?${JSON.stringify(
   themeColors.dark,
 )}:${JSON.stringify(themeColors.light)}})();`;

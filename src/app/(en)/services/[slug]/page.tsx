@@ -66,7 +66,6 @@ export default async function ServicePage({ params }: Props) {
           name={`service-${serviceSlug(key)}`} // TODO(photo): temporary stock photo, see PHOTO-CREDITS.md
           priority // first screen: preload, don't lazy-load (LCP)
           reveal
-          parallax
           sizes="(min-width: 1440px) 1344px, 100vw"
           placeholderLabel={common.placeholder.photo}
           illustrativeLabel={common.placeholder.illustrative}
@@ -80,13 +79,14 @@ export default async function ServicePage({ params }: Props) {
           <div className="lg:col-span-4">
             <SectionHeading id="scope-title" index="01" label={`${labels.chapter} ${number}`} title={labels.scope} />
           </div>
-          <ol className="border-t border-rule lg:col-span-7 lg:col-start-6">
+          <ol className="grid gap-3 lg:col-span-7 lg:col-start-6">
             {page.scope.map((item, i) => (
               <li
                 key={item.title}
                 data-reveal=""
                 style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-                className="grid grid-cols-[3rem_1fr] gap-x-4 border-b border-rule py-5 sm:py-6"
+                data-spotlight=""
+                className="grid grid-cols-[3rem_1fr] gap-x-4 rounded-field border border-divider bg-surface p-5 sm:p-6"
               >
                 <span className="t-meta tabular pt-1 text-brand">{String(i + 1).padStart(2, "0")}</span>
                 <div>
@@ -99,7 +99,7 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
-      <section aria-labelledby="clients-title" className="tone-dark tech-grid section-y">
+      <section aria-labelledby="clients-title" className="tone-dark section-y">
         <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
           <div className="lg:col-span-4">
             <SectionHeading id="clients-title" index="02" label={labels.chapter} title={labels.clients} />

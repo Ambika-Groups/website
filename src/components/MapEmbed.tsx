@@ -28,17 +28,17 @@ export function MapEmbed({
         <iframe
           src={embedUrl}
           title={title}
-          className="aspect-[4/3] w-full border border-divider"
+          className="aspect-[4/3] w-full rounded-card border border-divider"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
       ) : (
-        <div className="placeholder-photo flex aspect-[4/3] flex-col items-center justify-center gap-2 border border-divider p-4 text-center">
+        <div className="placeholder-photo flex aspect-[4/3] flex-col items-center justify-center gap-2 rounded-card border border-divider p-4 text-center">
           <button type="button" onClick={() => setLoaded(true)} className={button.secondary}>
             <MapPin aria-hidden="true" size={18} />
             {loadLabel}
           </button>
-          <p className="bg-surface px-2 py-0.5 text-xs text-text-2">{note}</p>
+          <p className="rounded-chip bg-surface px-2 py-0.5 text-xs text-text-2">{note}</p>
         </div>
       )}
       <a

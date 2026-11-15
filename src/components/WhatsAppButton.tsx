@@ -32,7 +32,9 @@ export function WhatsAppButton({
   const pathname = usePathname();
   const [formInView, setFormInView] = useState(false);
   const [formFocused, setFormFocused] = useState(false);
-  const excluded = hiddenOn.includes(pathname);
+  // Ignore a trailing slash: a visit to /contact/ must hide the button exactly as the pre-rendered /contact page does,
+  // or the client renders an extra element and hydration fails (which also drops the theme from <html>).
+  const excluded = hiddenOn.includes(pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname);
 
   useEffect(() => {
     if (excluded) return;
@@ -77,7 +79,7 @@ export function WhatsAppButton({
         aria-hidden={hidden || undefined}
         tabIndex={hidden ? -1 : undefined}
         // Floats, so level-2 elevation: shadow in light, the lighter surface in dark.
-        className={`fixed right-4 bottom-4 z-40 inline-flex min-h-12 items-center gap-2 border border-divider bg-elevated px-4 text-base font-medium text-text shadow-float-2 transition-[opacity,visibility,background-color] duration-150 hover:bg-band sm:right-6 sm:bottom-6 ${
+        className={`fixed right-4 bottom-4 z-40 inline-flex min-h-12 items-center gap-2 rounded-full border border-divider bg-elevated px-5 text-base font-medium text-text shadow-float-2 transition-[opacity,visibility,background-color] duration-150 hover:bg-band sm:right-6 sm:bottom-6 ${
           hidden ? "invisible opacity-0" : "visible opacity-100"
         }`}
       >

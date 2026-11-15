@@ -24,3 +24,12 @@
 
 /apple-icon.png
   Cache-Control: public, max-age=604800
+
+# Website admin (M7c): never indexed, never cached by a shared cache.
+/admin
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
