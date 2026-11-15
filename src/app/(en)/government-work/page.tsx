@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { arrowClass, button, container } from "@/components/ui";
 import { formIds } from "@/config/forms";
 import { ENQUIRY_ANCHOR, routes } from "@/config/routes";
+import { shown } from "@/config/launch";
 import { site, telLink } from "@/config/site";
 import { getContent } from "@/content";
 import { localePath, type Locale } from "@/i18n/config";
@@ -24,7 +25,12 @@ export const metadata: Metadata = pageMetadata({
 
 // Rhythm: paper header → light departments + work → dark process → light registrations → paper enquiry.
 export default function GovernmentWorkPage() {
-  const credentials = [...g.credentials.items, { label: common.footer.gstinLabel, value: site.gstin }];
+  // Registrations come from Site settings; PAN and GSTIN are added when real. The whole section is left out while empty.
+  const credentials = [
+    ...g.credentials.items,
+    { label: "PAN", value: site.pan },
+    { label: common.footer.gstinLabel, value: site.gstin },
+  ].filter((item) => shown(item.value));
 
   return (
     <>
@@ -52,9 +58,14 @@ export default function GovernmentWorkPage() {
             <SectionHeading id="departments-title" index="01" title={g.departments.title} />
             <ul className="mt-10 grid gap-3">
               {g.departments.items.map((dept) => (
-                <li key={dept.name} data-reveal="" data-spotlight="" className="rounded-card border border-divider bg-surface p-6 shadow-card">
+                <li
+                  key={dept.name}
+                  data-reveal=""
+                  data-spotlight=""
+                  className="rounded-card border border-divider bg-surface p-6 shadow-card"
+                >
                   <p className="t-h2">{dept.name}</p>
-                  <p className="mt-2 text-text-2">{dept.hint}</p>
+                  {dept.hint && <p className="mt-2 text-text-2">{dept.hint}</p>}
                 </li>
               ))}
             </ul>
@@ -98,23 +109,31 @@ export default function GovernmentWorkPage() {
         </div>
       </section>
 
-      <section aria-labelledby="credentials-title" className="section-y">
-        <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
-          <div className="lg:col-span-4">
-            <SectionHeading id="credentials-title" index="04" title={g.credentials.title} intro={g.credentials.intro} />
+      {credentials.length > 0 && (
+        <section aria-labelledby="credentials-title" className="section-y">
+          <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
+            <div className="lg:col-span-4">
+              <SectionHeading id="credentials-title" index="04" title={g.credentials.title} intro={g.credentials.intro} />
+            </div>
+            <dl className="rounded-card border border-divider bg-surface px-6 shadow-card lg:col-span-7 lg:col-start-6" data-reveal="">
+              {credentials.map((item) => (
+                <div key={item.label} className="grid gap-1 border-b border-divider py-5 last:border-b-0 sm:grid-cols-[14rem_1fr] sm:gap-6">
+                  <dt className="t-meta pt-1 text-text-2">{item.label}</dt>
+                  <dd className="t-h3 tabular">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-          <dl className="rounded-card border border-divider bg-surface px-6 shadow-card lg:col-span-7 lg:col-start-6" data-reveal="">
-            {credentials.map((item) => (
-              <div key={item.label} className="grid gap-1 border-b border-divider py-5 last:border-b-0 sm:grid-cols-[14rem_1fr] sm:gap-6">
-                <dt className="t-meta pt-1 text-text-2">{item.label}</dt>
-                <dd className="t-h3 tabular">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <EnquirySection locale={locale} formId={formIds.governmentWork} index="05" title={g.enquiry.title} body={g.enquiry.body} />
+      <EnquirySection
+        locale={locale}
+        formId={formIds.governmentWork}
+        index={credentials.length > 0 ? "05" : "04"}
+        title={g.enquiry.title}
+        body={g.enquiry.body}
+      />
     </>
   );
 }

@@ -2,6 +2,16 @@
 // against India's Digital Personal Data Protection Act, 2023) before launch. Keep it in step with
 // the enquiry form contract (docs/shared/enquiry-form-contract.md) if fields change.
 
+import { preview } from "@/config/launch";
+import { cmsSettings, filled } from "@/lib/cms";
+
+// Site settings → Privacy policy: `approved` is switched on once the advocate approves this text. That removes the
+// draft notice and the square brackets around the drafted paragraphs; `retention` and `updated` fill the two gaps.
+const approved = cmsSettings?.privacy?.approved === true;
+const retention = filled(cmsSettings?.privacy?.retention);
+const updated = filled(cmsSettings?.privacy?.updated);
+const unbracket = (text: string) => (approved ? text.replace(/^\[([\s\S]*)\]$/, "$1") : text);
+
 interface Section {
   heading: string;
   paragraphs?: string[];
@@ -48,17 +58,17 @@ const sections: Section[] = [
     // TODO(content): draft for the advocate to approve (contract v3). It describes the website's own back end:
     // enquiries stored on Google Cloud (Firebase, Mumbai region), owner emails sent through Resend, and Web3Forms
     // only as the fallback. The bracketed parts are placeholders. When the CRM link is switched on, add the third
-    // sentence about the customer records system.
+    // sentence about the customer records system. Site settings → Privacy policy switches the brackets off.
     paragraphs: [
-      "[Your enquiry is stored in our website's database on Google Cloud (Firebase), in Google's Mumbai region. Only our staff can see it, after signing in.]",
-      "[When an enquiry arrives, we are sent an email about it through Resend, an email delivery service.]",
-      "[Until our database is switched on, the form sends your enquiry to us by email through Web3Forms, a form service, instead.]",
-      "[Once our customer records system (CRM) is connected, your enquiry is also copied there so our team can follow it up.]",
+      unbracket("[Your enquiry is stored in our website's database on Google Cloud (Firebase), in Google's Mumbai region. Only our staff can see it, after signing in.]"),
+      unbracket("[When an enquiry arrives, we are sent an email about it through Resend, an email delivery service.]"),
+      unbracket("[Until our database is switched on, the form sends your enquiry to us by email through Web3Forms, a form service, instead.]"),
+      unbracket("[Once our customer records system (CRM) is connected, your enquiry is also copied there so our team can follow it up.]"),
     ],
   },
   {
     heading: "How long we keep it",
-    paragraphs: ["[Period to be decided, for example: for as long as the enquiry or project is active, and then for [N] years.]"],
+    paragraphs: [retention ?? "[Period to be decided, for example: for as long as the enquiry or project is active, and then for [N] years.]"],
   },
   {
     heading: "What the website stores on your device",
@@ -85,7 +95,8 @@ const privacy = {
   },
   title: "Privacy policy",
   draftNotice: "Draft. This policy has not yet been approved and will change before the website goes live.",
-  lastUpdated: "Last updated: [date]",
+  approved,
+  lastUpdated: updated ? `Last updated: ${updated}` : preview ? "Last updated: [date]" : "",
   sections,
   contactHeading: "Contact us about your information",
   contentsHeading: "Contents",

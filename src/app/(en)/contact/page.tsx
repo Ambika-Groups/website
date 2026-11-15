@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
-import { ArrowDown, ChevronDown, Clock, FileText, HelpCircle, Lock, Mail, MapPin, MessageCircle, Phone, PlayCircle, Ruler } from "lucide-react";
+import {
+  ArrowDown,
+  ChevronDown,
+  Clock,
+  FileText,
+  HelpCircle,
+  Lock,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  PlayCircle,
+  Ruler,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { ContactIntent } from "@/components/ContactIntent";
 import { MapEmbed } from "@/components/MapEmbed";
 import { VideoFacade } from "@/components/VideoFacade";
 import { button, container } from "@/components/ui";
 import { formIds } from "@/config/forms";
+import { shown } from "@/config/launch";
 import { ENQUIRY_ANCHOR, routes } from "@/config/routes";
 import { addressLine, mapsEmbedUrl, mapsLink, site, telLink, whatsappLink } from "@/config/site";
 import { getContent } from "@/content";
@@ -35,6 +49,8 @@ const stepIcons = [Phone, Ruler, FileText, Lock];
 export default function ContactPage() {
   const { hero, video, card, next, faq, details: d } = contact;
   const privacyHref = localePath(locale, routes.privacy);
+  // The map searches the office address, so it needs a real one.
+  const showMap = shown(site.address.street);
   return (
     <>
       {/* Follows the theme like the rest of the page (no dark-in-both-themes band here), so a theme switch turns the
@@ -42,7 +58,10 @@ export default function ContactPage() {
       <div className="relative isolate overflow-clip bg-bg pt-16 sm:pt-28 xl:pt-20">
         <div aria-hidden="true" className="hero-glow absolute inset-0 -z-10" />
         {/* A soft peach and red glow behind the headline that drifts slowly (transform and opacity only). */}
-        <div aria-hidden="true" className="glow-drift pointer-events-none absolute top-24 left-1/2 -z-10 h-[34rem] w-[min(60rem,120vw)] -translate-x-1/2" />
+        <div
+          aria-hidden="true"
+          className="glow-drift pointer-events-none absolute top-24 left-1/2 -z-10 h-[34rem] w-[min(60rem,120vw)] -translate-x-1/2"
+        />
         <section aria-labelledby="contact-title" className={`${container} pt-12 pb-10 text-center sm:pt-16 lg:pt-20 lg:pb-14`}>
           <div className="mx-auto max-w-5xl">
             {/* Staggered load-in: eyebrow, headline, lead, actions (600 ms ease-out, 90 ms apart). */}
@@ -64,7 +83,10 @@ export default function ContactPage() {
               </a>
               <p className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-text-2">
                 <span>{hero.orTalk}:</span>
-                <a href={telLink()} className="inline-flex min-h-11 items-center gap-2 font-medium text-text underline-offset-4 hover:underline">
+                <a
+                  href={telLink()}
+                  className="inline-flex min-h-11 items-center gap-2 font-medium text-text underline-offset-4 hover:underline"
+                >
                   <Phone aria-hidden="true" size={16} className="text-brand" />
                   <span className="tabular">{site.phone.display}</span>
                 </a>
@@ -110,10 +132,17 @@ export default function ContactPage() {
                         key={step.title}
                         data-spotlight=""
                         data-reveal=""
-                        style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
+                        style={
+                          {
+                            "--reveal-delay": `${i * 80}ms`,
+                          } as React.CSSProperties
+                        }
                         className="flex gap-4 rounded-field border border-divider bg-surface p-4"
                       >
-                        <span aria-hidden="true" className="grid size-10 flex-none place-items-center rounded-full border border-divider text-accent">
+                        <span
+                          aria-hidden="true"
+                          className="grid size-10 flex-none place-items-center rounded-full border border-divider text-accent"
+                        >
                           <Icon size={18} />
                         </span>
                         <div>
@@ -148,7 +177,12 @@ export default function ContactPage() {
                   <Phone aria-hidden="true" size={18} />
                   {common.actions.call}
                 </a>
-                <a href={whatsappLink(common.whatsappButton.prefill)} target="_blank" rel="noopener" className={`${button.secondary} min-h-12 px-4`}>
+                <a
+                  href={whatsappLink(common.whatsappButton.prefill)}
+                  target="_blank"
+                  rel="noopener"
+                  className={`${button.secondary} min-h-12 px-4`}
+                >
                   <MessageCircle aria-hidden="true" size={18} />
                   {common.actions.whatsapp}
                 </a>
@@ -178,13 +212,19 @@ export default function ContactPage() {
           <p className="mt-4 text-center text-text-2">{faq.intro}</p>
           <div className="mt-10 grid gap-3">
             {faq.items.map((item) => (
-              <details key={item.q} className="group rounded-field border border-divider bg-surface px-5 transition-colors duration-200 open:border-rule">
+              <details
+                key={item.q}
+                className="group rounded-field border border-divider bg-surface px-5 transition-colors duration-200 open:border-rule"
+              >
                 <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-4 text-left text-lg font-medium [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center gap-3">
                     <HelpCircle aria-hidden="true" size={20} className="flex-none text-accent" />
                     {item.q}
                   </span>
-                  <span aria-hidden="true" className="grid size-8 flex-none place-items-center rounded-full bg-text/[0.06] transition-transform duration-300 group-open:rotate-180">
+                  <span
+                    aria-hidden="true"
+                    className="grid size-8 flex-none place-items-center rounded-full bg-text/[0.06] transition-transform duration-300 group-open:rotate-180"
+                  >
                     <ChevronDown size={18} />
                   </span>
                 </summary>
@@ -197,7 +237,10 @@ export default function ContactPage() {
 
       <div className={`${container} pb-[clamp(4.5rem,2.8rem+6vw,9rem)]`}>
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-          <section className="rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8 lg:col-span-5" data-reveal="">
+          <section
+            className={`rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8 ${showMap ? "lg:col-span-5" : "lg:col-span-6 lg:col-start-4"}`}
+            data-reveal=""
+          >
             <h2 className="t-h3">{d.heading}</h2>
             <dl className="mt-5 space-y-5">
               <Detail icon={<Phone size={18} />} label={d.phone}>
@@ -215,32 +258,43 @@ export default function ContactPage() {
                   {site.whatsapp.display}
                 </a>
               </Detail>
-              <Detail icon={<Mail size={18} />} label={d.email}>
-                {site.email}
-              </Detail>
-              <Detail icon={<MapPin size={18} />} label={d.address}>
-                {addressLine()}
-              </Detail>
-              <Detail icon={<Clock size={18} />} label={d.hours}>
-                {site.hours}
-              </Detail>
-              <Detail icon={<MapPin size={18} />} label={d.serviceArea}>
-                {site.serviceArea}
-              </Detail>
+              {/* Rows without a real value are left out of a production build (placeholders show in review builds). */}
+              {shown(site.email) && (
+                <Detail icon={<Mail size={18} />} label={d.email}>
+                  {site.email}
+                </Detail>
+              )}
+              {shown(site.address.street) && (
+                <Detail icon={<MapPin size={18} />} label={d.address}>
+                  {addressLine()}
+                </Detail>
+              )}
+              {shown(site.hours) && (
+                <Detail icon={<Clock size={18} />} label={d.hours}>
+                  {site.hours}
+                </Detail>
+              )}
+              {shown(site.serviceArea) && (
+                <Detail icon={<MapPin size={18} />} label={d.serviceArea}>
+                  {site.serviceArea}
+                </Detail>
+              )}
             </dl>
           </section>
 
-          <section className="rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8 lg:col-span-7" data-reveal="">
-            <h2 className="t-h3">{contact.map.heading}</h2>
-            <MapEmbed
-              embedUrl={mapsEmbedUrl()}
-              openUrl={mapsLink()}
-              loadLabel={contact.map.load}
-              openLabel={common.actions.openMaps}
-              note={contact.map.note}
-              title={contact.map.title}
-            />
-          </section>
+          {showMap && (
+            <section className="rounded-card border border-divider bg-surface p-6 shadow-card sm:p-8 lg:col-span-7" data-reveal="">
+              <h2 className="t-h3">{contact.map.heading}</h2>
+              <MapEmbed
+                embedUrl={mapsEmbedUrl()}
+                openUrl={mapsLink()}
+                loadLabel={contact.map.load}
+                openLabel={common.actions.openMaps}
+                note={contact.map.note}
+                title={contact.map.title}
+              />
+            </section>
+          )}
         </div>
       </div>
     </>

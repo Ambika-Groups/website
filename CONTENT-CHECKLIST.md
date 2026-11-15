@@ -4,6 +4,8 @@ The new website is built and working. Wherever we don't yet have your real infor
 
 You don't need to send everything at once. Each item can go live as soon as it arrives.
 
+> **Update:** the numbered list in `LAUNCH-QUESTIONS.md` is now the working list (it says where each answer goes, and what happens if it is skipped). This document stays as the detailed guide for photo file names and for what each item means. A production build no longer shows [bracketed] placeholders: a section with no real content is left out, and `npm run launch-check` lists what is still missing.
+
 **How to send:** email or WhatsApp the text and photos to your web developer. Send photos as the original files (not screenshots, and not forwarded through WhatsApp "as photo", which shrinks them). Choose **"Document"** in WhatsApp, or use email or Google Drive.
 
 ---

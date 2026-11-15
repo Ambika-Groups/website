@@ -1,5 +1,9 @@
-import { cmsPostCount } from "@/lib/cms";
+import { preview } from "@/config/launch";
 import type { RouteKey } from "@/config/routes";
+import { cmsPostCount, cmsSettings, filled } from "@/lib/cms";
+
+// Optional promise from Site settings (empty = no promise is made anywhere on the site).
+const responseTime = filled(cmsSettings?.wording?.responseTime);
 
 const common = {
   skipToContent: "Skip to content",
@@ -35,14 +39,17 @@ const common = {
   },
   ctaBand: {
     title: "Planning a project?",
-    // TODO(content): add a response-time promise (e.g. "within one working day") once the user confirms it.
-    body: "Tell us what you want to build and where. We will call you back to discuss it.",
+    // The response-time promise comes from Site settings (wording), never from code.
+    body: responseTime
+      ? `Tell us what you want to build and where. ${responseTime}`
+      : "Tell us what you want to build and where. We will call you back to discuss it.",
   },
   footer: {
     tagline: "Construction, road works, interlocking and real estate development.",
     // The closing statement at the top of the footer ("the final page of a publication").
-    // TODO(content): a claim about the work; the client must approve the wording (CONTENT-CHECKLIST.md, section 3).
-    statement: "Houses, roads and paved ground, built to specification.",
+    // A claim about the work, so the client must supply or approve it: it comes from Site settings (wording).
+    // A production build without one shows the plain "Planning a project?" line instead; review builds show the draft.
+    statement: filled(cmsSettings?.wording?.closingStatement) ?? (preview ? "Houses, roads and paved ground, built to specification." : "Planning a project?"),
     contactHeading: "Contact",
     servicesHeading: "Services",
     companyHeading: "Company",

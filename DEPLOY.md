@@ -16,6 +16,27 @@ Both give the same website, with the same security headers and redirects.
 
 ---
 
+## The launch order
+
+Do these three things, in this order, before the site goes live:
+
+1. **Answer the questions.** Open `LAUNCH-QUESTIONS.md`. **Part 1** (16 questions) must be answered before launch; **Part 2** (23 questions) is safe to skip, and the site hides that section or uses a safe default instead of showing placeholder text. There are two ways to answer, and each question says where:
+   - **Quick path, no accounts needed:** type the answer into `src/config/launch-answers.ts` (each entry is named after its question, e.g. `q5_phone` answers Q5) and rebuild. This needs neither the admin nor Firebase. The file is committed and public, so put only public details in it, never a key or password.
+   - **Long term:** the admin (**/admin → Site settings**, then **Publish site**), once the back end exists. The admin overrides the file wherever it has an answer; a blank admin value never wipes out an answer typed in the file.
+
+   A few answers are neither: Netlify's environment settings (the enquiry key, Q2) or photo files (Q35). Tick the question's **Status** box when its answer is in.
+2. **Run the launch check.** In `Website\`:
+   ```
+   npm run build
+   npm run launch-check
+   ```
+   It lists every unanswered must-have and every placeholder still visible in the build, with the question number (Q1, Q2, …) and where to answer it, and says which answers came from `launch-answers.ts` and which from the admin. A site address that is not set yet (Q1) is a known pre-deploy item when you run it on your own computer; on Netlify it is a failure. Repeat until it says **RESULT: READY** (it ends with exit code 0). It also lists, as "safe to skip", the optional questions you have not answered yet.
+3. **Deploy** (section A or B below).
+
+**Strict mode (optional).** Normally the launch check only prints a one-line summary after each build and never stops it. When you are ready to launch, set the Netlify environment variable `LAUNCH_STRICT` to `1`. From then on, a build that still has an unanswered must-have or a visible placeholder **fails**, so an unfinished site can never be published by accident. Remove the variable to go back to the normal behaviour.
+
+---
+
 ## Before you start
 
 You need:
@@ -34,7 +55,9 @@ You need:
 
 These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key and the Firebase web settings are designed to be public (the security rules protect the data). Never put any other key, password or CRM secret here; those live in the back end (section C6).
 
-Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches on the sections that still contain placeholder figures and logos, and is only for internal review builds.
+Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches the placeholders back on (sample projects, placeholder figures and logos) and is only for internal review builds. In a normal production build the site never shows placeholder text: a section or row with no real content is left out.
+
+`LAUNCH_STRICT=1` is explained in "The launch order" above.
 
 ---
 
@@ -171,7 +194,7 @@ Do this after the first deploy and after the domain is connected. Replace `https
 9. **Nothing unverified is showing.** On the Home and About pages there must be **no** figures section ("Work that adds up") and **no** "Trusted by" logos. If you see them, the build was made with `NEXT_PUBLIC_PREVIEW_UNVERIFIED`; remove it and rebuild.
 10. **A quick look on a phone.** Open the site on a phone: menu opens and closes, the light/dark switch works, the WhatsApp button opens WhatsApp with the company number.
 
-Placeholders such as **[Office address line]** and the "Illustrative photo" labels are expected until the client's details and photos arrive (see `CONTENT-CHECKLIST.md`). They are not deploy errors.
+A production build shows **no** [bracketed] placeholder text; if you see one, run `npm run launch-check` (it names the question that is still open). The "Illustrative photo" labels on stock photos are expected until real photos arrive (Q35 in `LAUNCH-QUESTIONS.md`); they are not deploy errors.
 
 ---
 

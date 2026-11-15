@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { hasProjects } from "@/config/launch";
 import { routes, serviceKeys } from "@/config/routes";
 import { site } from "@/config/site";
 import { getContent } from "@/content";
@@ -14,10 +15,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.services,
     ...serviceKeys.map((key) => routes[key]),
     routes.governmentWork,
-    routes.projects,
+    ...(hasProjects ? [routes.projects] : []),
     ...getContent("en").projects.items.map((p) => `${routes.projects}/${p.slug}`),
     // The blog index always; each published post and topic once they exist (stand-in 404 pages are never listed).
-    routes.blog,
+    ...(posts.length ? [routes.blog] : []),
     ...posts.map((p) => `${routes.blog}/${p.slug}`),
     ...allTags.map((t) => `${routes.blog}/tag/${tagSlug(t)}`),
     routes.about,

@@ -4,6 +4,7 @@ import { Notice } from "@/components/Notice";
 import { PageHeader } from "@/components/PageHeader";
 import { container } from "@/components/ui";
 import { routes } from "@/config/routes";
+import { shown } from "@/config/launch";
 import { addressLine, site, telLink, whatsappLink } from "@/config/site";
 import { getContent } from "@/content";
 import { localePath, type Locale } from "@/i18n/config";
@@ -22,7 +23,7 @@ export const metadata: Metadata = pageMetadata({
 export default function PrivacyPage() {
   return (
     <>
-      <PageHeader title={privacy.title} label={privacy.lastUpdated} />
+      <PageHeader title={privacy.title} label={privacy.lastUpdated || undefined} />
       <div className={`${container} section-y grid gap-12 lg:grid-cols-12 lg:gap-8`}>
         {/* Contents: sticky on desktop, a quick way through a long legal text. */}
         <nav aria-labelledby="privacy-contents" className="lg:col-span-3">
@@ -46,8 +47,8 @@ export default function PrivacyPage() {
           </div>
         </nav>
         <div className="max-w-[68ch] lg:col-span-8 lg:col-start-5">
-          {/* TODO(content): remove the draft notice once the policy is approved. */}
-          <Notice>{privacy.draftNotice}</Notice>
+          {/* Shown until Site settings → Privacy policy → "approved" is switched on (the advocate has approved the text). */}
+          {!privacy.approved && <Notice>{privacy.draftNotice}</Notice>}
 
           {privacy.sections.map((section, i) => (
             <section key={section.heading} id={`privacy-${i + 1}`} className="mt-12 scroll-mt-32">
@@ -94,8 +95,8 @@ export default function PrivacyPage() {
                   {common.actions.whatsapp}: {site.whatsapp.display}
                 </a>
               </li>
-              <li className="py-2">{site.email}</li>
-              <li className="py-2">{addressLine()}</li>
+              {shown(site.email) && <li className="py-2">{site.email}</li>}
+              {shown(site.address.street) && <li className="py-2">{addressLine()}</li>}
             </ul>
           </section>
         </div>

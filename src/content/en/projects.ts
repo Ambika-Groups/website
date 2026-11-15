@@ -1,3 +1,4 @@
+import { usePlaceholderProjects } from "@/config/launch";
 import { cmsProjects } from "@/lib/cms";
 import type { ServiceKey } from "@/config/routes";
 
@@ -75,7 +76,9 @@ const items: Project[] = cmsProjects
         // Gallery slots after the main photo: exactly the photos the admin uploaded.
         photos: Math.max(0, p.photoAlts.length - 1),
       }))
-  : placeholderItems;
+  : usePlaceholderProjects
+    ? placeholderItems
+    : []; // a production build with no real project shows none (and leaves the Projects links out)
 
 const projects = {
   meta: {
@@ -84,7 +87,11 @@ const projects = {
   },
   title: "Projects",
   intro: "Completed and ongoing work for private clients and government departments.",
-  placeholderNotice: cmsProjects ? "" : "These entries are placeholders. Real projects and photos will replace them.",
+  placeholderNotice: usePlaceholderProjects ? "These entries are placeholders. Real projects and photos will replace them." : "",
+  empty: {
+    title: "Our project gallery is being prepared",
+    body: "Tell us what you are planning and we will tell you about similar work we have done.",
+  },
   items,
   labels: {
     view: "View project",

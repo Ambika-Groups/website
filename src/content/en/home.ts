@@ -1,4 +1,9 @@
+import { isReal, preview } from "@/config/launch";
 import { cmsSettings } from "@/lib/cms";
+
+const trustLogos = (cmsSettings?.trust?.logos ?? []).filter(isReal);
+const trustCerts = (cmsSettings?.trust?.certifications ?? []).filter(isReal);
+const govRegistrations = (cmsSettings?.government?.registrations ?? []).filter((r) => isReal(r.label) && isReal(r.value));
 
 const home = {
   meta: {
@@ -52,10 +57,10 @@ const home = {
     title: "Trusted by",
     // TODO(content): real client logos (with each client's permission) and real certifications only.
     // Hidden in production builds until then (config/flags.ts).
-    logos: cmsSettings?.trust?.logos?.length ? cmsSettings.trust.logos : ["[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]"],
-    certifications: cmsSettings?.trust?.certifications?.length
-      ? cmsSettings.trust.certifications
-      : ["[Contractor registration]", "[ISO or quality certificate]", "[Safety certificate]"],
+    // From Site settings. With at least one real client, the real lists are used as they are (no certificates is fine);
+    // the bracketed placeholders appear only in review builds, and only while no real client has been entered.
+    logos: trustLogos.length ? trustLogos : ["[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]", "[Client logo]"],
+    certifications: trustLogos.length ? trustCerts : ["[Contractor registration]", "[ISO or quality certificate]", "[Safety certificate]"],
     notice: "Placeholder logos. This section stays hidden on the live site until real client logos and certificates are supplied.",
   },
   government: {
@@ -65,7 +70,8 @@ const home = {
     body: "We carry out civil and road works for departments such as Nagar Nigam and PWD, to the tender's specification and schedule.",
     departments: ["Nagar Nigam (municipal corporation)", "PWD (Public Works Department)"],
     // TODO(content): registrations / contractor class / empanelments to list here.
-    credentials: "[Contractor registration and class to be supplied]",
+    // From Site settings (Government work → registrations); left out while empty.
+    credentials: govRegistrations.length ? govRegistrations.map((r) => `${r.label}: ${r.value}`).join(" · ") : preview ? "[Contractor registration and class to be supplied]" : "",
     link: "About our government work",
   },
   projects: {

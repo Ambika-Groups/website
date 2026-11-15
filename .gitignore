@@ -4,6 +4,11 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .env*.local
+# Local environment files hold real values (.env.local, or Netlify): none is committed. .env.example, with
+# placeholders only, is the tracked template.
+.env
+.env.*
+!.env.example
 .screenshots/
 # Generated from photos/ by scripts/optimize-images.mjs (src/generated/images.json is kept).
 public/images/

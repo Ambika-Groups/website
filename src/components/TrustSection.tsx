@@ -39,14 +39,16 @@ export function TrustSection({ locale }: { locale: Locale }) {
               </li>
             ))}
           </ul>
-          <ul className="t-meta mt-5 flex flex-wrap gap-x-6 gap-y-2 text-text-2">
-            {t.certifications.map((cert) => (
-              <li key={cert} className="flex items-center gap-2">
-                <span aria-hidden="true" className="size-1.5 rounded-full bg-brand-strong" />
-                {cert}
-              </li>
-            ))}
-          </ul>
+          {t.certifications.length > 0 && (
+            <ul className="t-meta mt-5 flex flex-wrap gap-x-6 gap-y-2 text-text-2">
+              {t.certifications.map((cert) => (
+                <li key={cert} className="flex items-center gap-2">
+                  <span aria-hidden="true" className="size-1.5 rounded-full bg-brand-strong" />
+                  {cert}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

@@ -11,7 +11,11 @@ import { pageMetadata } from "../../metadata";
 const locale: Locale = "en";
 const { blog } = getContent(locale);
 
-export const metadata: Metadata = pageMetadata({ locale, path: localePath(locale, routes.blog), title: blog.meta.title, description: blog.meta.description, absoluteTitle: true });
+export const metadata: Metadata = {
+  ...pageMetadata({ locale, path: localePath(locale, routes.blog), title: blog.meta.title, description: blog.meta.description, absoluteTitle: true }),
+  // No articles yet: the page stays out of search results until there is something to read.
+  ...(posts.length === 0 && { robots: { index: false, follow: true } }),
+};
 
 // Static at build: the posts come from the admin's snapshot (scripts/fetch-cms.mjs), so every article is indexed.
 export default function BlogPage() {

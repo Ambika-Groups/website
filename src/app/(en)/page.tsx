@@ -87,7 +87,7 @@ export default function HomePage() {
               title={home.government.title}
               intro={home.government.body}
             />
-            <p className="t-meta mt-6 text-text-2">{home.government.credentials}</p>
+            {home.government.credentials && <p className="t-meta mt-6 text-text-2">{home.government.credentials}</p>}
           </div>
           <div className="lg:col-span-5 lg:col-start-8 lg:pt-16" data-reveal="">
             <ul className="grid gap-3">

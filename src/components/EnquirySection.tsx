@@ -2,6 +2,7 @@ import { ArrowRight, MessageCircle, Phone } from "lucide-react";
 import { ENQUIRY_ANCHOR, routes } from "@/config/routes";
 import type { FormId } from "@/config/forms";
 import { site, telLink, whatsappLink } from "@/config/site";
+import { shown } from "@/config/launch";
 import { getContent } from "@/content";
 import { localePath, type Locale } from "@/i18n/config";
 import { EnquiryForm } from "./EnquiryForm";
@@ -53,9 +54,11 @@ export function EnquirySection({
                 </a>
               </li>
             </ul>
-            <p className="t-meta mt-4 text-text-2">
-              {common.footer.hoursLabel}: <span className="normal-case">{site.hours}</span>
-            </p>
+            {shown(site.hours) && (
+              <p className="t-meta mt-4 text-text-2">
+                {common.footer.hoursLabel}: <span className="normal-case">{site.hours}</span>
+              </p>
+            )}
           </div>
         </div>
         <div className="lg:col-span-7" data-reveal="">

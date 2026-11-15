@@ -1,7 +1,10 @@
 // Services overview and the four service pages. Home's service grid reads `items` too.
 // TODO(content): the user confirms every scope list and client type below.
-
+import { isReal, preview } from "@/config/launch";
 import type { ServiceKey } from "@/config/routes";
+import { cmsSettings } from "@/lib/cms";
+
+const realEstateProjects = (cmsSettings?.realEstate?.projects ?? []).filter((p) => isReal(p.title)).map((p) => ({ title: p.title, hint: isReal(p.hint) ? p.hint : undefined }));
 
 interface ScopeItem {
   title: string;
@@ -85,11 +88,15 @@ const pages: Record<ServiceKey, ServicePage> = {
     summary: "Residential projects that Ambika Group develops and builds.",
     jobs: ["Current projects", "Upcoming projects"],
     intro: "Ambika Group develops residential projects and builds them with its own construction team.",
-    // TODO(content): real project names, locations, unit types and status.
-    scope: [
-      { title: "[Current project name]", hint: "[Location · unit types · status]" },
-      { title: "[Upcoming project name]", hint: "[Location · expected launch]" },
-    ],
+    // TODO(content): the projects listed come from Site settings (Real estate); the section is left out while empty.
+    scope: realEstateProjects.length
+      ? realEstateProjects
+      : preview
+        ? [
+            { title: "[Current project name]", hint: "[Location · unit types · status]" },
+            { title: "[Upcoming project name]", hint: "[Location · expected launch]" },
+          ]
+        : [],
     clients: ["Home buyers", "Investors"],
     enquiryTitle: "Ask about our projects",
   },

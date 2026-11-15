@@ -1,3 +1,9 @@
+import { isReal, preview } from "@/config/launch";
+import { cmsSettings } from "@/lib/cms";
+
+const registrations = (cmsSettings?.government?.registrations ?? []).filter((r) => isReal(r.label) && isReal(r.value));
+const moreDepartments = (cmsSettings?.government?.departments ?? []).filter(isReal).map((name) => ({ name, hint: "" }));
+
 const government = {
   meta: {
     title: "Government Work | Nagar Nigam & PWD Contractor",
@@ -12,8 +18,9 @@ const government = {
     items: [
       { name: "Nagar Nigam", hint: "Municipal corporation of a city" },
       { name: "PWD", hint: "Public Works Department of the state government" },
+      // Further departments the client confirms (Site settings → Government work).
+      ...moreDepartments,
     ],
-    // TODO(content): add any other departments (e.g. development authorities, Jal Nigam) the user confirms.
   },
   work: {
     title: "Types of work",
@@ -22,13 +29,16 @@ const government = {
   credentials: {
     title: "Registrations",
     intro: "Details a department needs before awarding work.",
-    // TODO(content): real registration numbers and classes. Never publish a value until the user supplies it.
-    // GSTIN is shown too, read from src/config/site.ts.
-    items: [
-      { label: "Contractor registration", value: "[Department and registration number]" },
-      { label: "Contractor class", value: "[Class]" },
-      { label: "PAN", value: "[PAN to be supplied]" },
-    ],
+    // TODO(content): registrations come from Site settings (Government work). Never published until supplied;
+    // PAN and GSTIN are added by the page from Site settings (Company details). The section is left out while empty.
+    items: registrations.length
+      ? registrations
+      : preview
+        ? [
+            { label: "Contractor registration", value: "[Department and registration number]" },
+            { label: "Contractor class", value: "[Class]" },
+          ]
+        : [],
   },
   howWeWork: {
     title: "How we take on tendered work",

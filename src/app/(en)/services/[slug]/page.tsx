@@ -31,7 +31,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const key = serviceFromSlug((await params).slug);
   if (!key) return {};
   const { meta } = services.pages[key];
-  return pageMetadata({ locale, path: localePath(locale, routes[key]), title: meta.title, description: meta.description });
+  return pageMetadata({
+    locale,
+    path: localePath(locale, routes[key]),
+    title: meta.title,
+    description: meta.description,
+  });
 }
 
 // Rhythm: paper header → cover image → light scope → dark "who for" → light gallery → paper enquiry → light chapters.
@@ -40,6 +45,8 @@ export default async function ServicePage({ params }: Props) {
   if (!key) notFound();
   const page = services.pages[key];
   const name = common.serviceNames[key];
+  // A service page with no scope list yet (real estate, until the admin adds projects) leaves that section out.
+  const idx = (n: number) => String(n - (page.scope.length > 0 ? 0 : 1)).padStart(2, "0");
   const { labels } = services;
   const number = String(serviceKeys.indexOf(key) + 1).padStart(2, "0");
   // Every photos/service-<slug>-N file that exists; until then, GALLERY_SLOTS placeholders.
@@ -52,7 +59,10 @@ export default async function ServicePage({ params }: Props) {
       <PageHeader
         title={name}
         intro={page.intro}
-        parent={{ href: localePath(locale, routes.services), label: labels.breadcrumb }}
+        parent={{
+          href: localePath(locale, routes.services),
+          label: labels.breadcrumb,
+        }}
         actions={
           <a href={`#${ENQUIRY_ANCHOR}`} className={button.primary}>
             {common.actions.requestQuote}
@@ -74,35 +84,37 @@ export default async function ServicePage({ params }: Props) {
         />
       </div>
 
-      <section aria-labelledby="scope-title" className="section-y">
-        <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
-          <div className="lg:col-span-4">
-            <SectionHeading id="scope-title" index="01" label={`${labels.chapter} ${number}`} title={labels.scope} />
+      {page.scope.length > 0 && (
+        <section aria-labelledby="scope-title" className="section-y">
+          <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
+            <div className="lg:col-span-4">
+              <SectionHeading id="scope-title" index="01" label={`${labels.chapter} ${number}`} title={labels.scope} />
+            </div>
+            <ol className="grid gap-3 lg:col-span-7 lg:col-start-6">
+              {page.scope.map((item, i) => (
+                <li
+                  key={item.title}
+                  data-reveal=""
+                  style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
+                  data-spotlight=""
+                  className="grid grid-cols-[3rem_1fr] gap-x-4 rounded-field border border-divider bg-surface p-5 sm:p-6"
+                >
+                  <span className="t-meta tabular pt-1 text-brand">{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <p className="t-h3">{item.title}</p>
+                    {item.hint && <p className="mt-1 text-text-2">{item.hint}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
-          <ol className="grid gap-3 lg:col-span-7 lg:col-start-6">
-            {page.scope.map((item, i) => (
-              <li
-                key={item.title}
-                data-reveal=""
-                style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-                data-spotlight=""
-                className="grid grid-cols-[3rem_1fr] gap-x-4 rounded-field border border-divider bg-surface p-5 sm:p-6"
-              >
-                <span className="t-meta tabular pt-1 text-brand">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <p className="t-h3">{item.title}</p>
-                  {item.hint && <p className="mt-1 text-text-2">{item.hint}</p>}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section aria-labelledby="clients-title" className="tone-dark section-y">
         <div className={`${container} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
           <div className="lg:col-span-4">
-            <SectionHeading id="clients-title" index="02" label={labels.chapter} title={labels.clients} />
+            <SectionHeading id="clients-title" index={idx(2)} label={labels.chapter} title={labels.clients} />
           </div>
           <ul className="lg:col-span-7 lg:col-start-6">
             {page.clients.map((client, i) => (
@@ -121,7 +133,7 @@ export default async function ServicePage({ params }: Props) {
 
       <section aria-labelledby="photos-title" className="section-y">
         <div className={container}>
-          <SectionHeading id="photos-title" index="03" label={name} title={labels.photos} />
+          <SectionHeading id="photos-title" index={idx(3)} label={name} title={labels.photos} />
           <div className="mt-12">
             <Gallery
               names={gallery}
@@ -133,17 +145,11 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
-      <EnquirySection
-        locale={locale}
-        formId={serviceFormIds[key]}
-        index="04"
-        title={page.enquiryTitle}
-        body={labels.enquiryBody}
-      />
+      <EnquirySection locale={locale} formId={serviceFormIds[key]} index={idx(4)} title={page.enquiryTitle} body={labels.enquiryBody} />
 
       <section aria-labelledby="related-title" className="section-y">
         <div className={container}>
-          <SectionHeading id="related-title" index="05" label={labels.breadcrumb} title={labels.related} />
+          <SectionHeading id="related-title" index={idx(5)} label={labels.breadcrumb} title={labels.related} />
           <div className="mt-12">
             <ServiceChapters locale={locale} exclude={key} compact />
           </div>

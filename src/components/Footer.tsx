@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUp } from "lucide-react";
 import { routes } from "@/config/routes";
+import { hasProjects, shown } from "@/config/launch";
 import { addressLine, site, telLink, whatsappLink } from "@/config/site";
 import type { Dictionary } from "@/content";
 import { localePath, type Locale } from "@/i18n/config";
@@ -58,7 +59,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary["common"] 
             </h2>
             <ul>
               {t.nav.items
-                .filter((item) => item.route !== "services")
+                .filter((item) => item.route !== "services" && (item.route !== "projects" || hasProjects))
                 .map((item) => (
                   <li key={item.route}>
                     <Link href={href(routes[item.route])} className={linkClass}>
@@ -84,12 +85,24 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary["common"] 
                   {site.whatsapp.display}
                 </a>
               </dd>
-              <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.emailLabel}</dt>
-              <dd>{site.email}</dd>
-              <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.addressLabel}</dt>
-              <dd>{addressLine()}</dd>
-              <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.gstinLabel}</dt>
-              <dd className="tabular">{site.gstin}</dd>
+              {shown(site.email) && (
+                <>
+                  <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.emailLabel}</dt>
+                  <dd>{site.email}</dd>
+                </>
+              )}
+              {shown(site.address.street) && (
+                <>
+                  <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.addressLabel}</dt>
+                  <dd>{addressLine()}</dd>
+                </>
+              )}
+              {shown(site.gstin) && (
+                <>
+                  <dt className="t-meta pt-0.5 !text-[0.75rem]">{t.footer.gstinLabel}</dt>
+                  <dd className="tabular">{site.gstin}</dd>
+                </>
+              )}
             </dl>
           </div>
         </div>

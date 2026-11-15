@@ -7,8 +7,7 @@
  * TODO(content): when real figures arrive, put them in content/en/home.ts and set the matching flag to true.
  */
 import { cmsSettings } from "@/lib/cms";
-
-const preview = process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_PREVIEW_UNVERIFIED === "1";
+import { preview } from "./launch";
 
 // Once the website back end is live, the admin's Site settings switch each section on (with its real values); the
 // switch only takes effect when every value is real (no "[placeholder]"), so a placeholder can never ship.

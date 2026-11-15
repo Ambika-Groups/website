@@ -3,6 +3,7 @@
 import { ClipboardList, Clock, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 import type { FormId } from "@/config/forms";
+import { shown } from "@/config/launch";
 import { site, telLink, whatsappLink } from "@/config/site";
 import type { Dictionary, FormCopy } from "@/content";
 import type { Locale } from "@/i18n/config";
@@ -86,10 +87,12 @@ export function ContactIntent({ copy, formCopy, formId, locale, privacyHref, wha
                 {whatsappLabel}
               </a>
             </div>
-            <p className="flex items-center gap-2 text-sm text-text-2">
-              <Clock aria-hidden="true" size={16} />
-              {copy.talk.hours}: {site.hours}
-            </p>
+            {shown(site.hours) && (
+              <p className="flex items-center gap-2 text-sm text-text-2">
+                <Clock aria-hidden="true" size={16} />
+                {copy.talk.hours}: {site.hours}
+              </p>
+            )}
           </div>
         )}
       </div>

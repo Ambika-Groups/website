@@ -1,4 +1,5 @@
-import { cmsSettings } from "@/lib/cms";
+import { preview } from "@/config/launch";
+import { cmsSettings, filled } from "@/lib/cms";
 
 const contact = {
   meta: {
@@ -23,7 +24,9 @@ const contact = {
   // To switch the video off, set id to "": the page then hides the video and its caption. Once the website back end
   // is live, the admin's Site settings set it instead (an empty video id there hides the block too).
   video: {
-    id: cmsSettings?.videoId !== undefined ? cmsSettings.videoId.trim() : "jSkQGg2Tgoc",
+    // The sample video (another channel) shows only in development and review builds; production shows a video only
+    // when Site settings give one.
+    id: filled(cmsSettings?.videoId) ?? (preview ? "jSkQGg2Tgoc" : ""),
     title: "Apply your own photo|company logo| on your pendrive",
     play: "Play video",
     watchOnYoutube: "Watch on YouTube",
@@ -34,7 +37,7 @@ const contact = {
     titleAccent: "project.",
     intro: "Fill in your details and our team will call you back.",
     // TODO(content): replace with the response-time promise once the client confirms one (common.ts has the same TODO).
-    badge: "Your enquiry goes straight to our team",
+    badge: filled(cmsSettings?.wording?.responseTime) ?? "Your enquiry goes straight to our team",
     intentLabel: "How would you like to start?",
     intents: {
       form: { title: "Request a site visit", sub: "Fill in the form below" },

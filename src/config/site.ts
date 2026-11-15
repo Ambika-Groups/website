@@ -3,19 +3,23 @@
 // Once the website back end is live, the admin's Site settings (Firestore settings/site, snapshotted at build by
 // scripts/fetch-cms.mjs) override these values field by field; anything left empty there keeps the value here.
 import { cmsSettings, filled } from "@/lib/cms";
+import { launchAnswers } from "./launch-answers";
 
 const c = cmsSettings?.contact ?? {};
+const id = cmsSettings?.identity ?? {};
 
 export const PLACEHOLDER_PREFIX = "[";
 
 export const site = {
   // Trading name shown across the site. TODO(content): confirm ("Ambika Group" vs "Ambika Groups").
-  name: "Ambika Group",
+  name: filled(id.name) ?? "Ambika Group",
   // TODO(content): registered legal name, exactly as on the GST certificate.
-  legalName: "[Registered legal name]",
+  legalName: filled(id.legalName) ?? "[Registered legal name]",
   shortMark: "AG",
   // TODO(content): real domain. Read from env so builds for staging/production can differ.
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.com").replace(/\/$/, ""),
+  // Priority: Netlify/.env setting, then the launch answers file (Q1), then the placeholder.
+  // A setting that is still the example.com placeholder does not count.
+  url: ((/example\.com/.test(process.env.NEXT_PUBLIC_SITE_URL ?? "") ? "" : process.env.NEXT_PUBLIC_SITE_URL) || launchAnswers.q1_siteUrl.trim() || "https://www.example.com").replace(/\/$/, ""),
   // TODO(content): main phone, as dialled and as displayed.
   phone: { e164: filled(c.phoneE164) ?? "+910000000000", display: filled(c.phoneDisplay) ?? "[+91 00000 00000]" },
   // TODO(content): WhatsApp number, digits only with country code (used in wa.me links).
@@ -31,7 +35,9 @@ export const site = {
     country: "IN",
   },
   // TODO(content): GSTIN.
-  gstin: "[GSTIN to be supplied]",
+  gstin: filled(id.gstin) ?? "[GSTIN to be supplied]",
+  // TODO(content): PAN (shown on the Government work page only).
+  pan: filled(id.pan) ?? "[PAN to be supplied]",
   // TODO(content): primary service area, e.g. "Lucknow and nearby districts".
   serviceArea: filled(c.serviceArea) ?? "[City / region]",
   // TODO(content): Google Maps share link for the office. While empty, links search the address.

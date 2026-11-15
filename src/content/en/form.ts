@@ -1,3 +1,4 @@
+import { cmsSettings, filled } from "@/lib/cms";
 import type { WorkType } from "@/config/forms";
 import type { FieldErrorCode } from "@/lib/enquiry";
 
@@ -45,8 +46,10 @@ const form = {
   sending: "Sending…",
   success: {
     title: "Enquiry sent. Thank you.",
-    // TODO(content): add a response-time promise once the user confirms it.
-    body: "We will call you on the number you gave. For anything urgent, call or WhatsApp us.",
+    // The response-time promise, if any, comes from Site settings (wording).
+    body: filled(cmsSettings?.wording?.responseTime)
+      ? `${filled(cmsSettings?.wording?.responseTime)} For anything urgent, call or WhatsApp us.`
+      : "We will call you on the number you gave. For anything urgent, call or WhatsApp us.",
   },
   failure: {
     title: "Your enquiry could not be sent.",

@@ -1,3 +1,4 @@
+import { hasProjects } from "@/config/launch";
 import { routes } from "@/config/routes";
 import { telLink, whatsappLink } from "@/config/site";
 import type { Dictionary } from "@/content";
@@ -10,7 +11,7 @@ export function Header({ locale, t }: { locale: Locale; t: Dictionary["common"] 
   return (
     <SiteHeader
       brand={<BrandMark href={localePath(locale, routes.home)} />}
-      items={t.nav.items.map((item) => ({
+      items={t.nav.items.filter((item) => item.route !== "projects" || hasProjects).map((item) => ({
         href: localePath(locale, routes[item.route]),
         label: item.label,
         // Services opens its own page; the four service pages hang under it (dropdown on wider screens, sub-items in the phone menu).
