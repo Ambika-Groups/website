@@ -22,3 +22,24 @@
 
 # Clean URLs: Netlify serves /contact from out/contact.html. Unknown URLs get out/404.html with
 # status 404 automatically.
+
+# ── Strict launch mode: an unfinished site cannot be published ─────────────────────────────────────────────────────
+# Production (the main branch) runs `npm run launch-check` after the build and FAILS the deploy while a must-have
+# answer is missing or a placeholder shows (LAUNCH-QUESTIONS.md). Until the real site address (Q1) is set, a production
+# deploy is therefore blocked on purpose.
+[context.production.environment]
+  LAUNCH_STRICT = "1"
+
+# ── Preview path: see the site on a .netlify.app address without strict mode ───────────────────────────────────────
+# Any other branch (branch deploy) and any pull request (deploy preview) builds non-strict, with the page addresses set
+# to that deploy's own address, so links, the sitemap and canonical tags are right while you look around.
+# From this computer: `npm run deploy:preview`.
+[context.deploy-preview]
+  command = "NEXT_PUBLIC_SITE_URL=$DEPLOY_PRIME_URL npm run build"
+[context.deploy-preview.environment]
+  LAUNCH_STRICT = "0"
+
+[context.branch-deploy]
+  command = "NEXT_PUBLIC_SITE_URL=$DEPLOY_PRIME_URL npm run build"
+[context.branch-deploy.environment]
+  LAUNCH_STRICT = "0"

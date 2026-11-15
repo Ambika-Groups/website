@@ -1,5 +1,23 @@
 # Putting the website online (Netlify)
 
+## The commands (start here)
+
+Everything below is run in a terminal in the `Website\` folder. Nothing deploys, signs up or spends anything until you run the step that says so.
+
+| Step | Command | What it does |
+|---|---|---|
+| 1. Connect | `npm run netlify:setup -- --dry-run`, then `npm run netlify:setup` | Checks your Netlify login, links (or creates) the Netlify site for the GitHub repo `Ambika-Groups/website`, and pushes the settings from `.env.local` to Netlify (the enquiry key, the site address and the back-end address, but only real values, never placeholders). It **never prints a value**: only names, lengths and what it did. The dry run changes nothing and shows the plan. The first real run opens the browser once to log in and, if there is no site yet, to authorise GitHub. |
+| 2. Look | `npm run deploy:preview` | Builds on your computer and puts a **draft** on a `https://…--your-site.netlify.app` address, **without strict mode**, so you can see the site before it is ready. (Pushing any branch other than `main` does the same through Git.) |
+| 3. Check | `npm run verify:live -- https://your-draft-address` | After a deploy: checks every page, the 404, the security and cache headers, the redirects, `robots.txt`, the sitemap and canonical addresses, that the enquiry form has its key, that no placeholder text shows, and the launch-check state. It ends with **READY** or **NOT READY**. |
+| 4. Go live | answer the questions, `npm run launch-check` until READY, then merge to `main` | Production is **strict** (see below). |
+| 5. Confirm | `npm run verify:live -- https://www.yourdomain.in --production` | The same checks, now insisting that the real domain is used everywhere. |
+
+**Strict mode is already on for production.** `netlify.toml` sets `LAUNCH_STRICT=1` for the production context, so a deploy of `main` **fails** while any must-have answer is missing or a placeholder shows. Today the site address (Q1 in `LAUNCH-QUESTIONS.md`, the domain is not connected yet) blocks it on purpose, and the failed build says which question is open. Previews are never strict: branch deploys and deploy previews build with `LAUNCH_STRICT=0` and with their own `.netlify.app` address as the site address, so their links and sitemap are right.
+
+**Credits.** Netlify's Free plan lists deploy previews and branch deploys at 0 credits and a production deploy at 15. A **draft deploy made from your computer** (`npm run deploy:preview`) is not listed on the pages I read, so watch the credit meter the first time (Netlify → Billing → credit usage). Bandwidth is counted for previews too.
+
+---
+
 This guide is for whoever holds the company's Netlify account. You don't need to know how the site is built, but you will copy a few commands into a terminal.
 
 There are two ways to publish. Pick one:
@@ -33,7 +51,7 @@ Do these three things, in this order, before the site goes live:
    It lists every unanswered must-have and every placeholder still visible in the build, with the question number (Q1, Q2, …) and where to answer it, and says which answers came from `launch-answers.ts` and which from the admin. A site address that is not set yet (Q1) is a known pre-deploy item when you run it on your own computer; on Netlify it is a failure. Repeat until it says **RESULT: READY** (it ends with exit code 0). It also lists, as "safe to skip", the optional questions you have not answered yet.
 3. **Deploy** (section A or B below).
 
-**Strict mode (optional).** Normally the launch check only prints a one-line summary after each build and never stops it. When you are ready to launch, set the Netlify environment variable `LAUNCH_STRICT` to `1`. From then on, a build that still has an unanswered must-have or a visible placeholder **fails**, so an unfinished site can never be published by accident. Remove the variable to go back to the normal behaviour.
+**Strict mode.** It is on for production by default (`netlify.toml`, see "The commands" above): a production build that still has an unanswered must-have or a visible placeholder **fails**, so an unfinished site can never be published by accident. Previews are exempt. To run the same strict check on your own computer: `set LAUNCH_STRICT=1` (Windows) before `npm run build`.
 
 ---
 

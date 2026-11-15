@@ -16,6 +16,9 @@
     "launch-questions": "node scripts/gen-launch-questions.mjs",
     "start": "npx --yes serve@14.2.4 out",
     "preview:netlify": "npx --yes netlify-cli@27.14.2 serve --offline",
+    "netlify:setup": "node scripts/netlify-setup.mjs",
+    "verify:live": "node scripts/verify-live.mjs",
+    "deploy:preview": "npm run build && npx --yes netlify-cli@27.14.2 deploy --dir=out --message \"Preview from this computer\"",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test src/lib/*.test.ts && node --test scripts/*.test.mjs && npm --prefix functions test"
