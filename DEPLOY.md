@@ -204,7 +204,7 @@ This gives the site its own back end. Enquiries are stored and shown in the admi
 
 Until this is done the site works as before: enquiries go to Web3Forms, and `/admin` shows a clearly labelled **demo** with sample data.
 
-**Cost.** Everything below stays inside Firebase's free allowances for a site of this size. Firebase needs the Blaze (pay-as-you-go) plan for Functions, so a billing account is required, but the bill is ₹0 inside the free allowances. The ₹100 budget alert (C2) emails you long before any real cost. The enquiry function runs at most 2 copies at a time, so a flood of spam is turned away instead of scaling up.
+**Cost.** Everything below stays inside Firebase's free allowances for a site of this size, **provided the Storage bucket is in a US region** (C3 step 4): Google's no-cost Storage allowance covers only `us-central1`, `us-east1` and `us-west1`, not Mumbai. Firebase needs the Blaze (pay-as-you-go) plan for Storage and (judging by its pricing table) for Functions, so a billing account is required, but the bill is ₹0 inside the free allowances. The ₹100 budget alert (C2) emails you long before any real cost. The enquiry function runs at most 2 copies at a time, so a flood of spam is turned away instead of scaling up.
 
 ### C1. Create the project
 1. Open console.firebase.google.com with the company Google account → **Create a project**.
@@ -220,11 +220,11 @@ Until this is done the site works as before: enquiries go to Web3Forms, and `/ad
 
    An alert only warns you. It does not stop spending.
 
-### C3. Turn on the services (all in region `asia-south1`, Mumbai)
+### C3. Turn on the services (Firestore in Mumbai, Storage in a US region)
 1. **Authentication** → Get started → **Email/Password** → Enable.
 2. Still in Authentication: **Settings** → **User actions** → untick **Enable create (sign-up)**. Nobody can then make an account from the browser; you add admins yourself (C9).
 3. **Firestore Database** → Create → production mode → location `asia-south1`.
-4. **Storage** → Get started → production mode → location `asia-south1`.
+4. **Storage** → Get started → production mode → location **`us-central1`** (not Mumbai). Google's no-cost Storage allowance (5 GB stored, 100 GB a month of downloads) applies only to `us-central1`, `us-east1` and `us-west1`; a Mumbai bucket is billed from the first byte at a price not yet confirmed. Visitors are not affected: photos shown on the built pages are copied into the site at build time and served by Netlify; Storage is used only by the admin's uploads and by galleries loaded live. Firestore, Functions and the rest stay in `asia-south1`.
 
 ### C4. The web settings
 1. Project settings (gear) → **Your apps** → web (`</>`) → register "Website". Hosting: no.
@@ -280,7 +280,7 @@ This needs the Git-connected setup (A). A Drop site has no builds to trigger.
 
 The URL stays in the back end; the browser never sees it.
 
-**Each publish is a production deploy: 15 of the 300 monthly credits.** The admin counts them from its own publish log and shows how many are left. It refuses a second publish within 2 minutes. Make all your edits first, then publish once.
+**Each publish is counted as a production deploy: 15 of the 300 monthly credits.** The admin counts them from its own publish log and shows how many are left. **Watch the credit meter on the first real publish.** Netlify's documentation does not say whether a build started by a build hook is billed as a production deploy (15 credits) or as a branch deploy (0 credits), so the admin assumes the worst case. Open Netlify → Billing → credit usage before and after the first publish and note what it cost; if it is 0, the admin's credit figure is only a safe over-estimate. It refuses a second publish within 2 minutes. Make all your edits first, then publish once.
 
 If Firebase can't be reached during a Netlify build, the build carries on from the last saved snapshot (`src/generated/cms-*.json`) and says so in the deploy log. It never breaks the site.
 
