@@ -86,10 +86,10 @@ If a port is already in use, stop the other server, or run `npx serve@14.2.4 out
 
 ## Environment
 Copy `.env.example` to `.env.local`:
-- `NEXT_PUBLIC_ENQUIRY_ENDPOINT`: empty for Web3Forms (fallback); the website's own `submitEnquiry` URL once its back end is deployed (contract v3; DEPLOY.md section C). When it changes, also update the "Who handles it" section of the Privacy page (TODO in `src/content/en/privacy.ts`).
+- `NEXT_PUBLIC_ENQUIRY_ENDPOINT`: empty for Web3Forms (fallback); the website's own `/.netlify/functions/submit-enquiry` address once its back end exists (contract v3; DEPLOY.md section C). When it changes, also update the "Who handles it" section of the Privacy page (TODO in `src/content/en/privacy.ts`).
 - `NEXT_PUBLIC_WEB3FORMS_KEY`: stage 1 only.
 - `NEXT_PUBLIC_SITE_URL`: the production domain (canonical links, sitemap, share previews).
-- `NEXT_PUBLIC_FIREBASE_*` (five values): the website Firebase project's public web settings. Empty = demo mode for `/admin`, content files for the site. Setup: DEPLOY.md section C.
+- `NEXT_PUBLIC_FIREBASE_*` (four values; the storage bucket stays empty): the website Firebase project's public web settings. Empty = demo mode for `/admin`, content files for the site. Setup: DEPLOY.md section C.
 
 ## Photos
 Put original photos (any size, straight from the camera) in `photos/` with the names listed in `CONTENT-CHECKLIST.md`, e.g. `hero.jpg`, `service-road-works.jpg`, `project-<slug>-1.jpg`. The build makes AVIF + WebP copies at 480–2000 px in `public/images/`, applies the camera's rotation, strips all metadata (including GPS location) and records sizes in `src/generated/images.json`. Any slot without a photo shows a visible placeholder.

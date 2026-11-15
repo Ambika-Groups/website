@@ -68,10 +68,10 @@ You need:
 |---|---|---|
 | `NEXT_PUBLIC_WEB3FORMS_KEY` | The Web3Forms access key. | `a1b2c3d4-…` |
 | `NEXT_PUBLIC_SITE_URL` | The site's final address, starting with `https://`, **no slash at the end**. Search engines and link previews use it. | `https://www.ambikagroup.in` |
-| `NEXT_PUBLIC_ENQUIRY_ENDPOINT` | Empty means "send enquiries to Web3Forms". Once the website back end is set up (section C), the address of its `submitEnquiry` function. | *(empty)*, later `https://asia-south1-ambika-website.cloudfunctions.net/submitEnquiry` |
-| `NEXT_PUBLIC_FIREBASE_API_KEY`, `…_AUTH_DOMAIN`, `…_PROJECT_ID`, `…_STORAGE_BUCKET`, `…_APP_ID` | **Leave empty until section C.** The website Firebase project's web settings (C4). While `…_PROJECT_ID` is empty, `/admin` runs in demo mode on sample data, and the site uses its content files. | *(empty)* |
+| `NEXT_PUBLIC_ENQUIRY_ENDPOINT` | Empty means "send enquiries to Web3Forms". Once the website back end is set up (section C), the address of its `submit-enquiry` Netlify Function. | *(empty)*, later `/.netlify/functions/submit-enquiry` |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`, `…_AUTH_DOMAIN`, `…_PROJECT_ID`, `…_APP_ID` (and `…_STORAGE_BUCKET`, which stays empty: Storage is not used) | **Leave empty until section C.** The website Firebase project's web settings (C3). While `…_PROJECT_ID` is empty, `/admin` runs in demo mode on sample data, and the site uses its content files. | *(empty)* |
 
-These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key and the Firebase web settings are designed to be public (the security rules protect the data). Never put any other key, password or CRM secret here; those live in the back end (section C6).
+These values end up inside the website's files when it is built, so **after changing any of them you must build and deploy again** for the change to show. None of them is a password: the Web3Forms key and the Firebase web settings are designed to be public (the security rules protect the data). Never put any other key, password or CRM secret here; those live in the back end (section C).
 
 Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches the placeholders back on (sample projects, placeholder figures and logos) and is only for internal review builds. In a normal production build the site never shows placeholder text: a section or row with no real content is left out.
 
@@ -216,89 +216,75 @@ A production build shows **no** [bracketed] placeholder text; if you see one, ru
 
 ---
 
-## C. The website back end and admin (Firebase)
+## C. The website back end and admin (free plan only, no card)
 
-This gives the site its own back end. Enquiries are stored and shown in the admin at `/admin` (inbox and analytics), and the owner gets an email for each one. The blog, projects and site settings are edited there and published with one button. It is a **separate Firebase project from the CRM's**, so its traffic, spam and quota can never touch the CRM.
+> **You do not need any of this to launch.** The site works as it is: enquiries go to Web3Forms and `/admin` shows a clearly labelled **demo** with sample data. Do this section only when you decide to build the back end described in `docs/BACKEND-PLAN.md` (read its summary first). **Some of it cannot be done yet:** the Netlify Functions the steps refer to (`submit-enquiry`, `publish-site`, `media-sign`) are part of the plan's phases 0 to 2 and are **not written yet**. Until they are, you can do C1 to C4 (accounts and settings) but not deploy a working back end. The click-paths below are from the vendors' usual consoles as I know them; where a button might have moved, the step says what to look for.
 
-Until this is done the site works as before: enquiries go to Web3Forms, and `/admin` shows a clearly labelled **demo** with sample data.
+**What this gives the site.** Enquiries are stored and shown in the admin at `/admin` (inbox and analytics) and optionally emailed to the owner. Projects (with photo galleries, before-and-after pairs and YouTube links), the blog and the site settings are edited there and published with one button. It is a **separate Firebase project from the CRM's**, so its traffic, spam and quota can never touch the CRM.
 
-**Cost.** Everything below stays inside Firebase's free allowances for a site of this size, **provided the Storage bucket is in a US region** (C3 step 4): Google's no-cost Storage allowance covers only `us-central1`, `us-east1` and `us-west1`, not Mumbai. Firebase needs the Blaze (pay-as-you-go) plan for Storage and (judging by its pricing table) for Functions, so a billing account is required, but the bill is ₹0 inside the free allowances. The ₹100 budget alert (C2) emails you long before any real cost. The enquiry function runs at most 2 copies at a time, so a flood of spam is turned away instead of scaling up.
+**What it costs: ₹0, and nobody enters a payment method.** Everything stays on free plans:
+| Service | What it does here | Plan | Needs a card? |
+|---|---|---|---|
+| **Firebase Spark** | sign-in (Authentication) and the database (Firestore) | free "Spark" plan: Cloud Functions and Cloud Storage are **not** part of it, and are not used | No: the pricing table says "No payment method needed" |
+| **Netlify Functions** | the few jobs that need a secret: receive an enquiry, start a publish, sign a photo upload | included in the Netlify Free plan you already use | No |
+| **Cloudinary** | stores and serves the gallery photos | Free plan, 25 credits a month | Its pricing page says "No credit card required" |
+| **Cloudflare Turnstile** | a free bot check on the enquiry form | Free plan | **Not confirmed**: check when signing up (C5). If it asks for a card, skip it |
+| **Resend** (optional) | emails the owner for each enquiry | Free, 100 a day | **Not confirmed**: check when signing up (C6). If it asks for a card, use the Web3Forms route in C6 |
 
-### C1. Create the project
-1. Open console.firebase.google.com with the company Google account → **Create a project**.
-2. Name it e.g. `ambika-website`. Do not use the CRM's project.
+**Limits to know** (details and the reasons are in the plan, sections 1, 13 and 14):
+- Netlify Free has **300 credits a month and stops every site on the account when they are used up**. Each publish uses 15 (assume that until the first one is measured), so plan on **8 to 10 publishes a month**. A flood of fake enquiries could also use credits; the rate limit and bot check in C5 and C8 exist for that.
+- Cloudinary's 25 credits a month cover roughly 12,000 gallery views. Past that it says it will "ask you nicely to upgrade"; what exactly happens on Free is **not confirmed**, so watch its dashboard.
+- Firestore: 50,000 reads and 20,000 writes a day. There is **no automatic deletion** of old enquiries on this plan (the plan has a button for it instead).
+
+### C1. Create the Firebase project (Spark)
+1. Open console.firebase.google.com with the company Google account → **Create a project** (or **Add project**).
+2. Name it e.g. `ambika-website`. **Do not use the CRM's project.**
 3. Google Analytics: **off**.
+4. Do **not** click **Upgrade** or add a billing account at any point. If Firebase asks for a plan, choose the free **Spark** plan. If a screen says a feature "requires the Blaze plan" (Cloud Functions, Storage), that feature is not used here: leave it alone.
 
-### C2. Blaze plan and the ₹100 alert
-1. In the project, **Upgrade** → Blaze → link or create a billing account.
-2. Go to console.cloud.google.com → **Billing** → **Budgets & alerts** → **Create budget**:
-   - scope: this project only
-   - amount: **₹100**
-   - alerts at 50%, 90% and 100%, emailed to the billing admins
-
-   An alert only warns you. It does not stop spending.
-
-### C3. Turn on the services (Firestore in Mumbai, Storage in a US region)
-1. **Authentication** → Get started → **Email/Password** → Enable.
+### C2. Turn on Authentication and Firestore
+1. **Build** → **Authentication** → **Get started** → **Sign-in method** → **Email/Password** → Enable. (If the console says this needs anything beyond a free account, stop and tell the developer: that is plan item 8.)
 2. Still in Authentication: **Settings** → **User actions** → untick **Enable create (sign-up)**. Nobody can then make an account from the browser; you add admins yourself (C9).
-3. **Firestore Database** → Create → production mode → location `asia-south1`.
-4. **Storage** → Get started → production mode → location **`us-central1`** (not Mumbai). Google's no-cost Storage allowance (5 GB stored, 100 GB a month of downloads) applies only to `us-central1`, `us-east1` and `us-west1`; a Mumbai bucket is billed from the first byte at a price not yet confirmed. Visitors are not affected: photos shown on the built pages are copied into the site at build time and served by Netlify; Storage is used only by the admin's uploads and by galleries loaded live. Firestore, Functions and the rest stay in `asia-south1`.
+3. **Build** → **Firestore Database** → **Create database** → location `asia-south1` (Mumbai) → **production mode**. A project has exactly one free database; this is it.
+4. Do **not** open **Storage** (it needs Blaze). Photos go to Cloudinary (C4).
 
-### C4. The web settings
-1. Project settings (gear) → **Your apps** → web (`</>`) → register "Website". Hosting: no.
-2. It shows `apiKey`, `authDomain`, `projectId`, `storageBucket` and `appId`.
-3. Put them in the five `NEXT_PUBLIC_FIREBASE_…` settings: in Netlify, and in `.env.local` for builds on your computer.
+### C3. The web settings
+1. **Project settings** (gear) → **General** → **Your apps** → the web icon `</>` → register "Website". Firebase Hosting: no.
+2. It shows `apiKey`, `authDomain`, `projectId` and `appId` (and a `storageBucket`, which is not used: leave `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` empty).
+3. Put the four in the `NEXT_PUBLIC_FIREBASE_…` settings: in Netlify (**Site configuration** → **Environment variables** → **Add a variable**), and in `.env.local` for builds on your computer. These are public by design.
 
-### C5. Tools on your computer (once)
-```
-npm install -g firebase-tools
-firebase login
-```
-In `Website\`, copy `.firebaserc.example` to `.firebaserc` and put the project id in it.
+### C4. Cloudinary (photos)
+1. Sign up at cloudinary.com with the company email, choosing the **Free** plan. **If any step asks for a card, stop** and tell the developer.
+2. Open the **Dashboard** (or **Settings** → **API Keys**): note the **Cloud name**, **API Key** and **API Secret**. The secret is a password: never put it in `.env.local` or in the site files. It goes into the admin's Configuration page (phase 7 of the plan), or, until that exists, into a Netlify environment variable named `CLOUDINARY_API_SECRET`.
+3. Nothing else is needed: the admin signs each upload through a Netlify Function, so no unsigned upload preset is created.
 
-### C6. Back-end settings and secrets
-1. **Back-end settings.** Create `Website\functions\.env`. It holds no secret, but it belongs to this installation, so never commit it:
-   ```
-   SITE_ORIGINS=https://www.ambikagroup.in,https://ambikagroup.in
-   OWNER_EMAIL=owner@ambikagroup.in
-   EMAIL_FROM=Ambika Group Website <onboarding@resend.dev>
-   ```
-   `*.netlify.app` addresses and localhost are always allowed.
-2. **Owner email (free).** Sign up at resend.com with the owner's email and create an API key. Then run:
-   ```
-   firebase functions:secrets:set RESEND_API_KEY
-   ```
-   and paste the key.
-   - Until you have a key, enter `none`. Enquiries are still stored; only the email is skipped.
-   - With `onboarding@resend.dev` as the sender, Resend only delivers to the address the Resend account was made with.
-   - To send from the company's own address instead, verify the domain in Resend and change `EMAIL_FROM`.
-3. **Netlify build hook.** The admin's "Publish site" button needs it; you create it in C8. For now, run:
-   ```
-   firebase functions:secrets:set NETLIFY_BUILD_HOOK
-   ```
-   and enter `none`.
+### C5. Cloudflare Turnstile (bot check, optional but recommended)
+1. dash.cloudflare.com → sign up (free) → **Turnstile** in the left menu → **Add widget**. Check on this screen that it does not ask for a card or a paid plan; **if it does, skip Turnstile**. The form is still protected by the rate limit, the honeypot and the size cap.
+2. Widget name `ambika-website`, **hostnames**: your live domain and your `.netlify.app` address. Mode: **Managed**. Create.
+3. It shows a **site key** (public: goes in `NEXT_PUBLIC_TURNSTILE_SITE_KEY` in Netlify) and a **secret key** (a password: Configuration page or `TURNSTILE_SECRET_KEY` in Netlify).
 
-### C7. Deploy the back end
-```
-cd functions
-npm ci
-npm test
-cd ..
-firebase deploy --only functions,firestore,storage
-```
-1. The output lists the `submitEnquiry` address. Put it in `NEXT_PUBLIC_ENQUIRY_ENDPOINT` in Netlify.
-2. Deploy the site once.
+### C6. Owner email (optional)
+**Route A, Resend.** Sign up at resend.com with the owner's email and create an API key. **If signup asks for a card, use Route B.**
+- The key goes in the Configuration page, or `RESEND_API_KEY` in Netlify.
+- With `onboarding@resend.dev` as the sender, Resend only delivers to the address the Resend account was made with. (Whether that is still the rule is **not confirmed**.)
+- To send from the company's own address, verify the domain in Resend (needs the domain connected first).
 
-The form now posts to the website's own back end (contract v3), and Web3Forms is no longer used.
+**Route B, Web3Forms in front.** Keep the form posting to Web3Forms for the email and its spam filter, and have the site also send a copy to the website's function to store it. Nothing more to sign up for.
+
+### C7. The Netlify Function key (the one secret that must be an environment variable)
+This is what lets the Netlify Functions use the database. It is a key to your whole database: treat it like a bank password.
+1. Firebase → **Project settings** (gear) → **Service accounts** → **Generate new private key** → **Generate key**. A small `.json` file downloads. (If Spark does not offer this, stop: plan item 8.)
+2. Open the file in a text editor. Keep only `project_id`, `client_email` and `private_key`, and put them on **one line** as JSON (the developer's setup tool will do this for you; the `private_key` must keep its `\n` sequences exactly).
+3. Netlify → the site → **Site configuration** → **Environment variables** → **Add a variable**: name `FIREBASE_SERVICE_ACCOUNT`, paste the one-line JSON, scopes **All** (Free plan: no per-scope choice). The value limit is 5,000 characters; the key is about 2,300. Whether many large variables together hit a total limit is **not confirmed** (plan item 1): the first deploy shows it.
+4. **Delete the downloaded `.json` file** (and empty the recycle bin). Never email it, commit it or paste it in a chat.
+5. **A changed variable only takes effect after a new deploy.** To replace the key later: generate a new one in Firebase, update the variable, deploy, then delete the old key under **Service accounts** → **Manage service account permissions**.
 
 ### C8. The "Publish site" button (Netlify build hook)
 This needs the Git-connected setup (A). A Drop site has no builds to trigger.
 1. Netlify → the site → **Site configuration** → **Build & deploy** → **Build hooks** → **Add build hook**: name "Admin publish", branch `main`. Copy the URL.
-2. Run `firebase functions:secrets:set NETLIFY_BUILD_HOOK`, paste the URL, then run `firebase deploy --only functions`.
+2. Paste it into the Configuration page (or `NETLIFY_BUILD_HOOK` in Netlify). The `publish-site` Function calls it; the URL never reaches the browser.
 
-The URL stays in the back end; the browser never sees it.
-
-**Each publish is counted as a production deploy: 15 of the 300 monthly credits.** The admin counts them from its own publish log and shows how many are left. **Watch the credit meter on the first real publish.** Netlify's documentation does not say whether a build started by a build hook is billed as a production deploy (15 credits) or as a branch deploy (0 credits), so the admin assumes the worst case. Open Netlify → Billing → credit usage before and after the first publish and note what it cost; if it is 0, the admin's credit figure is only a safe over-estimate. It refuses a second publish within 2 minutes. Make all your edits first, then publish once.
+**Each publish is assumed to be a production deploy: 15 of the 300 monthly credits.** The admin counts them from its own publish log and shows how many are left. **Watch the credit meter on the first real publish.** Netlify's documentation does not say whether a build started by a build hook is billed as a production deploy (15 credits) or a branch deploy (0 credits). Open Netlify → Billing → credit usage before and after the first publish and note what it cost. The function refuses a second publish within 2 minutes. Make all your edits first, then publish once.
 
 If Firebase can't be reached during a Netlify build, the build carries on from the last saved snapshot (`src/generated/cms-*.json`) and says so in the deploy log. It never breaks the site.
 
@@ -310,16 +296,17 @@ If Firebase can't be reached during a Netlify build, the build carries on from t
 - **To add another admin:** repeat C9.
 - **To remove an admin:** delete their `admins` document. Also delete the user if they shouldn't sign in at all.
 
-### C10. Checks
-1. Send a test enquiry from the Contact page. It should appear in **/admin → Enquiries** within seconds. If C6.2 is set up, the owner email should arrive too.
+### C10. Checks (once the Functions exist)
+1. Send a test enquiry from the Contact page. It should appear in **/admin → Enquiries** within seconds. If C6 is set up, the owner email should arrive too.
 2. Run `curl.exe -I https://<your site>/admin`. It should show `X-Robots-Tag: noindex, nofollow, noarchive`. Check that `/admin` is not in `sitemap.xml`.
-3. In the admin, change something small (e.g. Site settings → office hours), save, then press **Publish site**. A new deploy should appear in Netlify within a minute, and the change goes live a few minutes later.
+3. In the admin, change something small (e.g. Site settings → office hours), save, then press **Publish site**. A new deploy should appear in Netlify within a minute, and the change goes live a few minutes later. Note the credits it cost (C8).
+4. Upload one photo in the admin and check it shows on the site and in Cloudinary's dashboard.
 
 ### C11. The CRM link (later)
 When the CRM's API exists, go to **/admin → Site settings → CRM link** and enter its address and key.
-- The key goes to a back-end-only document that no browser can read back.
+- The key is stored in a document no browser can read.
 - Each new enquiry is then also sent to the CRM, and its status shows on the enquiry.
-- Syncing projects from the CRM is prepared but not built yet (`functions/src/crm.js`, TODO).
+- Syncing projects from the CRM is prepared but not built yet.
 
 ---
 
@@ -333,7 +320,7 @@ When the CRM's API exists, go to **/admin → Site settings → CRM link** and e
 | Old page still shows after a deploy | Browser cache | Reload with Ctrl+Shift+R, or try a private window. |
 | "Site not available" on every page | Monthly credits used up | Wait for the monthly reset, or upgrade the plan. See README "Free plan". |
 | Enquiries arrive at the wrong email | Web3Forms key belongs to another account | Create the key with the right email, update the setting, rebuild. |
-| /admin says "Demo mode" on the live site | The Firebase settings were empty when the site was built | Set the five `NEXT_PUBLIC_FIREBASE_…` settings (C4) and deploy again. |
+| /admin says "Demo mode" on the live site | The Firebase settings were empty when the site was built | Set the `NEXT_PUBLIC_FIREBASE_…` settings (C3) and deploy again. |
 | /admin: "No admin access" | The account has no `admins` document | C9 step 2, with the exact User UID. |
-| Enquiry form shows an error after C7 | The site's address is not in `SITE_ORIGINS` | Add it in `functions/.env` (C6), then `firebase deploy --only functions`. |
-| "Publish site" says the build hook is not set up | `NETLIFY_BUILD_HOOK` is still `none` | C8. |
+| Enquiry form says it is busy or asks to try later | The rate limit or bot check turned the request away (or the Netlify credits are used up) | Wait a minute and try again; check Netlify → Billing → credit usage. |
+| "Publish site" says the build hook is not set up | The build hook address has not been entered | C8. |
