@@ -77,6 +77,16 @@ Do **not** set `NEXT_PUBLIC_PREVIEW_UNVERIFIED`. It switches the placeholders ba
 
 `LAUNCH_STRICT=1` is explained in "The launch order" above.
 
+### Putting the settings into Netlify (plain instructions)
+`.env.local` and `.env` never reach GitHub, so Netlify cannot see them. **The values you enter in Netlify's dashboard replace the `.env` files for the live site.**
+1. Netlify → the site → **Site configuration** → **Environment variables** → **Add a variable** → **Import from a .env file** ("Import environment variables" box).
+2. Open `.env.local` on your computer and paste **only the lines you need** (the `NEXT_PUBLIC_…` ones from the table above). Do not paste anything else.
+3. Leave **Contains secret values** **unticked** for the `NEXT_PUBLIC_` ones. They are public by design and are embedded in the site's files; ticking it would make Netlify's secrets scanner treat them as secrets and fail the build.
+4. Scopes: **All scopes**. (Per-scope choice is documented only for paid plans; on Free you may not be offered it, and then nothing needs choosing.)
+5. Real secrets (the service-account key, API secrets, the CRM key) are **different**: they are added one at a time, with **Contains secret values** ticked, and never go in the pasted lines or in `.env.local`. They are only needed for section C.
+
+As a safety net, `netlify.toml` sets `SECRETS_SCAN_OMIT_KEYS` with the names of the public `NEXT_PUBLIC_` settings, so the scanner skips them even if one is ticked by mistake. (Netlify's docs say scanning covers values marked secret; whether `netlify.toml` can set this variable is **not confirmed** in them, so if a build ever fails with "secrets scanning found secrets", untick the box for that variable or add `SECRETS_SCAN_OMIT_KEYS` in the dashboard with the same list.) `npm run netlify:setup` imports these settings with the Netlify CLI, which does not mark them as secret (expected, not verified here).
+
 ---
 
 ## A. Connected to Git (recommended)
